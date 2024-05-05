@@ -1,109 +1,854 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <!-- Include your compiled Tailwind CSS -->
-    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Satisfy&display=swap" rel="stylesheet">
     <style>
-      .main-logo-design{
+      .main-logo-design {
         font-size: 1.8rem;
-        color:navy;
+        color: navy;
         font-weight: bold;
+        font-family: "Satisfy", cursive;
       }
+      .custom-list-item {
+        margin-left: 2.5rem;
+      }
+
+      .custom-dt {
+        color: rgb(0, 0, 255); /* Tailwind's indigo-600 */
+        font-weight: 600; /* Tailwind's font-semibold */
+      }
+
+      .custom-dd {
+        color: #4b5563; /* Tailwind's text-gray-600 */
+      }
+      /* Custom CSS to replicate Tailwind styles */
+.relative {
+    position: relative;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.custom-svg {
+    height: 2rem; /* Adjust the height as needed */
+    width: 2rem; /* Adjust the width as needed */
+    margin-right: 1rem; /* Adjust the margin as needed */
+}
+/* Custom CSS to refine section appearance */
+@media (min-width: 1024px) {
+    .lg\:flex-row-reverse {
+        flex-direction: row-reverse !important;
+    }
+    .lg\:pl-8 {
+        padding-left: 2rem !important; /* Adjust as needed */
+    }
+}
+
+/* Container styling */
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.bg-gradient-to-b {
+    background-image: linear-gradient(to bottom, #ffffff, #f9fafb);
+}
+
+/* Max width container */
+.max-w-7xl {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Inner container */
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.sm\:px-6 {
+    @media (min-width: 640px) {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+.lg\:px-8 {
+    @media (min-width: 1024px) {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* Flex container */
+.flex {
+    display: flex;
+}
+
+.flex-col-reverse {
+    flex-direction: column-reverse;
+}
+
+.lg\:flex-row {
+    @media (min-width: 1024px) {
+        flex-direction: row;
+    }
+}
+
+.lg\:items-center {
+    @media (min-width: 1024px) {
+        align-items: center;
+    }
+}
+
+/* Product section */
+.custom-product {
+    margin-top: 2rem;
+}
+
+/* Left column */
+.lg\:w-1\/2 {
+    @media (min-width: 1024px) {
+        width: 50%;
+    }
+}
+
+.max-w-lg {
+    max-width: 42rem;
+    margin-right: 1rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-gray-900 {
+    color: #4a5568;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+/* Description list */
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+/* Right column */
+.mt-10 {
+    margin-top: 2.5rem;
+}
+
+.lg\:pl-8 {
+    @media (min-width: 1024px) {
+        padding-left: 2rem;
+    }
+}
+
+.w-full {
+    width: 100%;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.wider-img {
+    width: 100%; /* Adjust the width as needed */
+    max-width: 700px; /* Maximum width for the image */
+}
+
+/* Adjust the margins to push the content to the right */
+.lg\:pl-8 {
+    @media (min-width: 1024px) {
+        padding-left: 4rem; /* Increase the padding to push content to the right */
+    }
+}
+/* Image */
+img {
+    margin-left:1rem;
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+#product{
+  background-color: #1a202c; /* Dark greyish blue color */
+    color: white; /* Text color for better readability */
+    padding: 3rem 0;
+}
+.dark-mode-bg {
+    background-color: #1a202c; /* Dark greyish blue color */
+    color: white!important; /* Text color for better readability */
+    padding: 3rem 0; /* Add padding to the section */
+}
+#features {
+    color: #fff;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+#features h2 {
+    color: rgb(0, 0, 255);
+}
+
+#features .bg-indigo-600 {
+    background-color: rgb(0, 0, 255);
+}
+
+#features .text-indigo-600 {
+    color: rgb(0, 0, 255);
+}
+
+.flex-custom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem; /* Adjust the gap between the dl elements */
+}
+
+.margg-l-2 {
+    margin-left: 2rem;
+}
+
+/* Adjust the gap between dl elements */
+.flex-custom dl {
+    margin-bottom: 2rem; /* Increase vertical gap between dl elements */
+}
+
+/* Adjust spacing within dl elements */
+.flex-custom dt, .flex-custom dd {
+    margin-bottom: 1rem;
+}
+.bg-custom{
+  background-color: rgb(0, 0, 255);
+}
+.text-custom{
+  color: rgb(0, 0, 255);
+}
+#aboutus h2 {
+            color: #4a5568; /* Dark gray text */
+        }
+
+        #aboutus p {
+            color: #718096; /* Gray text */
+        }
+
+        #aboutus .content-block {
+            background-color: #ffffff; /* White background */
+            border-radius: 0.75rem; /* Rounded corners */
+            padding: 2rem; /* Spacing inside the content block */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Shadow effect */
+        }
+
+        #aboutus .content-block svg {
+            width: 64px; /* Adjust the size of SVG icons */
+            height: 64px;
+            color: rgb(0, 0, 255); /* Icon color */
+        }
+
+        #aboutus .content-block h3 {
+            margin-top: 1.5rem; /* Spacing between heading and content */
+            color: #4a5568; /* Dark gray text */
+        }
+
+        #aboutus .content-block p {
+            margin-top: 0.75rem; /* Spacing between paragraphs */
+            color: #718096; /* Gray text */
+        }
+     
+        /* Custom CSS for About Us Section */
+        #aboutus {
+            position: relative;
+            overflow: hidden;
+            background-color: #1a202c; /* Dark gray background */
+            padding: 6rem 0; /* Generous padding */
+        }
+
+        #aboutus h2 {
+            color: #ffffff; /* White text */
+            font-size: 2.25rem; /* Larger font size */
+            font-weight: 700; /* Bold font weight */
+            line-height: 1.2; /* Increased line height */
+            text-align: center; /* Center-aligned text */
+            margin-bottom: 2rem; /* Spacing below heading */
+        }
+
+        #aboutus p {
+            color: #cbd5e0; /* Light gray text */
+            font-size: 1.125rem; /* Font size */
+            line-height: 1.5; /* Line height */
+            text-align: center; /* Center-aligned text */
+            max-width: 36rem; /* Maximum width */
+            margin: 0 auto 3rem; /* Spacing */
+        }
+
+        #aboutus .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two columns */
+            gap: 1.5rem; /* Gap between items */
+            margin-top: 2rem; /* Spacing above grid */
+        }
+
+        #aboutus a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem; /* Padding */
+            background-color: #4a5568; /* Dark gray background */
+            color: #ffffff; /* White text */
+            font-size: 1.125rem; /* Font size */
+            font-weight: 600; /* Font weight */
+            text-decoration: none; /* Remove underline */
+            border-radius: 0.375rem; /* Rounded corners */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        #aboutus a:hover {
+            background-color: #2d3748; /* Darken background on hover */
+        }
+
+        #aboutus dl {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr)); /* Four columns */
+            gap: 1.5rem; /* Gap between items */
+            margin-top: 3rem; /* Spacing above grid */
+        }
+
+        #aboutus dt,
+        #aboutus dd {
+            text-align: center; /* Center-aligned text */
+        }
+
+        #aboutus dt {
+            color: #cbd5e0; /* Light gray text */
+            font-size: 0.875rem; /* Font size */
+            line-height: 1.5; /* Line height */
+        }
+
+        #aboutus dd {
+            color: #ffffff; /* White text */
+            font-size: 1.5rem; /* Larger font size */
+            font-weight: 700; /* Bold font weight */
+            line-height: 1.2; /* Line height */
+        }
+      /* Custom CSS for Footer */
+      footer {
+          background-color: #ffffff; /* White background */
+          border-radius: 0.5rem; /* Rounded corners */
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Shadow */
+          margin: 1rem; /* Margin */
+          padding: 1rem; /* Padding */
+      }
+
+      footer a {
+          color: #4a5568; /* Gray text color */
+          text-decoration: none; /* Remove underline */
+          transition: color 0.3s ease; /* Smooth transition */
+      }
+
+      footer a:hover {
+          color: #2d3748; /* Darker text color on hover */
+      }
+
+      footer ul {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-top: 0.75rem; /* Spacing above list */
+          padding: 0; /* Remove default padding */
+          list-style: none; /* Remove bullet points */
+      }
+
+      footer ul li {
+          margin-right: 1.5rem; /* Spacing between list items */
+      }
+
+      footer ul li:last-child {
+          margin-right: 0; /* No margin on the last item */
+      }
+ 
     </style>
-</head>
-<body class="bg-gray-1000 text-gray-900">
-  
+  </head>
+  <body class="bg-gray-1000 text-gray-900">
     <div class="bg-blue-500">
-        <header class="absolute inset-x-0 top-0 z-50">
-          <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-            <div class="flex lg:flex-1">
+      <header class="absolute inset-x-0 top-0 z-50">
+        <nav
+          class="flex items-center justify-between p-6 lg:px-8"
+          aria-label="Global"
+        >
+          <div class="flex lg:flex-1">
+            <a href="#" class="-m-1.5 p-1.5">
+              <span class="sr-only">JustERP</span>
+              <span class="main-logo-design">JustERP</span>
+              <!-- <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt=""> -->
+            </a>
+          </div>
+          <div class="flex lg:hidden">
+            <button
+              type="button"
+              class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="hidden lg:flex lg:gap-x-12">
+            <a
+              href="#product"
+              class="text-sm font-semibold leading-6 text-gray-900"
+              >Product</a
+            >
+            <a href="#features" class="text-sm font-semibold leading-6 text-gray-900"
+              >Features</a
+            >
+           
+            <a href="#aboutus" class="text-sm font-semibold leading-6 text-gray-900"
+              >Company</a
+            >
+          </div>
+          <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+              >Log in <span aria-hidden="true">&rarr;</span></a
+            >
+          </div>
+        </nav>
+        <!-- Mobile menu, show/hide based on menu open state. -->
+        <div class="lg:hidden" role="dialog" aria-modal="true">
+          <!-- Background backdrop, show/hide based on slide-over state. -->
+          <div class="fixed inset-0 z-50"></div>
+          <div
+            class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
+          >
+            <div class="flex items-center justify-between">
               <a href="#" class="-m-1.5 p-1.5">
-                <span class="sr-only">JustERP</span>
-                <span class="main-logo-design">JustERP</span>
-                <!-- <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt=""> -->
+                <span class="sr-only">Your Company</span>
+                <img
+                  class="h-8 w-auto"
+                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                  alt=""
+                />
               </a>
-            </div>
-            <div class="flex lg:hidden">
-              <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
-                <span class="sr-only">Open main menu</span>
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              <button
+                type="button"
+                class="-m-2.5 rounded-md p-2.5 text-gray-700"
+              >
+                <span class="sr-only">Close menu</span>
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
-            <div class="hidden lg:flex lg:gap-x-12">
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Product</a>
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Features</a>
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Company</a>
-            </div>
-            <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
-            </div>
-          </nav>
-          <!-- Mobile menu, show/hide based on menu open state. -->
-          <div class="lg:hidden" role="dialog" aria-modal="true">
-            <!-- Background backdrop, show/hide based on slide-over state. -->
-            <div class="fixed inset-0 z-50"></div>
-            <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div class="flex items-center justify-between">
-                <a href="#" class="-m-1.5 p-1.5">
-                  <span class="sr-only">Your Company</span>
-                  <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="">
-                </a>
-                <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-                  <span class="sr-only">Close menu</span>
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div class="mt-6 flow-root">
-                <div class="-my-6 divide-y divide-gray-500/10">
-                  <div class="space-y-2 py-6">
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Product</a>
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Features</a>
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Marketplace</a>
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Company</a>
-                  </div>
-                  <div class="py-6">
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
-                  </div>
+            <div class="mt-6 flow-root">
+              <div class="-my-6 divide-y divide-gray-500/10">
+                <div class="space-y-2 py-6">
+                  <a
+                    href="#product"
+                    class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >Product</a
+                  >
+                  <a
+                    href="#features"
+                    class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >Features</a
+                  >
+                 
+                  <a
+                    href="#aboutus"
+                    class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >Company</a
+                  >
+                </div>
+                <div class="py-6">
+                  <a
+                    href="#"
+                    class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >Log in</a
+                  >
                 </div>
               </div>
             </div>
           </div>
-        </header>
-      
-        <div class="relative isolate px-6 pt-14 lg:px-8">
-          <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-            <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-          </div>
-          <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-            <div class="hidden sm:mb-8 sm:flex sm:justify-center">
-              <div class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-                Announcing our next round of funding. <a href="#" class="font-semibold text-indigo-600"><span class="absolute inset-0" aria-hidden="true"></span>Read more <span aria-hidden="true">&rarr;</span></a>
-              </div>
+        </div>
+      </header>
+
+      <div class="relative isolate px-6 pt-14 lg:px-8">
+        <div
+          class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+          aria-hidden="true"
+        >
+          <div
+            class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style="
+              clip-path: polygon(
+                74.1% 44.1%,
+                100% 61.6%,
+                97.5% 26.9%,
+                85.5% 0.1%,
+                80.7% 2%,
+                72.5% 32.5%,
+                60.2% 62.4%,
+                52.4% 68.1%,
+                47.5% 58.3%,
+                45.2% 34.5%,
+                27.5% 76.7%,
+                0.1% 64.9%,
+                17.9% 100%,
+                27.6% 76.8%,
+                76.1% 97.7%,
+                74.1% 44.1%
+              );
+            "
+          ></div>
+        </div>
+        <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div class="hidden sm:mb-8 sm:flex sm:justify-center">
+            <div
+              class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+            >
+              Announcing our next round of funding.
+              <a href="#" class="font-semibold text-custom"
+                ><span class="absolute inset-0" aria-hidden="true"></span>Read
+                more <span aria-hidden="true">&rarr;</span></a
+              >
             </div>
-            <div class="text-center">
-              <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Customize your own Enterprise Resource Planning software with JustERP.</h1>
-              <p class="mt-6 text-lg leading-8 text-gray-600">Build and Customize your own Enterprise Resource Planning software now at a fraction of a cost for building custom ERP systems. Install and delete modules at your fingertips</p>
-              <div class="mt-10 flex items-center justify-center gap-x-6">
-                <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
-                <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
           </div>
-          <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-            <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+          <div class="text-center">
+            <h1
+              class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
+            >
+              Customize your own Enterprise Resource Planning software with
+              JustERP.
+            </h1>
+            <p class="mt-6 text-lg leading-8 text-gray-600">
+              Build and Customize your own Enterprise Resource Planning software
+              now at a fraction of a cost for building custom ERP systems.
+              Install and delete modules at your fingertips
+            </p>
+            <div class="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="#"
+                class="rounded-md bg-custom px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >Get started</a
+              >
+              <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+                >Learn more <span aria-hidden="true">→</span></a
+              >
+            </div>
           </div>
         </div>
+        <div
+          class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+          aria-hidden="true"
+        >
+          <div
+            class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+            style="
+              clip-path: polygon(
+                74.1% 44.1%,
+                100% 61.6%,
+                97.5% 26.9%,
+                85.5% 0.1%,
+                80.7% 2%,
+                72.5% 32.5%,
+                60.2% 62.4%,
+                52.4% 68.1%,
+                47.5% 58.3%,
+                45.2% 34.5%,
+                27.5% 76.7%,
+                0.1% 64.9%,
+                17.9% 100%,
+                27.6% 76.8%,
+                76.1% 97.7%,
+                74.1% 44.1%
+              );
+            "
+          ></div>
+        </div>
       </div>
-      
-</body>
-</html>
+    </div>
+    <section id="product">
+      <div class="overflow-hidden py-12  dark-mode-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 dark-mode-bg">
+            <div class="flex flex-col-reverse lg:flex-row lg:items-center custom-product ">
+                <div class="lg:w-1/2">
+                    <div class="max-w-lg mx-auto">
+                        <h2 class="text-3xl font-bold text-white">Deploy faster</h2>
+                        <p class="mt-4 text-lg text-white">A better workflow Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.</p>
+                        <dl class="mt-6 space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-2.75a.75.75 0 001.5 0V9.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0l-3.25 3.5a.75.75 0 101.1 1.02l1.95-2.1v4.59z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-white">
+                                    <dt class="text-lg font-medium leading-6 text-white">Push to deploy.</dt>
+                                    <dd class="mt-2 text-base leading-6">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.</dd>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-white">
+                                    <dt class="text-lg font-medium leading-6 text-white">SSL certificates.</dt>
+                                    <dd class="mt-2 text-base leading-6">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.</dd>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path d="M4.632 3.533A2 2 0 016.577 2h6.846a2 2 0 011.945 1.533l1.976 8.234A3.489 3.489 0 0016 11.5H4c-.476 0-.93.095-1.344.267l1.976-8.234z" />
+                                        <path fill-rule="evenodd" d="M4 13a2 2 0 100 4h12a2 2 0 100-4H4zm11.24 2a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V15zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V15a.75.75 0 00-.75-.75h-.01z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-white">
+                                    <dt class="text-lg font-medium leading-6 text-white">Database backups.</dt>
+                                    <dd class="mt-2 text-base leading-6">Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.</dd>
+                                </div>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-10 lg:mt-0 lg:w-1/2 lg:pl-8">
+                  <img src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png" alt="Product screenshot" class="w-full rounded-lg shadow-lg wider-img">
+              </div>
+              
+            </div>
+        </div>
+    </div>
+    
+    </section>
 
+    <section id="features" class="bg-white py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+          <div class="mx-auto max-w-4xl lg:text-center">
+              <h2 class="text-base font-semibold leading-7 text-indigo-600">Deploy faster</h2>
+              <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Everything you need to deploy your app</p>
+              <p class="mt-6 text-lg leading-8 text-gray-600">Quis tellus eget adipiscing convallis sit sit eget aliquet quis. Suspendisse eget egestas a elementum pulvinar et feugiat blandit at. In mi viverra elit nunc.</p>
+          </div>
+          <div class="mx-auto mt-16 max-w-4xl sm:mt-24 lg:mt-24 lg:max-w-4xl flex-custom">
+              <div class=" gap-y-10 lg:grid-cols-2 lg:gap-y-16">
+                  <dl class="relative pl-16">
+                      <dt class="text-base font-semibold leading-7 text-gray-900">
+                          <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                              </svg>
+                          </div>
+                          Push to deploy
+                      </dt>
+                      <dd class="mt-2 text-base leading-7 text-gray-600">Morbi viverra dui mi arcu sed. Tellus semper adipiscing suspendisse semper morbi. Odio urna massa nunc massa.</dd>
+                  </dl>
+                  <dl class="relative pl-16">
+                      <dt class="text-base font-semibold leading-7 text-gray-900">
+                          <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                              </svg>
+                          </div>
+                          SSL certificates
+                      </dt>
+                      <dd class="mt-2 text-base leading-7 text-gray-600">Sit quis amet rutrum tellus ullamcorper ultricies libero dolor eget. Sem sodales gravida quam turpis enim lacus amet.</dd>
+                  </dl>
+                  <dl class="relative pl-16">
+                      <dt class="text-base font-semibold leading-7 text-gray-900">
+                          <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                              </svg>
+                          </div>
+                          Simple queues
+                      </dt>
+                      <dd class="mt-2 text-base leading-7 text-gray-600">Quisque est vel vulputate cursus. Risus proin diam nunc commodo. Lobortis auctor congue commodo diam neque.</dd>
+                  </dl>
+                  <dl class="relative pl-16">
+                      <dt class="text-base font-semibold leading-7 text-gray-900">
+                          <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
+                              </svg>
+                          </div>
+                          Advanced security
+                      </dt>
+                      <dd class="mt-2 text-base leading-7 text-gray-600">Arcu egestas dolor vel iaculis in ipsum mauris. Tincidunt mattis aliquet hac quis. Id hac maecenas ac donec pharetra eget.</dd>
+                  </dl>
+              </div>
+
+
+              <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl margg-l-2">
+                <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 lg:gap-y-16">
+                    <dl class="relative pl-16 ">
+                        <dt class="text-base font-semibold leading-7 text-gray-900">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                                </svg>
+                            </div>
+                            Push to deploy
+                        </dt>
+                        <dd class="mt-2 text-base leading-7 text-gray-600">Morbi viverra dui mi arcu sed. Tellus semper adipiscing suspendisse semper morbi. Odio urna massa nunc massa.</dd>
+                    </dl>
+                    <dl class="relative pl-16">
+                        <dt class="text-base font-semibold leading-7 text-gray-900">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                </svg>
+                            </div>
+                            SSL certificates
+                        </dt>
+                        <dd class="mt-2 text-base leading-7 text-gray-600">Sit quis amet rutrum tellus ullamcorper ultricies libero dolor eget. Sem sodales gravida quam turpis enim lacus amet.</dd>
+                    </dl>
+                    <dl class="relative pl-16">
+                        <dt class="text-base font-semibold leading-7 text-gray-900">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </div>
+                            Simple queues
+                        </dt>
+                        <dd class="mt-2 text-base leading-7 text-gray-600">Quisque est vel vulputate cursus. Risus proin diam nunc commodo. Lobortis auctor congue commodo diam neque.</dd>
+                    </dl>
+                    <dl class="relative pl-16">
+                        <dt class="text-base font-semibold leading-7 text-gray-900">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
+                                </svg>
+                            </div>
+                            Advanced security
+                        </dt>
+                        <dd class="mt-2 text-base leading-7 text-gray-600">Arcu egestas dolor vel iaculis in ipsum mauris. Tincidunt mattis aliquet hac quis. Id hac maecenas ac donec pharetra eget.</dd>
+                    </dl>
+                </div>
+
+
+          </div>
+      </div>
+  </section>
+  
+  <section id="aboutus">
+
+    <div class="relative overflow-hidden bg-gray-900 py-24 sm:py-32">
+        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center">
+        <div class="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl" aria-hidden="true">
+            <div class="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+        </div>
+        <div class="absolute -top-52 left-1/2 -z-10 -translate-x-1/2 transform-gpu blur-3xl sm:top-[-28rem] sm:ml-16 sm:translate-x-0 sm:transform-gpu" aria-hidden="true">
+            <div class="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+        </div>
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl lg:mx-0">
+                <h2>About us</h2>
+                <p>Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua.</p>
+            </div>
+            <div class="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
+                <div class="grid">
+                    <a href="#">Open roles <span>&rarr;</span></a>
+                    <a href="#">Internship program <span>&rarr;</span></a>
+                    <a href="#">Our values <span>&rarr;</span></a>
+                    <a href="#">Meet our leadership <span>&rarr;</span></a>
+                </div>
+                <dl>
+                    <div>
+                        <dt>Offices worldwide</dt>
+                        <dd>12</dd>
+                    </div>
+                    <div>
+                        <dt>Full-time colleagues</dt>
+                        <dd>300+</dd>
+                    </div>
+                    <div>
+                        <dt>Hours per week</dt>
+                        <dd>40</dd>
+                    </div>
+                    <div>
+                        <dt>Paid time off</dt>
+                        <dd>Unlimited</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<footer class="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
+  <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" class="hover:underline">JustERP™</a>. All Rights Reserved.
+      </span>
+      <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+          <li>
+              <a href="#aboutus" class="hover:underline me-4 md:me-6">About</a>
+          </li>
+          <li>
+              <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+          </li>
+          <li>
+              <a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
+          </li>
+          <li>
+              <a href="#" class="hover:underline">Contact</a>
+          </li>
+      </ul>
+  </div>
+</footer>
+
+  </body>
+</html>
