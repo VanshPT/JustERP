@@ -3,6 +3,10 @@ from authapp.models import CustomUser,CompanyProfile
 from django.contrib import messages
 from django_countries import countries
 from django_countries.fields import Country
+from django.contrib.auth import authenticate, login as auth_login
+from django.http import HttpResponseNotAllowed
+from django.views.decorators.http import require_POST
+
 # Create your views here.
 def company(request):
     countries_list = list(countries)
@@ -34,7 +38,7 @@ def root_signup(request):
         }
     return render(request, 'authapp/rootSignup.html' , context)
 
-def login(request):
+def successfull_signup(request):
     if request.method == "POST":
         username=request.POST.get('username')
         email = request.POST.get('email')
@@ -60,4 +64,18 @@ def login(request):
             root_user.set_password(password)
             root_user.save()
         
+        return redirect('/')
+
+def login(request):
     return render(request, 'authapp/login.html')
+@require_POST
+def successfull_login(request):
+    email=request.POST.get('email')
+    password=request.POST.get('password')
+    user=authenticate(request, email=email, password=password)
+    if user is not None:
+         auth_login(request, user)
+         return redirect('/home/dashboard/')
+    else:
+        messages.error(request, "Wrong Company ID, User ID or Password!")
+        return render(request, 'authapp/login.html')

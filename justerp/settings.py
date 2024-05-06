@@ -136,3 +136,4 @@ STATICFILES_FINDERS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authapp.CustomUser'
+LOGIN_URL = '/auth/login/'
