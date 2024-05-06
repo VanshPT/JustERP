@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from authapp.models import CustomUser,CompanyProfile
 from django.contrib import messages
-from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
