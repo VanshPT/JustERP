@@ -21,7 +21,7 @@ class CompanyProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.company_name
+        return f"{self.company_id}: {self.company_name}"
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, first_name, last_name, password=None, type='normal', **extra_fields):
