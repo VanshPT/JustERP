@@ -75,7 +75,7 @@ def successfull_login(request):
     user=authenticate(request, email=email, password=password)
     if user is not None:
          auth_login(request, user)
-         return redirect('/home/dashboard/')
+         return redirect(f'/home/{user.company.company_id}/dashboard/')
     else:
         messages.error(request, "Wrong Company ID, User ID or Password!")
         return render(request, 'authapp/login.html')

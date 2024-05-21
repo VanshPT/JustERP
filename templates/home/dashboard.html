@@ -53,13 +53,38 @@
         width: 12%;
         margin-right: 1rem;
       }
+      .custt{
+        display: flex;
+        justify-content: center;
+      }
+      .custt-outer{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      .main-area{
+       margin-left: 10rem; 
+      }
+      body.transitioning aside {
+        transition: transform 0.3s ease;
+      }
+
+      body.transitioning main {
+        transition: margin-left 0.3s ease;
+      }
+
+      body.transitioning header {
+        transition: left 0.3s ease;
+      }
+      
     </style>
   </head>
 
   <body class="relative bg-blue-50 overflow-hidden max-h-screen">
     <header class="fixed right-0 top-0 left-60 bg-blue-200 py-3 px-4 h-16">
       <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between">
+        <div  class="flex items-center justify-between">
+          <div id="toggle-off-logo"></div>
     
           <div class="text-lg custom-font font-bold">Welcome! {{ first_name }} {{ last_name }}</div>
           <div id="custom-flex">
@@ -84,8 +109,9 @@
       </div>
     </header>
 
-    <aside class="fixed inset-y-0 left-0 bg-white shadow-md max-h-screen w-60">
-      <div class="flex flex-col justify-between h-full">
+  <aside class="fixed inset-y-0 left-0 bg-white shadow-md max-h-screen w-60">
+    <div class="flex flex-col justify-between h-full">
+      
         <div class="flex-grow">
           <div class="px-4 py-6 text-center border-b">
             <h1 class="text-xl font-bold leading-none">
@@ -155,96 +181,164 @@
             </ul>
           </div>
         </div>
-        <div class="p-4">
-          
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              class=""
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1h8zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
-              />
-            </svg>
-          </button>
-          <span class="font-bold text-sm ml-2">Logout</span>
-        </div>
+      <div class="p-4">
+        
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            fill="currentColor"
+            class=""
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1h8zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+            />
+          </svg>
+        </button>
+        <span class="font-bold text-sm ml-2">Logout</span>
+        
       </div>
-    </aside>
+    </div>
+  </aside>
+
+    
 
     <main class="ml-60 pt-16 max-h-screen overflow-auto">
-      <div class="px-6 py-8">
-        <div class="max-w-4xl mx-auto">
-          <div class="bg-white rounded-3xl p-8 mb-5">
-            <h1 class="text-3xl font-bold mb-10">
-              {{ company_name }} Enterprise Resource Planning Software
-            </h1>
-            <div class="flex items-center justify-between">
-              <div class="flex items-stretch">
-                <div class="text-gray-400 text-xs">{{ username }}</div>
-                <div class="h-100 border-l mx-4"></div>
-                
-              </div>
-              <div class="flex items-center gap-x-2">
-                
+
+      <div class="custt-outer">
+        <h1 class="custt">
+          <button id="toggle-sidebar" class="text-gray-500 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+        </h1>
+        <div class="px-6 py-8 main-area">
+          <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl p-8 mb-5">
+              <h1 class="text-3xl font-bold mb-10">
+                {{ company_name }} Enterprise Resource Planning Software
+              </h1>
+              <div class="flex items-center justify-between">
+                <div class="flex items-stretch">
+                  <div class="text-gray-400 text-xs">{{ username }}</div>
+                  <div class="h-100 border-l mx-4"></div>
                   
-                    <path
-                      d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center h-9 px-5 rounded-xl bg-gray-900 text-gray-300 hover:text-white text-sm font-semibold transition"
-                >
-                  Logout
-                </button>
+                </div>
+                <div class="flex items-center gap-x-2">
+                  
+                    
+                      <path
+                        d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center h-9 px-5 rounded-xl bg-gray-900 text-gray-300 hover:text-white text-sm font-semibold transition"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
+  
+              <hr class="my-10" />
+  
+              <div class="grid grid-cols-4 gap-6">
+                <!-- Module 1: Messaging ID framework development -->
+                <a href="#module1" class="p-4 bg-green-200 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Financial Management</div>
+                </a>
+                <!-- Module 2: Module 2 Name -->
+                <a href="#module2" class="p-4 bg-yellow-200 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Human Resources Management (HRM)</div>
+                </a>
+                <!-- Module 3: Module 3 Name -->
+                <a href="#module3" class="p-4 bg-yellow-200 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Customer Relationship Management (CRM)</div>
+                </a>
+                <!-- Module 4: Module 4 Name -->
+                <a href="#module4" class="p-4 bg-purple-200 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Inventory Management</div>
+                </a>
+                <!-- Module 5: Module 5 Name -->
+                <a href="#module5" class="p-4 bg-blue-200 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Sales and Distribution</div>
+                </a>
+                <!-- Module 6: Module 6 Name -->
+                <a href="#module6" class="p-4 bg-green-300 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Reporting and Analytics</div>
+                </a>
+                <!-- Module 7: Module 7 Name -->
+                <a href="#module7" class="p-4 bg-yellow-300 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Customer Service</div>
+                </a>
+                <!-- Module 8: Module 8 Name -->
+                <a href="#module8" class="p-4 bg-yellow-300 rounded-xl">
+                  <div class="font-bold text-lg text-gray-700 leading-none">Project Management</div>
+                </a>
+              </div>
+              
             </div>
-
-            <hr class="my-10" />
-
-            <div class="grid grid-cols-4 gap-6">
-              <!-- Module 1: Messaging ID framework development -->
-              <a href="#module1" class="p-4 bg-green-200 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Financial Management</div>
-              </a>
-              <!-- Module 2: Module 2 Name -->
-              <a href="#module2" class="p-4 bg-yellow-200 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Human Resources Management (HRM)</div>
-              </a>
-              <!-- Module 3: Module 3 Name -->
-              <a href="#module3" class="p-4 bg-yellow-200 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Customer Relationship Management (CRM)</div>
-              </a>
-              <!-- Module 4: Module 4 Name -->
-              <a href="#module4" class="p-4 bg-purple-200 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Inventory Management</div>
-              </a>
-              <!-- Module 5: Module 5 Name -->
-              <a href="#module5" class="p-4 bg-blue-200 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Sales and Distribution</div>
-              </a>
-              <!-- Module 6: Module 6 Name -->
-              <a href="#module6" class="p-4 bg-green-300 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Reporting and Analytics</div>
-              </a>
-              <!-- Module 7: Module 7 Name -->
-              <a href="#module7" class="p-4 bg-yellow-300 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Customer Service</div>
-              </a>
-              <!-- Module 8: Module 8 Name -->
-              <a href="#module8" class="p-4 bg-yellow-300 rounded-xl">
-                <div class="font-bold text-lg text-gray-700 leading-none">Project Management</div>
-              </a>
-            </div>
-            
           </div>
         </div>
+
+
       </div>
+
+      
     </main>
   </body>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleButton = document.getElementById("toggle-sidebar");
+      const sidebar = document.querySelector("aside");
+      const mainArea = document.querySelector("main");
+      const mainAreaWhite = document.querySelector(".main-area")
+      const header = document.querySelector("header");
+      const custtOuter = document.querySelector(".custt-outer");
+      const logoContainerOff= document.getElementById("toggle-off-logo");
+  
+      toggleButton.addEventListener("click", function() {
+        document.body.classList.add("transitioning");
+        if (sidebar.parentNode === document.body) {
+          // If aside element is in the body, remove it
+          document.body.removeChild(sidebar);
+          // Adjust main area width to fill the space
+          mainArea.classList.remove("ml-60");
+          // Adjust header left position
+          header.style.left = "0";
+          // Align the button to the left
+          custtOuter.style.width = "100%";
+          //push main area right
+          mainAreaWhite.style.marginLeft= "15rem";
+          //add justerp symbol when aside toggled off in header
+          logoContainerOff.innerHTML="<h1><span class='main-logo-design'>JustERP</span></h1>";
+
+        } else {
+          // If aside element is not in the body, add it back
+          document.body.appendChild(sidebar);
+          // Restore main area width
+          mainArea.classList.add("ml-60");
+          // Restore header left position
+          header.style.left = "10rem";
+          // Restore button alignment
+          custtOuter.style.width = "auto";
+          //remove justerp symbol when aside toggled off in header
+          logoContainerOff.innerHTML="";
+        }
+        // Set toggle icon margin left to 1rem regardless of the aside state
+        toggleButton.style.marginLeft = "1rem";
+        
+        setTimeout(function() {
+        document.body.classList.remove("transitioning");
+      }, 300);
+
+      });
+    });
+  </script>
+  
 </html>
