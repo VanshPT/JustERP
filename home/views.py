@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @login_required
-def dashboard(request, customer_id):
+def dashboard(request, company_id):
     user=request.user
     if user.is_authenticated:
-        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name}
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
         return render(request, 'home/dashboard.html', context)
     else:
         return redirect('/auth/login/')
@@ -16,3 +16,10 @@ def dashboard(request, customer_id):
 
 def error(request):
    return render(request, 'home/error.html')
+
+@login_required
+def company_profile(request, company_id):
+    user=request.user
+    if user.is_authenticated:
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+    return render(request,'home/companyProfile.html', context)

@@ -3,7 +3,7 @@ from authapp.models import CustomUser,CompanyProfile
 from django.contrib import messages
 from django_countries import countries
 from django_countries.fields import Country
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 
@@ -79,3 +79,7 @@ def successfull_login(request):
     else:
         messages.error(request, "Wrong Company ID, User ID or Password!")
         return render(request, 'authapp/login.html')
+
+def logout(request):
+    auth_logout(request)
+    return redirect('/')
