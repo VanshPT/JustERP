@@ -132,3 +132,15 @@ padding:5px;
   padding: 10px; 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.popover {
+  transition: opacity 0.3s ease;
+}
+
+
+.popover.fade {
+  opacity: 0;
+}
+
+.popover.show {
+  opacity: 1;
+}
