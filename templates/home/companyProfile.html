@@ -2,15 +2,118 @@
 {% block title %} Company Profile {% endblock %}
 {% block css %}
 <style>
+   .company-profile-container {
+    background-color: #ffffff;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 2rem auto;
+    text-align: center;
+  }
 
+  .company-logo {
+    width: 600px;
+    margin-bottom: 1rem;
+  }
+
+  .company-name {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+
+  .company-details {
+    text-align: left;
+    margin-top: 2rem;
+  }
+
+  .company-details p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .detail-heading {
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-content {
+    margin-left: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .divider{
+    padding: 2rem;
+  }
 </style>
 {% endblock %}
 {% block activecp %}200{% endblock %}
 {% block body %}
-random stuff
+{% load static %}
+<div class="company-profile-container">
+    <img src="{% static 'images/default-company.jpg' %}" alt="Company Logo" class="company-logo">
+  
+    <h2 class="company-name">{{ company.company_name }}</h2>
+  
+    <hr class="divider">
+    <div class="company-details">
+      <div>
+        <div class="detail-heading">Contact Person</div>
+        <div class="detail-content">{{ company.contact_person_name }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Contact Email</div>
+        <div class="detail-content">{{ company.contact_email }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Contact Phone</div>
+        <div class="detail-content">{{ company.contact_phone }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Address</div>
+        <div class="detail-content">{{ company.company_address }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Business Description</div>
+        <div class="detail-content">{{ company.business_description }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Country</div>
+        <div class="detail-content">{{ company.country }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Registration Number</div>
+        <div class="detail-content">{{ company.registration_number }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Budget</div>
+        <div class="detail-content">{{ company.budget }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Created At</div>
+        <div class="detail-content">{{ company.created_at }}</div>
+      </div>
+      <div>
+        <div class="detail-heading">Updated At</div>
+        <div class="detail-content">{{ company.updated_at }}</div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 {% block js %}
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggleButton = document.getElementById("toggle-sidebar");
+    const sidebar = document.querySelector("aside");
+    const companyProfileArea = document.querySelector(".company-profile-container")
 
+   
+       companyProfileArea.style.marginLeft = "10rem";
+
+      
+    });
 </script>
 {% endblock %}
