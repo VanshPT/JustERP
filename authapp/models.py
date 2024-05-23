@@ -24,16 +24,20 @@ class CompanyProfile(models.Model):
         return f"{self.company_id}: {self.company_name}"
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, username, first_name, last_name, password=None, type='normal', **extra_fields):
+    def create_user(self, email, username, first_name, last_name, password=None, type='normal', company=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username, first_name=first_name, last_name=last_name, type=type, **extra_fields)
+
+        if isinstance(company, int):
+            company=CompanyProfile.objects.get(pk=company)
+
+        user = self.model(email=email, username=username, first_name=first_name, last_name=last_name, type=type,company=company, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, first_name, last_name, password=None, **extra_fields):
+    def create_superuser(self, email, username, first_name, last_name, password=None, company=None ,**extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -42,7 +46,7 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, username, first_name, last_name, password, **extra_fields)
+        return self.create_user(email, username, first_name, last_name, password,type='root', company=company, **extra_fields)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
