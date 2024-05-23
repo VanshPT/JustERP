@@ -39,38 +39,12 @@
       <hr class="my-10" />
 
       <div class="grid grid-cols-4 gap-6">
-        <!-- Module 1: Messaging ID framework development -->
-        <a href="#module1" class="p-4 bg-green-200 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Financial Management</div>
+        {% for module in modules %}
+        <a href="/{{ module.module.module_code }}" class="p-4 bg-{% cycle 'blue' 'pink' 'yellow' 'red' 'green' %}-200 rounded-xl">
+          <div class="font-bold text-lg text-gray-700 leading-none">{{ module.module.module_name }}</div>
         </a>
-        <!-- Module 2: Module 2 Name -->
-        <a href="#module2" class="p-4 bg-yellow-200 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Human Resources Management (HRM)</div>
-        </a>
-        <!-- Module 3: Module 3 Name -->
-        <a href="#module3" class="p-4 bg-yellow-200 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Customer Relationship Management (CRM)</div>
-        </a>
-        <!-- Module 4: Module 4 Name -->
-        <a href="#module4" class="p-4 bg-purple-200 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Inventory Management</div>
-        </a>
-        <!-- Module 5: Module 5 Name -->
-        <a href="#module5" class="p-4 bg-blue-200 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Sales and Distribution</div>
-        </a>
-        <!-- Module 6: Module 6 Name -->
-        <a href="#module6" class="p-4 bg-green-300 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Reporting and Analytics</div>
-        </a>
-        <!-- Module 7: Module 7 Name -->
-        <a href="#module7" class="p-4 bg-yellow-300 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Customer Service</div>
-        </a>
-        <!-- Module 8: Module 8 Name -->
-        <a href="#module8" class="p-4 bg-yellow-300 rounded-xl">
-          <div class="font-bold text-lg text-gray-700 leading-none">Project Management</div>
-        </a>
+        
+        {% endfor %}
       </div>
       
     </div>

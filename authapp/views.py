@@ -6,6 +6,7 @@ from django_countries.fields import Country
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
+from home.models import CompanyModule, Module
 
 # Create your views here.
 def company(request):
@@ -32,6 +33,12 @@ def root_signup(request):
        
         company=CompanyProfile(company_name=company_name, contact_person_name=contact_person_name, contact_email= contact_email,contact_phone=contact_phone, company_address=company_address, business_description=business_description,country=country,registration_number=registration_number, budget=budget)
         company.save()
+
+        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management']
+
+        default_modules_objects=Module.objects.filter(module_code__in=module_codes)
+        for module in default_modules_objects:
+            CompanyModule.objects.create(company=company, module=module)
         context={
             'company_id': company.company_id,
             'company_name': company.company_name
