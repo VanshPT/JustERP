@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from authapp.models import CustomUser,CompanyProfile
+from authapp.models import CustomUser,CompanyProfile,Permission
 from django.contrib import messages
 from django_countries import countries
 from django_countries.fields import Country
@@ -34,7 +34,7 @@ def root_signup(request):
         company=CompanyProfile(company_name=company_name, contact_person_name=contact_person_name, contact_email= contact_email,contact_phone=contact_phone, company_address=company_address, business_description=business_description,country=country,registration_number=registration_number, budget=budget)
         company.save()
 
-        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management']
+        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management', 'users', 'support']
 
         default_modules_objects=Module.objects.filter(module_code__in=module_codes)
         for module in default_modules_objects:
@@ -63,6 +63,17 @@ def successfull_signup(request):
             messages.error(request,'Root User already exists for this account! Cannot sign in as root user!')
             return redirect('/home/error/')
         else:
+            all_access_permission, created = Permission.objects.get_or_create(
+                name="All Access",
+                defaults={
+                    'description': 'Full access to all modules'
+                }
+            )
+
+            if created:
+                all_modules = Module.objects.all()
+                all_access_permission.modules.set(all_modules)
+                all_access_permission.save()
             root_user= CustomUser(username=username, email=email, first_name=first_name, last_name=last_name, company=company_obj, type='root', is_active=True, is_staff=True)
 
             if password !=conf_password:
