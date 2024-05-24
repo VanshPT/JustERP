@@ -3,6 +3,8 @@ from django_countries.fields import CountryField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 
+
+
 class CompanyProfile(models.Model):
     company_id=models.AutoField(primary_key=True)
     company_name = models.CharField(max_length=100)
@@ -22,6 +24,16 @@ class CompanyProfile(models.Model):
 
     def __str__(self):
         return f"{self.company_id}: {self.company_name}"
+    
+
+class Permission(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField()
+    modules=models.ManyToManyField('home.Module')
+
+    def __str__(self):
+        return self.name
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, first_name, last_name, password=None, type='normal', company=None, **extra_fields):
@@ -58,6 +70,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     type = models.CharField(max_length=10, choices=[('root', 'Root'), ('normal', 'Normal')], default='normal')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    permissions=models.ManyToManyField(Permission)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()

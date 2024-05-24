@@ -1,5 +1,4 @@
 from django.db import models
-from authapp.models import CompanyProfile
 from django.utils.text import slugify
 # Create your models here.
 
@@ -17,7 +16,7 @@ class Module(models.Model):
         return self.module_name
 class CompanyModule(models.Model):
     cm_id=models.AutoField(primary_key=True)
-    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    company = models.ForeignKey('authapp.CompanyProfile', on_delete=models.CASCADE)
     module= models.ForeignKey(Module, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
