@@ -1,6 +1,47 @@
 {% extends 'home/base.html' %}
 {% block title %}Users{% endblock %}
 {% block activeusers %}200{% endblock %}
+{% block css %}
+<style>
+     .nav-link {
+    color: #4B5563; 
+    transition: color 0.3s; 
+}
+
+.nav-link.active,
+.nav-link:hover {
+    border-bottom: 2px solid #3B82F6;
+}
+
+.navbar {
+    background-color: white;
+    transition: all 0.8s; 
+    padding:0.5rem;
+    border-radius: 10px;
+}
+
+</style>
+{% endblock %}
 {% block body %}
-Hello Users
+{% include 'authapp/base_internal.html' %}
+
+{% endblock %}
+{% block js %}
+<script>
+    
+    document.getElementById('nav-toggle').addEventListener('click', function() {
+        document.getElementById('nav-menu').classList.toggle('hidden');
+    });
+
+   
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+
+
+</script>
 {% endblock %}

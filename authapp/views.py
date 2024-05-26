@@ -108,4 +108,7 @@ def logout(request):
 
 @login_required
 def users(request):
-    return render(request,'authapp/users.html')
+    user=request.user
+    if user.is_authenticated:
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+    return render(request,'authapp/users.html', context)
