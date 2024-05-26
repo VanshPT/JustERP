@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.http import HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 from home.models import CompanyModule, Module
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def company(request):
@@ -79,9 +80,12 @@ def successfull_signup(request):
             if password !=conf_password:
                 messages.error(request,'Password and Confirm Password must be same!')
                 return redirect('/home/error/')
-            root_user.set_password(password)
+            root_user.set_password(password) 
             root_user.save()
-        
+
+            root_user.permissions.add(all_access_permission)
+            root_user.save()
+            
         return redirect('/')
 
 def login(request):
@@ -101,3 +105,7 @@ def successfull_login(request):
 def logout(request):
     auth_logout(request)
     return redirect('/')
+
+@login_required
+def users(request):
+    return render(request,'authapp/users.html')

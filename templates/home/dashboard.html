@@ -40,10 +40,11 @@
 
       <div class="grid grid-cols-4 gap-6">
         {% for module in modules %}
+        {% if module.module.module_code and module.module.module_code != 'users' and module.module.module_code != 'support' %}
         <a href="/{{ module.module.module_code }}" class="p-4 bg-{% cycle 'blue' 'pink' 'yellow' 'red' 'green' %}-200 rounded-xl">
           <div class="font-bold text-lg text-gray-700 leading-none">{{ module.module.module_name }}</div>
         </a>
-        
+        {% endif %}
         {% endfor %}
       </div>
       

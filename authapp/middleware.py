@@ -15,6 +15,7 @@ class ModulePermissionMiddleware:
             for segment in path_segments:
                 try:
                     module = Module.objects.get(module_code=segment)
+                    
                     user_permissions = user.permissions.all()
                     has_permission = any(module in permission.modules.all() for permission in user_permissions)
 
