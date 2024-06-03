@@ -30,12 +30,20 @@ class Department(models.Model):
     dept_name=models.CharField(max_length=30)
     dept_desc=models.TextField(blank=True)
 
+    def __str__(self):
+        return self.dept_name
+
 
 class Profile(models.Model):
     profile_id=models.AutoField(primary_key=True)
     dept=models.ForeignKey(Department, on_delete=models.CASCADE)
     profile_name=models.CharField(max_length=50)
     profile_desc=models.TextField()
+
+    def __str__(self):
+        return f"{self.dept.dept_name}: {self.profile_name}"
+    
+    
 class Permission(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()

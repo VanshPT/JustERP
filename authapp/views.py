@@ -8,6 +8,7 @@ from django.http import HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 from home.models import CompanyModule, Module
 from django.contrib.auth.decorators import login_required
+from .models import Department,Profile
 
 # Create your views here.
 def company(request):
@@ -110,7 +111,8 @@ def logout(request):
 def users(request):
     user=request.user
     if user.is_authenticated:
-        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+        departments = Department.objects.all()
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email, 'departments':departments}
     return render(request,'authapp/users.html', context)
 
 
@@ -118,7 +120,20 @@ def users(request):
 def profile(request):
     user=request.user
     if user.is_authenticated:
-        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+        department=request.POST.get('department')
+        job_name=request.POST.get('job_name')
+        job_description=request.POST.get('job_description')
+        department_name=request.POST.get('department_name')
+        department_desc=request.POST.get('department_desc')
+
+        if department_name and department_desc:
+            dept=Department(dept_name=department_name,dept_desc=department_desc)
+            dept.save()
+        elif department and job_name and job_description:
+            department=Department.objects.get(dept_id=department)
+            profile=Profile(dept=department,profile_name=job_name,profile_desc=job_description)
+            profile.save()
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email, 'departments':Department.objects.all()}
     return render(request, "authapp/profile.html", context)
 
 

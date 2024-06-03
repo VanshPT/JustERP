@@ -5,19 +5,111 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/base_internal.css' %}">
 <style>
-    .content-wrapper{
-        margin-left:10rem;
+    .content-wrapper {
+        margin-left: 2rem;
+        padding: 2rem;
+    }
+    .department-section {
+        margin-bottom: 2rem;
+    }
+    .department-heading {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #007BFF;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    th, td {
+        padding: 0.75rem;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .expandable {
+        cursor: pointer;
+    }
+    .hidden-info {
+        display: none;
     }
 </style>
 {% endblock %}
 {% block body %}
 {% include 'authapp/base_internal.html' %}
 <div class="content-wrapper">
-
+    {% for department in departments %}
+    <div class="department-section">
+        <h2 class="department-heading">{{ department.dept_name }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Type</th>
+                    <th>Date Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in department.customuser_set.all %}
+                <tr class="expandable">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.type }}</td>
+                    <td>{{ user.date_joined }}</td>
+                </tr>
+                <tr class="hidden-info">
+                    <td colspan="6">
+                        <strong>Profile:</strong>
+                        {% if user.profile %}
+                            {{ user.profile.profile_name }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                        <br>
+                        <strong>Company:</strong>
+                        {% if user.company %}
+                            {{ user.company.company_name }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                        <br>
+                        <strong>Permissions:</strong>
+                        <ul>
+                            {% for permission in user.permissions.all %}
+                            <li>{{ permission.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/base_internal.js' %}"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const expandableRows = document.querySelectorAll('.expandable');
+        expandableRows.forEach(row => {
+            row.addEventListener('click', function() {
+                const nextRow = this.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('hidden-info')) {
+                    nextRow.style.display = nextRow.style.display === 'none' || nextRow.style.display === '' ? 'table-row' : 'none';
+                }
+            });
+        });
+    });
 </script>
 {% endblock %}

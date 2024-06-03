@@ -65,13 +65,43 @@
     .form-container button:hover {
         background-color: #0056b3;
     }
-    .content-wrapper{
-        margin-left:10rem;
+    .content-wrapper {
+        margin-left: 10rem;
     }
-    .form-heading{
+    .content-wrapper-1{
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        margin-left: 10rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .form-heading {
         font-size: 1.7rem;
         font-weight: bold;
-        margin-bottom:1rem;
+        margin-bottom: 1rem;
+    }
+    .department-table {
+        width: 80%;
+        margin: 2rem auto;
+        border-collapse: collapse;
+    }
+    .department-table th, .department-table td {
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    .department-table th {
+        background-color: #007BFF;
+        color: white;
+    }
+    .department-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    #partition{
+        border: 1px solid rgb(192, 192, 192);
+        margin: 1rem 2rem;
     }
 </style>
 {% endblock %}
@@ -84,10 +114,14 @@
     </div>
     <div id="job_profile_form" class="form-container active-tab">
         <h2 class="form-heading">Create a Job Profile</h2>
-        <form method="post">
+        <form method="post" action="/auth/profile">
+            {% csrf_token %}
             <label for="department">Select Department:</label>
             <select id="department" name="department">
                 <!-- Dynamically load options here -->
+                {% for dept in departments %}
+                <option value="{{ dept.dept_id }}">{{ dept.dept_name }}</option>
+                {% endfor %}
             </select>
             <label for="job_name">Job Profile Name:</label>
             <input type="text" id="job_name" name="job_name" required>
@@ -98,7 +132,8 @@
     </div>
     <div id="department_form" class="form-container">
         <h2 class="form-heading">Create a Department</h2>
-        <form method="post">
+        <form method="post" action="/auth/profile">
+            {% csrf_token %}
             <label for="department_name">Department Name:</label>
             <input type="text" id="department_name" name="department_name" required>
             <label for="department_desc">Department Description:</label>
@@ -106,6 +141,33 @@
             <button type="submit">Make Department</button>
         </form>
     </div>
+</div>
+
+<div class="content-wrapper-1">
+    <div id="partition"></div>
+    <h2 class="form-heading">Current Departments and Positions</h2>
+    <table class="department-table">
+        <thead>
+            <tr>
+                <th>Department Name</th>
+                <th>Positions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in departments %}
+            <tr>
+                <td>{{ department.dept_name }}</td>
+                <td>
+                    <ul>
+                        {% for job in department.profile_set.all %}
+                        <li>{{ job.profile_name }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
 {% block js %}
