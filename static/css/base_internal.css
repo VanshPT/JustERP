@@ -1,0 +1,16 @@
+.nav-link {
+    color: #4B5563; 
+    transition: color 0.3s; 
+}
+
+.nav-link.active,
+.nav-link:hover {
+    border-bottom: 2px solid #3B82F6;
+}
+
+.navbar {
+    background-color: white;
+    transition: all 0.8s; 
+    padding:0.5rem;
+    border-radius: 10px;
+}

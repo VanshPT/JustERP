@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CompanyProfile, CustomUser, Permission
+from .models import CompanyProfile, CustomUser, Permission, Department, Profile
 # Register your models here.
 admin.site.register(CompanyProfile)
 class CustomUserAdmin(UserAdmin):
@@ -14,3 +14,5 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Permission)
+admin.site.register(Department)
+admin.site.register(Profile)

@@ -25,7 +25,17 @@ class CompanyProfile(models.Model):
     def __str__(self):
         return f"{self.company_id}: {self.company_name}"
     
+class Department(models.Model):
+    dept_id=models.AutoField(primary_key=True)
+    dept_name=models.CharField(max_length=30)
+    dept_desc=models.TextField(blank=True)
 
+
+class Profile(models.Model):
+    profile_id=models.AutoField(primary_key=True)
+    dept=models.ForeignKey(Department, on_delete=models.CASCADE)
+    profile_name=models.CharField(max_length=50)
+    profile_desc=models.TextField()
 class Permission(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
@@ -68,6 +78,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30)
     company=models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, null=True)
     type = models.CharField(max_length=10, choices=[('root', 'Root'), ('normal', 'Normal')], default='normal')
+    profile=models.ForeignKey(Profile, on_delete=models.PROTECT, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     permissions=models.ManyToManyField(Permission)
@@ -80,3 +91,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+    
+
+

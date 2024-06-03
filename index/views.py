@@ -12,6 +12,7 @@ default_modules = [
     'Project Management',
     'Users',
     'Support',
+    'Profile'
 ]
 
 def index(request):

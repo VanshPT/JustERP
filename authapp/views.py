@@ -35,7 +35,7 @@ def root_signup(request):
         company=CompanyProfile(company_name=company_name, contact_person_name=contact_person_name, contact_email= contact_email,contact_phone=contact_phone, company_address=company_address, business_description=business_description,country=country,registration_number=registration_number, budget=budget)
         company.save()
 
-        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management', 'users', 'support']
+        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management', 'users', 'support','profile']
 
         default_modules_objects=Module.objects.filter(module_code__in=module_codes)
         for module in default_modules_objects:
@@ -112,3 +112,35 @@ def users(request):
     if user.is_authenticated:
         context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
     return render(request,'authapp/users.html', context)
+
+
+@login_required
+def profile(request):
+    user=request.user
+    if user.is_authenticated:
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+    return render(request, "authapp/profile.html", context)
+
+
+@login_required
+def create_user(request):
+    user=request.user
+    if user.is_authenticated:
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+    return render(request, "authapp/create_user.html", context)
+
+
+@login_required
+def permission(request):
+    user=request.user
+    if user.is_authenticated:
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+    return render(request, "authapp/permissions.html", context)
+
+
+@login_required
+def logs(request):
+    user=request.user
+    if user.is_authenticated:
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+    return render(request, "authapp/logs.html", context)

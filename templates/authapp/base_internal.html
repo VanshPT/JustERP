@@ -1,25 +1,28 @@
+<!-- Navbar -->
 
-    <!-- Navbar -->
-    <nav id="navbar" class="navbar sticky top-0 w-full z-10">
-        <div class="flex items-center justify-end px-4 py-2">
-            <div class="hidden md:flex space-x-8">
-                <a href="#home" class="nav-link active">User List</a>
-                <a href="#about" class="nav-link">Create User</a>
-                <a href="#services" class="nav-link ">Permission</a>
-                <a href="#contact" class="nav-link ">Logs</a>
-            </div>
-            <div class="md:hidden flex items-center">
-                <button id="nav-toggle" class="focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
+<nav id="navbar" class="navbar sticky top-0 w-full z-10">
+    <div class="flex items-center justify-end px-4 py-2">
+        <div class="hidden md:flex space-x-8">
+            <a href="/auth/users" class="nav-link" id="user-list">User List</a>
+            <a href="/auth/create-user" class="nav-link" id="create-user">Create User</a>
+            <a href="/auth/permission" class="nav-link" id="permission">Permission</a>
+            <a href="/auth/profile" class="nav-link" id="profiles">Profiles</a>
+            <a href="/auth/logs" class="nav-link" id="logs">Logs</a>
         </div>
-        <div id="nav-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1">
-            <a href="#home" class="block nav-link">User List</a>
-            <a href="#about" class="block nav-link">Create User</a>
-            <a href="#services" class="block nav-link">permission</a>
-            <a href="#contact" class="block nav-link">Logs</a>
+        <div class="md:hidden flex items-center">
+            <button id="nav-toggle" class="focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
         </div>
-    </nav>
+    </div>
+    <div id="nav-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1">
+        <a href="/auth/users" class="block nav-link">User List</a>
+        <a href="/auth/create-user" class="block nav-link">Create User</a>
+        <a href="/auth/permission" class="block nav-link">Permission</a>
+        <a href="/auth/profile" class="block nav-link">Profiles</a>
+        <a href="/auth/logs" class="block nav-link">Logs</a>
+    </div>
+</nav>
+

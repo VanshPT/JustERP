@@ -6,6 +6,7 @@ class Module(models.Model):
     module_id=models.AutoField(primary_key=True)
     module_code=models.SlugField(max_length=100, unique=True, blank=True)
     module_name=models.CharField(max_length=200)
+    parent_module =models.ManyToManyField('self',symmetrical=False, related_name="child_module", blank=True)
 
     def save(self, *args, **kwargs):
         if not self.module_code:

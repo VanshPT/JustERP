@@ -3,6 +3,7 @@
 {% block css %}{% endblock %}
 {% block activedash %}200{% endblock %}
 {% block body %}
+{% load custom_filter %}
   <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-3xl p-8 mb-5">
       <h1 class="text-3xl font-bold mb-10">
@@ -40,7 +41,7 @@
 
       <div class="grid grid-cols-4 gap-6">
         {% for module in modules %}
-        {% if module.module.module_code and module.module.module_code != 'users' and module.module.module_code != 'support' %}
+        {% if module.module.module_code and module.module.module_code|not_in_deny_list %}
         <a href="/{{ module.module.module_code }}" class="p-4 bg-{% cycle 'blue' 'pink' 'yellow' 'red' 'green' %}-200 rounded-xl">
           <div class="font-bold text-lg text-gray-700 leading-none">{{ module.module.module_name }}</div>
         </a>

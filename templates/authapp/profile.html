@@ -1,0 +1,134 @@
+{% extends "home/base.html" %}
+{% block title %}Profile Manager{% endblock %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/base_internal.css' %}">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+    
+    #form_switch {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+    #form_switch button {
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    #form_switch .active-tab {
+        background-color: #007BFF;
+        color: white;
+    }
+    .form-container {
+        display: none;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 500px;
+    }
+    .form-container.active-tab {
+        display: block;
+        transition: opacity 0.5s ease-in-out;
+    }
+    .form-container input, .form-container textarea, .form-container select {
+        width: 100%;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .form-container button {
+        display: block;
+        width: 100%;
+        padding: 0.7rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #007BFF;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+    .form-container button:hover {
+        background-color: #0056b3;
+    }
+    .content-wrapper{
+        margin-left:10rem;
+    }
+    .form-heading{
+        font-size: 1.7rem;
+        font-weight: bold;
+        margin-bottom:1rem;
+    }
+</style>
+{% endblock %}
+{% block body %}
+{% include 'authapp/base_internal.html' %}
+<div class="content-wrapper">
+    <div id="form_switch">
+        <button class="switch_tab active-tab">Create a Job Profile</button>
+        <button class="switch_tab">Create a Department</button>
+    </div>
+    <div id="job_profile_form" class="form-container active-tab">
+        <h2 class="form-heading">Create a Job Profile</h2>
+        <form method="post">
+            <label for="department">Select Department:</label>
+            <select id="department" name="department">
+                <!-- Dynamically load options here -->
+            </select>
+            <label for="job_name">Job Profile Name:</label>
+            <input type="text" id="job_name" name="job_name" required>
+            <label for="job_description">Job Description:</label>
+            <textarea id="job_description" name="job_description" rows="4" required></textarea>
+            <button type="submit">Make Job Profile</button>
+        </form>
+    </div>
+    <div id="department_form" class="form-container">
+        <h2 class="form-heading">Create a Department</h2>
+        <form method="post">
+            <label for="department_name">Department Name:</label>
+            <input type="text" id="department_name" name="department_name" required>
+            <label for="department_desc">Department Description:</label>
+            <textarea id="department_desc" name="department_desc" rows="4" required></textarea>
+            <button type="submit">Make Department</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/base_internal.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const switchTabs = document.querySelectorAll('.switch_tab');
+        const jobProfileForm = document.getElementById('job_profile_form');
+        const departmentForm = document.getElementById('department_form');
+
+        switchTabs.forEach((tab, index) => {
+            tab.addEventListener('click', function() {
+                switchTabs.forEach(t => t.classList.remove('active-tab'));
+                tab.classList.add('active-tab');
+                if (index === 0) {
+                    jobProfileForm.classList.add('active-tab');
+                    departmentForm.classList.remove('active-tab');
+                } else {
+                    jobProfileForm.classList.remove('active-tab');
+                    departmentForm.classList.add('active-tab');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
