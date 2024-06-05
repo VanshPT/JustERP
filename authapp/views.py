@@ -136,20 +136,60 @@ def profile(request):
         context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email, 'departments':Department.objects.all()}
     return render(request, "authapp/profile.html", context)
 
-
 @login_required
 def create_user(request):
-    user=request.user
-    if user.is_authenticated:
-        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
-    return render(request, "authapp/create_user.html", context)
+    user = request.user
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        company_id = request.POST['company']
+        profile_id = request.POST['profile']
+        permissions = request.POST.getlist('permissions')
 
+        company = CompanyProfile.objects.get(pk=company_id)
+        profile = Profile.objects.get(pk=profile_id)
+        new_user = CustomUser.objects.create_user(
+            email=email,
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+            type='normal',  
+            company=company,
+            profile=profile,
+            is_active=True,  
+            is_staff=True  
+        )
+        new_user.save()
+        new_user.permissions.set(permissions)
+        return redirect('users')
+
+    companies = CompanyProfile.objects.all()
+    profiles = Profile.objects.all()
+    permissions = Permission.objects.all()
+    context = {
+        'company_id': user.company.company_id,
+        'company_name': user.company.company_name,
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email,
+        'companies': companies,
+        'profiles': profiles,
+        'permissions': permissions
+    }
+    return render(request, "authapp/create_user.html", context)
 
 @login_required
 def permission(request):
     user=request.user
     if user.is_authenticated:
-        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email}
+        modules=Module.objects.all()
+        permissions=Permission.objects.all()
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email, 'modules':modules, 'permissions':permissions}
     return render(request, "authapp/permissions.html", context)
 
 

@@ -4,20 +4,192 @@
 {% block css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/base_internal.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <style>
-    .content-wrapper{
-        margin-left:10rem;
+    .content-wrapper {
+        margin-left: 10rem;
+    }
+    .switch-btn {
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .switch-btn.active-tab {
+        background-color: #007BFF;
+        color: white;
+    }
+    .form-container {
+        margin-top: 2rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 500px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: none;
+    }
+    .form-container.active-tab {
+        opacity: 1;
+        display: block;
     }
 </style>
 {% endblock %}
 {% block body %}
 {% include 'authapp/base_internal.html' %}
 <div class="content-wrapper">
+    <div class="flex justify-between">
+        <button id="create-permission-btn" class="switch-btn active-tab">
+            Create New Permission
+        </button>
+        <button id="change-permissions-btn" class="switch-btn">
+            Change User Permissions
+        </button>
+    </div>
 
+    <div id="create-permission-form" class="form-container active-tab">
+        <form method="post" action="/auth/permission" class="w-full max-w-lg">
+            {% csrf_token %}
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="name">
+                        Permission Name
+                    </label>
+                    <input name="name" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="name" type="text" placeholder="Permission Name">
+                </div>
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="description">
+                        Description
+                    </label>
+                    <textarea name="description" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="description" placeholder="Permission Description"></textarea>
+                </div>
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="modules">
+                        Modules
+                    </label>
+                    <select name="modules" multiple class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="modules">
+                        {% for module in modules %}
+                            <option value="{{ module.module_id }}">{{ module.module_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full px-3">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" name="create_permission">
+                        Create Permission
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="change-permissions-form" class="form-container">
+        <div class="w-full max-w-lg mb-6">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="search-user">
+                Search User
+            </label>
+            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="search-user" type="text" placeholder="Search by username">
+        </div>
+        <div id="user-list" class="w-full max-w-lg mb-6">
+            <!-- User list will be populated here by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- User Permissions Modal -->
+<div id="user-permissions-modal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white rounded-lg p-6 shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Change User Permissions</h2>
+            <form id="change-user-permissions-form" method="post" action="/auth/permission">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" id="modal-user-id">
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="modal-permissions">
+                            Permissions
+                        </label>
+                        <select name="permissions" multiple class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="modal-permissions">
+                            {% for permission in permissions %}
+                                <option value="{{ permission.id }}">{{ permission.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full px-3">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" name="change_permissions">
+                            Save Changes
+                        </button>
+                        <button type="button" id="close-modal-btn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
+
 {% block js %}
 <script src="{% static 'js/base_internal.js' %}"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const switchButtons = document.querySelectorAll('.switch-btn');
+        const forms = document.querySelectorAll('.form-container');
+
+        switchButtons.forEach((button, index) => {
+            button.addEventListener('click', function() {
+                switchButtons.forEach(btn => btn.classList.remove('active-tab'));
+                button.classList.add('active-tab');
+
+                forms.forEach(form => {
+                    form.classList.remove('active-tab');
+                });
+                forms[index].classList.add('active-tab');
+            });
+        });
+
+        document.getElementById('search-user').addEventListener('input', function() {
+            const query = this.value;
+            fetch(`/auth/search-users/?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const userList = document.getElementById('user-list');
+                    userList.innerHTML = '';
+                    data.forEach(user => {
+                        const userItem = document.createElement('div');
+                        userItem.className = 'cursor-pointer p-2 border-b';
+                        userItem.textContent = user.username;
+                        userItem.dataset.userId = user.id;
+                        userItem.addEventListener('click', function() {
+                            const userId = this.dataset.userId;
+                            fetch(`/auth/get-user-permissions/${userId}/`)
+                                .then(response => response.json())
+                                .then(permissionData => {
+                                    document.getElementById('modal-user-id').value = userId;
+                                    const permissionsSelect = document.getElementById('modal-permissions');
+                                    permissionsSelect.value = '';
+                                    for (const option of permissionsSelect.options) {
+                                        option.selected = permissionData.permissions.includes(parseInt(option.value));
+                                    }
+                                    document.getElementById('user-permissions-modal').classList.remove('hidden');
+                                });
+                        });
+                        userList.appendChild(userItem);
+                    });
+                });
+        });
+
+        document.getElementById('close-modal-btn').addEventListener('click', function() {
+            document.getElementById('user-permissions-modal').classList.add('hidden');
+        });
+    });
 </script>
 {% endblock %}
