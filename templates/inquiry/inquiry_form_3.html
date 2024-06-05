@@ -1,0 +1,109 @@
+{% extends 'inquiry/inquiry_base.html' %}
+{% block title %}JustERP | Fill in Inquiry - Part 3{% endblock %}
+{% block activein %}200{% endblock %}
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    .container {
+        margin-left: 10rem;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container mx-auto py-10">
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-300 rounded-full h-4 mb-8">
+        <div id="progressBar" class="bg-blue-500 rounded-full h-4 transition" style="width: 100%;"></div>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4">Part 3</h2>
+    <form class="w-full max-w-lg" method="post" action="/inquiry/inquiry-table">
+        {% csrf_token %}
+        <input type="hidden" name="inquiry_id" value="{{ inquiry_id }}">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="add_division">
+                    Add Division
+                </label>
+                <select class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="add_division" name="division">
+                    {% for division in divisions %}
+                    <option value="{{ division.pk }}">{{ division.division_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="add_cluster">
+                    Add Cluster
+                </label>
+                <select class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="add_cluster" name="cluster">
+                    {% for cluster in clusters %}
+                    <option value="{{ cluster.pk }}">{{ cluster.cluster_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="payment_terms">
+                    Payment Terms
+                </label>
+                <select class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="payment_terms" name="payment_terms">
+                    <!-- Populate options dynamically -->
+                    <option value="1">Credit</option>
+                    <option value="2">Direct</option>
+                    <option value="3">Cash</option>
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="credit_days">
+                    Credit Days
+                </label>
+                <select class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="credit_days" name="credit_days">
+                    <!-- Populate options dynamically -->
+                    <option value="1">30 Days</option>
+                    <option value="2">45 Days</option>
+                    <option value="3">60 Days</option>
+                    <option value="4">75 Days</option>
+                    <option value="5">90 Days</option>
+                    <option value="6">105 Days</option>
+                    <option value="7">120 Days</option>
+                    <option value="8">135 Days</option>
+                    <option value="9">150 Days</option>
+                    <option value="10">165 Days</option>
+                    <option value="11">180 Days</option>
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="make_insurance">
+                    Make Insurance
+                </label>
+                <select class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="make_insurance" name="make_insurance">
+                    <!-- Populate options dynamically -->
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+        </div>
+        <button class="px-6 py-3 bg-blue-500 text-white font-bold rounded shadow mt-4 hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit</button>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const inputs = document.querySelectorAll("input[type='text'], input[type='number'], input[type='datetime-local'], select");
+            let isValid = true;
+            inputs.forEach(function (input) {
+                if (!input.value) {
+                    input.classList.add("border-red-500");
+                    isValid = false;
+                } else {
+                    input.classList.remove("border-red-500");
+                }
+            });
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

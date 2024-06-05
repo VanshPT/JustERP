@@ -1,0 +1,21 @@
+{% extends 'inquiry/inquiry_base.html' %}
+{% block title %}JustERP | Fill in Inquiry{% endblock %}
+{% block activebulkin %}200{% endblock %}
+{% block css %}{% endblock %}
+{% block body %}
+<div class="bg-white rounded-lg p-6 shadow-md">
+    <h2 class="text-2xl font-bold mb-6">Upload CSV/XLSX Inquiry Data</h2>
+    <form action="/inquiry/uploader" method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label for="file" class="block font-medium text-gray-700">Choose File:</label>
+        <input type="file" id="file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+      </div>
+      <div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">Upload</button>
+      </div>
+    </form>
+  </div>
+  
+{% endblock %}
+{% block js %}{% endblock %}

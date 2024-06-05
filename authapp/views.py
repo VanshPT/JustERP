@@ -36,7 +36,7 @@ def root_signup(request):
         company=CompanyProfile(company_name=company_name, contact_person_name=contact_person_name, contact_email= contact_email,contact_phone=contact_phone, company_address=company_address, business_description=business_description,country=country,registration_number=registration_number, budget=budget)
         company.save()
 
-        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management', 'users', 'support','profile']
+        module_codes=['financial-management', 'human-resources-management-hrm', 'customer-relationship-management-crm', 'inventory-management', 'sales-and-distribution','reporting-and-analytics','customer-service', 'project-management', 'users', 'support','profile','inquiry']
 
         default_modules_objects=Module.objects.filter(module_code__in=module_codes)
         for module in default_modules_objects:

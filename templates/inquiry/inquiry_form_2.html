@@ -1,0 +1,122 @@
+{% extends 'inquiry/inquiry_base.html' %}
+{% block title %}JustERP | Fill in Inquiry - Part 2{% endblock %}
+{% block activein %}200{% endblock %}
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    .container {
+        margin-left: 10rem;
+    }
+    #seperator {
+        margin: 2rem 0;
+    }
+    .error {
+        border-color: red;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container mx-auto py-10">
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-300 rounded-full h-4 mb-8">
+        <div id="progressBar" class="bg-blue-500 rounded-full h-4 transition" style="width: 66.6%;"></div>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4">Part 2</h2>
+    <form class="w-full max-w-lg" method="post" action="/inquiry/f3" id="form2">
+        {% csrf_token %}
+        <input type="hidden" value="{{ inquiry_id }}" name="inquiry_id">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Pickup Section -->
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="pickup_address">
+                    Pickup Address
+                </label>
+                <select class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="pickup_address" name="pickup_address">
+                    <!-- Populate options dynamically -->
+                    {% for address in addresses %}
+                    <option value="{{ address.address_id }}">{{address.customer}}, {{address.address_point}}, {{ address.city }}, {{ address.state }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <button class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 mt-8">Add Address</button>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="freight_value">
+                    Freight Value
+                </label>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="freight_value" type="number" placeholder="Enter Freight Value" name="freight_value">
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="planned_loading_datetime">
+                    Planned Loading Date Time
+                </label>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="planned_loading_datetime" type="datetime-local" name="planned_loading_datetime">
+            </div>
+        </div>
+
+        <div id="seperator"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Unloading Section -->
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="unloading_address">
+                    Unloading Address
+                </label>
+                <select class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="unloading_address" name="unloading_address">
+                    <!-- Populate options dynamically -->
+                    {% for address in addresses %}
+                    <option value="{{ address.address_id }}">{{address.customer.company_name}}, {{address.address_point}}, {{ address.city }}, {{ address.state }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <button class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 mt-8">Add Address</button>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="price_value">
+                    Price Value
+                </label>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="price_value" type="number" placeholder="Enter Price Value" name="price_value">
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="planned_unloading_datetime">
+                    Planned Unloading Date Time
+                </label>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="planned_unloading_datetime" type="datetime-local" name="planned_unloading_datetime">
+            </div>
+        </div>
+
+        <button type="submit" class="px-6 py-3 bg-blue-500 text-white font-bold rounded shadow mt-4 hover:bg-blue-600 focus:outline-none focus:bg-blue-600" id="submitBtn">Next</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        // Reset error styles
+        var inputs = document.querySelectorAll('input');
+        inputs.forEach(function(input) {
+            input.classList.remove('error');
+        });
+
+        // Check if any field is empty
+        var isEmpty = false;
+        inputs.forEach(function(input) {
+            if (!input.value) {
+                input.classList.add('error');
+                isEmpty = true;
+            }
+        });
+
+        // Submit form if all fields are populated
+        if (!isEmpty) {
+            document.getElementById('form2').submit();
+        }
+    });
+</script>
+{% endblock %}

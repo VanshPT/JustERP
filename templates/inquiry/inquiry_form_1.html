@@ -1,0 +1,166 @@
+{% extends 'inquiry/inquiry_base.html' %}
+{% block title %}JustERP | Fill in Inquiry - Part 1{% endblock %}
+{% block activein %}200{% endblock %}
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<style>
+.container{
+    margin-left: 10rem;
+}
+.input-error {
+    border-color: red;
+}
+.label-error {
+    color: red;
+}
+</style>
+{% endblock %}
+{% block body %}
+<div class="container py-10">
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-300 rounded-full h-4 mb-8">
+        <div id="progressBar" class="bg-blue-500 rounded-full h-4 transition" style="width: 0;"></div>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4">Part 1</h2>
+    <form id="inquiryForm" class="w-full max-w-lg" action="/inquiry/f2" method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="customer">
+                    Customer
+                </label>
+                <select name="customer" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="customer" required>
+                    <!-- Populate options dynamically -->
+                    {% for comp in companies %}
+                    <option value="{{ comp.company_id }}">{{ comp.company_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="do_be_po">
+                    Do/BE/PO No
+                </label>
+                <input name="do_be_po" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="do_be_po" type="number" placeholder="Enter Do/BE/PO No" required>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="consignment_description">
+                    Consignment Description
+                </label>
+                <input name="consignment_description" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="consignment_description" type="text" placeholder="Enter Consignment Description" required>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="seal_no">
+                    Seal No
+                </label>
+                <input name="seal_no" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="seal_no" type="number" placeholder="Enter Seal No" required>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="container_no">
+                    Container No
+                </label>
+                <input name="container_no" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="container_no" type="number" placeholder="Enter Container No" required>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="truck_type">
+                    Truck Type
+                </label>
+                <select name="truck_type" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="truck_type" required>
+                    <!-- Populate options dynamically -->
+                    {% for tt in truck_types %}
+                    <option value="{{ tt.tt_id }}">{{ tt.truck_type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="truck_capacity">
+                    Truck Capacity
+                </label>
+                <select name="truck_capacity" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="truck_capacity" required>
+                    <!-- Populate options dynamically -->
+                    {% for tc in truck_capacity %}
+                    <option value="{{ tc.tc_id }}">{{ tc.truck_capacity }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="length">
+                    Length
+                </label>
+                <select name="length" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="length" required>
+                    <!-- Populate options dynamically -->
+                    {% for tl in truck_length %}
+                    <option value="{{ tl.tl_id }}">{{ tl.truck_length }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="axle_type">
+                    Axle Type
+                </label>
+                <select name="axle_type" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="axle_type" required>
+                    <!-- Populate options dynamically -->
+                    {% for axel_type in axel_types %}
+                    <option value="{{ axel_type.axel_id }}">{{ axel_type.axel_type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="loading_by_consignor">
+                    Loading by Consignor
+                </label>
+                <select name="loading_by_consignor" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="loading_by_consignor" required>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="unloading_by_consignee">
+                    Unloading by Consignee
+                </label>
+                <select name="unloading_by_consignee" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="unloading_by_consignee" required>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mode_of_shipment">
+                    Mode of Shipment
+                </label>
+                <select name="mode_of_shipment" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="mode_of_shipment" required>
+                    <!-- Populate options dynamically -->
+                    {% for mos in mode_of_shipments %}
+                    <option value="{{ mos.ms_id }}">{{ mos.mode_of_shipment }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button id="nextButton" class="px-6 py-3 bg-blue-500 text-white font-bold rounded shadow mt-4 hover:bg-blue-600 focus:outline-none focus:bg-blue-600" type="submit">Next</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('nextButton').addEventListener('click', function() {
+    var form = document.getElementById('inquiryForm');
+    var isValid = true;
+
+    form.querySelectorAll('select, input').forEach(function(input) {
+        var label = input.previousElementSibling;
+
+        if (!input.value) {
+            isValid = false;
+            input.classList.add('input-error');
+            label.classList.add('label-error');
+        } else {
+            input.classList.remove('input-error');
+            label.classList.remove('label-error');
+        }
+    });
+
+    if (isValid) {
+        form.submit();
+    }
+});
+</script>
+
+{% endblock %}

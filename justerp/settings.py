@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'index',
     'authapp',
     'home',
+    'inquiry',
    'django_browser_reload',
 ]
 

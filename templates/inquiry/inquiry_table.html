@@ -1,0 +1,81 @@
+{% extends 'inquiry/inquiry_base.html' %}
+{% block title %}JustERP | Fill in Inquiry{% endblock %}
+{% block activeintable %}200{% endblock %}
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    /* Additional custom styling */
+</style>
+{% endblock %}
+{% block body %}
+<div class="container mx-auto py-10">
+    <h2 class="text-2xl font-bold mb-4">Inquiries</h2>
+    <div class="overflow-x-auto">
+        <table class="table-auto min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inquiry ID</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DO_BE_PO_NO</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CONSIGNMENT_DESCRIPTION</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seal No</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Container No</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck Type</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck Capacity</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Length</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Axel Type</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loading By Consignor</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unloading By Consignee</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode of Shipment</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup Address</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Freight Value</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Planned Loading Date Time</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination Address</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price Value</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Planned Unloading Date Time</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Division</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cluster</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Terms</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit Days</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Insurance</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for inq in inquiries %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.inquiry_id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.customer }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.DO_BE_PO_NO }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.CONSIGNMENT_DESCRIPTION }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.seal_no }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.container_no }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.truck_type }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.truck_capacity }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.length }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.axel_type }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.loading_by_consignor }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.unloading_by_consignee }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.mode_of_shipment }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.pickup_address }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.freight_value }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.planned_loading_datetime }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.destination_address }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.price_value }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.planned_unloading_datetime }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.division}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.cluster }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.payment_terms }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.credit_days }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.insurance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+        
+    </script>
+{% endblock %}
