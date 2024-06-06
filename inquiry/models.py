@@ -40,7 +40,7 @@ class TruckDetails(models.Model):
     
 
     def __str__(self):
-        return self.truck_type
+        return f"{self.truck_number}-{self.truck_capacity}"
 
 
 

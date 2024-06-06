@@ -15,7 +15,7 @@ def inquiry_form_1(request):
         companies=CompanyProfile.objects.all()
         truck_types=models.TruckType.objects.all()
         truck_details=models.TruckDetails.objects.all()
-        order_quantity=models.TruckCapacity.objects.all()
+        order_quantity=models.OrderQuantity.objects.all()
         truck_lengths=models.TruckLength.objects.all()
         axel_types=models.AxelType.objects.all()
         mode_of_shipments=models.ModeOfShipment.objects.all()
@@ -132,7 +132,7 @@ def inquiry_uploader(request):
 
     if request.method == 'POST' and request.FILES.get('file'):
         file = request.FILES['file']
-        if file.name.endswith('.csv'):
+        if file.name.endswith('.csv') or file.name.endswith('.CSV'):
             data = pd.read_csv(file)
         elif file.name.endswith('.xlsx') or file.name.endswith('.XLSX'):
             data = pd.read_excel(file)
@@ -143,6 +143,7 @@ def inquiry_uploader(request):
         default_truck_length, _ = TruckLength.objects.get_or_create(truck_length='22 feet')
         default_axel_type, _ = AxelType.objects.get_or_create(axel_type='MULTI')
         default_cluster, _ = Cluster.objects.get_or_create(cluster_name='CEMENT BAGS')
+        default_truck_type,_ = TruckType.objects.get_or_create(truck_type='Cement Truck')
 
         for index, row in data.iterrows():
             try:
@@ -152,12 +153,12 @@ def inquiry_uploader(request):
                 seal_no = row['Contract Qty']
                 container_no = row['SO Qty']
                 
-                truck_type, _ = TruckType.objects.get_or_create(tt_id=(row['Usage']+1))
+                truck_desc, _ = TruckDetails.objects.get_or_create(t_id=(row['Usage']))
 
                 # Ensure that the truck type is retrieved or created successfully
                 # You might need to handle errors or constraints related to this operation
 
-                truck_capacity, _ = TruckCapacity.objects.get_or_create(truck_capacity=row['SO Pnd Qty'])
+                order_quantity, _ = OrderQuantity.objects.get_or_create(order_quantity=row['SO Pnd Qty'])
 
                 # Find or create pickup and destination addresses
                 pickup_address, _ = Address.objects.get_or_create(
@@ -191,8 +192,9 @@ def inquiry_uploader(request):
                     CONSIGNMENT_DESCRIPTION=consignment_description,
                     seal_no=seal_no,
                     container_no=container_no,
-                    truck_type=truck_type,
-                    truck_capacity=truck_capacity,
+                    truck_type=default_truck_type,
+                    truck_details=truck_desc,
+                    order_quantity=order_quantity,
                     length=default_truck_length,
                     axel_type=default_axel_type,
                     loading_by_consignor='Yes',
@@ -271,7 +273,7 @@ def inquiry_table(request):
         inquiries = Inquiry.objects.all()
         addresses=Address.objects.all()
         truck_types=TruckType.objects.all()
-
+        truck_details=TruckDetails.objects.all()
 
             # Prepare context data
         context = {
@@ -283,8 +285,32 @@ def inquiry_table(request):
             'email': user.email,
             'inquiries': inquiries,
             'addresses':addresses,
+            'truck_details':truck_details,
             'truck_types':truck_types
         }
 
             # Render inquiry table page with data
         return render(request, 'inquiry/inquiry_table.html', context)
+
+
+@login_required
+def placement_table(request):
+    user=request.user
+    if user.is_authenticated:
+        inquiries = Inquiry.objects.all()
+        addresses=Address.objects.all()
+        truck_types=TruckType.objects.all()
+        truck_details=TruckDetails.objects.all()
+        context = {
+            'company_id': user.company.company_id,
+            'company_name': user.company.company_name,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'inquiries': inquiries,
+            'addresses':addresses,
+            'truck_details':truck_details,
+            'truck_types':truck_types
+        }
+        return render(request,"inquiry/placement_table.html", context)

@@ -1,0 +1,180 @@
+{% extends 'inquiry/inquiry_base.html' %}
+{% block title %}Placement Table {% endblock %}
+{% block activeptable %}200{% endblock %}
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+<style>
+    .custom-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .compact-table th, .compact-table td {
+        padding: 5px;
+    }
+    .table-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    .table-wrapper {
+        width: 48%;
+    }
+</style>
+{% endblock %}
+{% block body %}
+
+<div class="">
+    <div class="table-container">
+        <div class="table-wrapper">
+            <div class="custom-flex">
+                <div>
+                    <h2 class="text-xl font-bold">Inquiries</h2>
+                </div>
+                {% include 'inquiry/search.html' %}
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <input type="checkbox" id="select-all-left">
+                            </th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inquiry ID</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DO_BE_PO_NO</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Qty</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination Address</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for inq in inquiries %}
+                        {% if inq.truck_type.truck_type %}
+                        <tr>
+                            <td class="px-2 py-1 whitespace-nowrap">
+                                <input type="checkbox" class="select-row-left" value="{{ inq.inquiry_id }}">
+                            </td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.inquiry_id }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.customer }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.DO_BE_PO_NO }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.order_quantity }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap" data-address-id="{{ inq.destination_address.address_id }}">{{ inq.destination_address }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <div class="custom-flex">
+                <h2 class="text-xl font-bold">Truck Table</h2>
+                <!-- {% include 'inquiry/truck_search.html' %} -->
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <input type="checkbox" id="select-all-right">
+                            </th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck ID</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck Type</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck Number</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Length</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ageing Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for truck in truck_details %}
+                        <tr>
+                            <td class="px-2 py-1 whitespace-nowrap">
+                                <input type="checkbox" class="select-row-right" value="{{ truck.truck_id }}">
+                            </td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.t_id }}</td>
+                            {% for t in truck_types %}
+                            <td class="px-2 py-1 whitespace-nowrap">{{ t.truck_type }}</td>
+                            {% endfor %}
+                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.truck_number }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.truck_capacity }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.truck_length }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.ageing_duration }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Function to perform search for the left table
+        $('#search-dropdown').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+            });
+        });
+
+        // Function to filter based on dropdown selection for the left table
+        $('#dropdown').on('change', 'input[type="checkbox"]', function() {
+            var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function(){
+                return $(this).val();
+            }).get();
+
+            if (selectedDestinations.length > 0) {
+                $('.table-wrapper:nth-child(1) tbody tr').hide();
+                $('.table-wrapper:nth-child(1) tbody tr').each(function() {
+                    var destinationAddressId = $(this).find('td[data-address-id]').data('address-id');
+                    if (selectedDestinations.includes(destinationAddressId.toString())) {
+                        $(this).show();
+                    }
+                });
+            } else {
+                $('.table-wrapper:nth-child(1) tbody tr').show();
+            }
+        });
+
+        // Function to calculate the total order quantity of selected rows
+        function calculateTotalOrderQuantity() {
+            var totalOrderQuantity = 0;
+            $('.select-row-left:checked').each(function() {
+                totalOrderQuantity += parseFloat($(this).closest('tr').find('td:nth-child(5)').text()) || 0;
+            });
+            return totalOrderQuantity;
+        }
+
+        // Function to filter trucks based on total order quantity
+        function filterTrucksByCapacity(totalOrderQuantity) {
+            $('.table-wrapper:nth-child(2) tbody tr').each(function() {
+                var truckCapacity = parseFloat($(this).find('td:nth-child(5)').text().replace(' ton', '')) || 0;
+                if (truckCapacity < totalOrderQuantity) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        }
+
+        // Event listener for checkbox selection in the left inquiry table
+        $('.select-row-left').on('change', function() {
+            var totalOrderQuantity = calculateTotalOrderQuantity();
+            if (totalOrderQuantity > 0) {
+                filterTrucksByCapacity(totalOrderQuantity);
+            } else {
+                // Show all trucks if no inquiries are selected
+                $('.table-wrapper:nth-child(2) tbody tr').show();
+            }
+        });
+    });
+</script>
+{% endblock %}
