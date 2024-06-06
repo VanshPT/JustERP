@@ -3,13 +3,22 @@
 {% block activeintable %}200{% endblock %}
 {% block css %}
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 <style>
-    /* Additional custom styling */
+    .custom-flex{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 {% endblock %}
 {% block body %}
 <div class="container mx-auto py-10">
-    <h2 class="text-2xl font-bold mb-4">Inquiries</h2>
+    <div class="custom-flex">
+        <h2 class="text-2xl font-bold mb-4">Inquiries</h2>
+        {% include 'inquiry/search.html' %}
+    </div>
+    
     <div class="overflow-x-auto">
         <table class="table-auto min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -59,7 +68,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.pickup_address }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.freight_value }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.planned_loading_datetime }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.destination_address }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap" data-address-id="{{ inq.destination_address.address_id }}">{{ inq.destination_address }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.price_value }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.planned_unloading_datetime }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.division}}</td>
@@ -75,7 +84,40 @@
 </div>
 {% endblock %}
 {% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        
+    $(document).ready(function() {
+        // Function to perform search
+        $('#search-dropdown').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+            });
+        });
+
+        // Function to filter based on dropdown selection
+        $('#dropdown').on('change', 'input[type="checkbox"]', function() {
+    var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function(){
+        return $(this).val();
+    }).get();
+    
+    console.log("Selected Destinations:", selectedDestinations);
+
+    if (selectedDestinations.length > 0) {
+        $('tbody tr').hide();
+        $('tbody tr').each(function() {
+            var destinationAddressId = $(this).find('td[data-address-id]').data('address-id');
+            console.log("Destination Address ID from Table:", destinationAddressId);
+            if (selectedDestinations.includes(destinationAddressId.toString())) {
+                $(this).show();
+            }
+        });
+    } else {
+        $('tbody tr').show();
+    }
+});
+
+    });
     </script>
 {% endblock %}

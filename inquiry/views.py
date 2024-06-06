@@ -259,6 +259,7 @@ def inquiry_table(request):
 
                 # Fetch all inquiries
                 inquiries = Inquiry.objects.all()
+                addresses=Address.objects.all()
 
                 # Prepare context data
                 context = {
@@ -268,7 +269,8 @@ def inquiry_table(request):
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'email': user.email,
-                    'inquiries': inquiries
+                    'inquiries': inquiries,
+                    'addresses':addresses
                 }
 
                 # Redirect to inquiry table page with updated data
@@ -282,6 +284,8 @@ def inquiry_table(request):
         elif request.method == 'GET':
             # Fetch all inquiries
             inquiries = Inquiry.objects.all()
+            addresses=Address.objects.all()
+
 
             # Prepare context data
             context = {
@@ -291,7 +295,8 @@ def inquiry_table(request):
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'email': user.email,
-                'inquiries': inquiries
+                'inquiries': inquiries,
+                'addresses':addresses
             }
 
             # Render inquiry table page with data
