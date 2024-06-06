@@ -3,26 +3,46 @@ from authapp.models import CompanyProfile
 
 # Create your models here.
 # dropdown models 
-class TruckType(models.Model):
-    tt_id = models.AutoField(primary_key=True)
-    truck_type = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.truck_type
-
 class TruckCapacity(models.Model):
     tc_id = models.AutoField(primary_key=True)
     truck_capacity = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return str(self.truck_capacity)
+    
+class OrderQuantity(models.Model):
+    oq_id = models.AutoField(primary_key=True)
+    order_quantity = models.CharField(max_length=100, unique=True)
 
+    def __str__(self):
+        return str(self.order_quantity)
+    
 class TruckLength(models.Model):
     tl_id = models.AutoField(primary_key=True)
     truck_length = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.truck_length
+    
+
+class TruckType(models.Model):
+    tt_id=models.AutoField(primary_key=True)
+    truck_type=models.CharField(max_length=100, default='Cement Truck')
+
+    def __str__(self):
+        return self.truck_type
+class TruckDetails(models.Model):
+    t_id = models.AutoField(primary_key=True)
+    truck_number = models.CharField(max_length=100, unique=True)
+    truck_capacity=models.ForeignKey(TruckCapacity, on_delete=models.CASCADE, blank=True,null=True)
+    truck_length=models.ForeignKey(TruckLength, on_delete=models.CASCADE, blank=True,null=True,default=1)
+    ageing_duration=models.TimeField(default='20:00')
+    
+
+    def __str__(self):
+        return self.truck_type
+
+
 
 class AxelType(models.Model):
     axel_id = models.AutoField(primary_key=True)
@@ -78,8 +98,9 @@ class Inquiry(models.Model):
     CONSIGNMENT_DESCRIPTION = models.CharField(max_length=500)
     seal_no = models.IntegerField()
     container_no = models.IntegerField()
+    truck_details=models.ForeignKey(TruckDetails, on_delete=models.CASCADE)
     truck_type = models.ForeignKey(TruckType, on_delete=models.CASCADE)
-    truck_capacity = models.ForeignKey(TruckCapacity, on_delete=models.CASCADE)
+    order_quantity = models.ForeignKey(OrderQuantity, on_delete=models.CASCADE)
     length = models.ForeignKey(TruckLength, on_delete=models.CASCADE)
     axel_type = models.ForeignKey(AxelType, on_delete=models.CASCADE)
     loading_by_consignor = models.CharField(max_length=3)

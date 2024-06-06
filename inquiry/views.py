@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from authapp.models import CompanyProfile
 from . import models
-from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster
+from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster,OrderQuantity,TruckDetails
 from django.http import HttpResponseBadRequest, HttpResponse
 from datetime import datetime, timedelta
 import pandas as pd
@@ -14,11 +14,12 @@ def inquiry_form_1(request):
     if user.is_authenticated:
         companies=CompanyProfile.objects.all()
         truck_types=models.TruckType.objects.all()
-        truck_capacity=models.TruckCapacity.objects.all()
+        truck_details=models.TruckDetails.objects.all()
+        order_quantity=models.TruckCapacity.objects.all()
         truck_lengths=models.TruckLength.objects.all()
         axel_types=models.AxelType.objects.all()
         mode_of_shipments=models.ModeOfShipment.objects.all()
-        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email, 'companies':companies,'truck_types': truck_types, 'truck_capacity':truck_capacity,'truck_length':truck_lengths, 'axel_types':axel_types,'mode_of_shipments':mode_of_shipments}
+        context={'company_id':user.company.company_id,'company_name':user.company.company_name, 'username':user.username, 'first_name':user.first_name, 'last_name': user.last_name, 'email': user.email, 'companies':companies,'truck_types': truck_types, 'truck_details':truck_details,'order_quantity':order_quantity,'truck_length':truck_lengths, 'axel_types':axel_types,'mode_of_shipments':mode_of_shipments}
     return render(request, 'inquiry/inquiry_form_1.html',context)
 
 
@@ -31,12 +32,13 @@ def inquiry_form_2(request):
 
         # Extracting data from form 1
         customer_id = request.POST.get('customer')
-        do_be_po = request.POST.get('do_be_po')  # Remove this line
-        consignment_description = request.POST.get('consignment_description')  # Remove this line
+        do_be_po = request.POST.get('do_be_po')  
+        consignment_description = request.POST.get('consignment_description') 
         seal_no = request.POST.get('seal_no')
         container_no = request.POST.get('container_no')
-        truck_type_id = request.POST.get('truck_type')
-        truck_capacity_id = request.POST.get('truck_capacity')
+        truck_detail_id = request.POST.get('truck_number')
+        truck_type_id=request.POST.get('truck_type')
+        order_quantity_id = request.POST.get('order_quantity')
         truck_length_id = request.POST.get('length')  # Remove this line
         axel_type_id = request.POST.get('axle_type')
         loading_by_consignor = request.POST.get('loading_by_consignor')
@@ -46,8 +48,9 @@ def inquiry_form_2(request):
         # Validate and fetch actual objects from IDs
         try:
             customer = CompanyProfile.objects.get(pk=customer_id)
+            truck_details = TruckDetails.objects.get(t_id=truck_detail_id)
             truck_type = TruckType.objects.get(tt_id=truck_type_id)
-            truck_capacity = TruckCapacity.objects.get(tc_id=truck_capacity_id)
+            order_quantity =OrderQuantity.objects.get(oq_id=order_quantity_id)
             truck_length = TruckLength.objects.get(tl_id=truck_length_id)
             axel_type = AxelType.objects.get(axel_id=axel_type_id)
             mode_of_shipment = ModeOfShipment.objects.get(ms_id=mode_of_shipment_id)
@@ -61,8 +64,9 @@ def inquiry_form_2(request):
             CONSIGNMENT_DESCRIPTION=consignment_description,  # Update this line
             seal_no=seal_no,
             container_no=container_no,
+            truck_details=truck_details,
             truck_type=truck_type,
-            truck_capacity=truck_capacity,
+            order_quantity=order_quantity,
             length=truck_length,  # Update this line
             axel_type=axel_type,
             loading_by_consignor=loading_by_consignor,
@@ -257,52 +261,30 @@ def inquiry_table(request):
                 # Save the updated Inquiry object
                 inquiry.save()
 
-                # Fetch all inquiries
-                inquiries = Inquiry.objects.all()
-                addresses=Address.objects.all()
-
-                # Prepare context data
-                context = {
-                    'company_id': user.company.company_id,
-                    'company_name': user.company.company_name,
-                    'username': user.username,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'email': user.email,
-                    'inquiries': inquiries,
-                    'addresses':addresses
-                }
-
-                # Redirect to inquiry table page with updated data
-                return render(request, 'inquiry/inquiry_table.html', context)
 
             except Inquiry.DoesNotExist:
                 return HttpResponseBadRequest("Invalid Inquiry ID")
             except (Division.DoesNotExist, Cluster.DoesNotExist):
                 return HttpResponseBadRequest("Invalid Division or Cluster ID")
 
-        elif request.method == 'GET':
-            # Fetch all inquiries
-            inquiries = Inquiry.objects.all()
-            addresses=Address.objects.all()
+        
+        inquiries = Inquiry.objects.all()
+        addresses=Address.objects.all()
+        truck_types=TruckType.objects.all()
 
 
             # Prepare context data
-            context = {
-                'company_id': user.company.company_id,
-                'company_name': user.company.company_name,
-                'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'inquiries': inquiries,
-                'addresses':addresses
-            }
+        context = {
+            'company_id': user.company.company_id,
+            'company_name': user.company.company_name,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'inquiries': inquiries,
+            'addresses':addresses,
+            'truck_types':truck_types
+        }
 
             # Render inquiry table page with data
-            return render(request, 'inquiry/inquiry_table.html', context)
-
-        else:
-            return HttpResponseBadRequest("Invalid request method")
-    else:
-        return HttpResponseBadRequest("User is not authenticated")
+        return render(request, 'inquiry/inquiry_table.html', context)

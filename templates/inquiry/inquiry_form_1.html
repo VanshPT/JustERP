@@ -62,6 +62,17 @@
                 <input name="container_no" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="container_no" type="number" placeholder="Enter Container No" required>
             </div>
             <div>
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="truck_number">
+                    Truck Number
+                </label>
+                <select name="truck_number" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="truck_number" required>
+                    <!-- Populate options dynamically -->
+                    {% for t in truck_details %}
+                    <option value="{{ t.t_id }}">{{ t.truck_number }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="truck_type">
                     Truck Type
                 </label>
@@ -73,13 +84,13 @@
                 </select>
             </div>
             <div>
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="truck_capacity">
-                    Truck Capacity
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="order_quantity">
+                    Order Quantity
                 </label>
-                <select name="truck_capacity" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="truck_capacity" required>
+                <select name="order_quantity" class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="truck_capacity" required>
                     <!-- Populate options dynamically -->
-                    {% for tc in truck_capacity %}
-                    <option value="{{ tc.tc_id }}">{{ tc.truck_capacity }}</option>
+                    {% for oq in order_quantity %}
+                    <option value="{{ oq.oq_id }}">{{ oq.order_quantity }}</option>
                     {% endfor %}
                 </select>
             </div>

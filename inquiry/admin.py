@@ -8,7 +8,9 @@ from .models import (
     Address,
     Division,
     Cluster,
-    Inquiry
+    Inquiry,
+    OrderQuantity,
+    TruckDetails
 )
 
 # Register your models here
@@ -21,3 +23,5 @@ admin.site.register(Address)
 admin.site.register(Division)
 admin.site.register(Cluster)
 admin.site.register(Inquiry)
+admin.site.register(OrderQuantity)
+admin.site.register(TruckDetails)
