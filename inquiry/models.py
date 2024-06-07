@@ -33,6 +33,7 @@ class TruckType(models.Model):
         return self.truck_type
 class TruckDetails(models.Model):
     t_id = models.AutoField(primary_key=True)
+    truck_type=models.ForeignKey(TruckType, on_delete=models.CASCADE, default=1)
     truck_number = models.CharField(max_length=100, unique=True)
     truck_capacity=models.ForeignKey(TruckCapacity, on_delete=models.CASCADE, blank=True,null=True)
     truck_length=models.ForeignKey(TruckLength, on_delete=models.CASCADE, blank=True,null=True,default=1)
@@ -88,36 +89,51 @@ class Cluster(models.Model):
     def __str__(self):
         return self.cluster_name
     
+class PaymentTerms(models.Model):
+    p_id=models.AutoField(primary_key=True)
+    payment_terms=models.CharField(max_length=100,default=1)
+
+    def __str__(self):
+        return self.payment_terms
+
+class CreditDays(models.Model):
+    cd_id=models.AutoField(primary_key=True)
+    credit_days=models.CharField(max_length=100, default=2)
+
+    def __str__(self):
+        return self.credit_days
 
 #building models for inquiry form
 class Inquiry(models.Model):
     #part1
     inquiry_id=models.AutoField(primary_key=True)
-    customer = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
-    DO_BE_PO_NO = models.IntegerField()
+    customer = models.ManyToManyField(CompanyProfile)
+    DO_BE_PO_NO = models.CharField(max_length=100)
     CONSIGNMENT_DESCRIPTION = models.CharField(max_length=500)
-    seal_no = models.IntegerField()
-    container_no = models.IntegerField()
-    truck_details=models.ForeignKey(TruckDetails, on_delete=models.CASCADE)
-    truck_type = models.ForeignKey(TruckType, on_delete=models.CASCADE)
-    order_quantity = models.ForeignKey(OrderQuantity, on_delete=models.CASCADE)
-    length = models.ForeignKey(TruckLength, on_delete=models.CASCADE)
-    axel_type = models.ForeignKey(AxelType, on_delete=models.CASCADE)
+    seal_no = models.CharField(max_length=100)
+    container_no = models.CharField(max_length=100)
+    truck_details=models.ManyToManyField(TruckDetails)
+    truck_type = models.ManyToManyField(TruckType)
+    order_quantity = models.ManyToManyField(OrderQuantity)
+    length = models.ManyToManyField(TruckLength)
+    axel_type = models.ManyToManyField(AxelType)
     loading_by_consignor = models.CharField(max_length=3)
     unloading_by_consignee = models.CharField(max_length=3)
-    mode_of_shipment = models.ForeignKey(ModeOfShipment, on_delete=models.CASCADE)
+    mode_of_shipment = models.ManyToManyField(ModeOfShipment)
     #part2
-    pickup_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='pickup_address', null=True, blank=True)
-    freight_value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    planned_loading_datetime = models.DateTimeField(blank=True, null=True)
-    destination_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='destination_address', null=True, blank=True)
-    price_value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    planned_unloading_datetime = models.DateTimeField(blank=True, null=True)
+    pickup_address = models.ManyToManyField(Address, related_name='pickup_address', null=True, blank=True)
+    freight_value = models.CharField(max_length=100, blank=True, null=True)
+    planned_loading_datetime = models.CharField(max_length=200,blank=True, null=True)
+    destination_address = models.ManyToManyField(Address, related_name='destination_address', null=True, blank=True)
+    price_value = models.CharField(max_length=100, blank=True, null=True)
+    planned_unloading_datetime = models.CharField(max_length=200,blank=True, null=True)
     #part3
-    division = models.ForeignKey(Division, on_delete=models.CASCADE, blank=True, null=True)
-    cluster = models.ForeignKey(Cluster, on_delete=models.CASCADE, blank=True, null=True)
-    payment_terms = models.CharField(max_length=100, blank=True, null=True)
-    credit_days = models.CharField(max_length=100, blank=True, null=True)
+    division = models.ManyToManyField(Division, blank=True, null=True)
+    cluster = models.ManyToManyField(Cluster,  blank=True, null=True)
+    payment_terms = models.ManyToManyField(PaymentTerms,null=True,blank=True)
+    credit_days = models.ManyToManyField(CreditDays, blank=True, null=True)
     insurance = models.CharField(max_length=100, blank=True, null=True)
+
     def __str__(self):
-        return f"Inquiry {self.inquiry_id} for {self.customer}"
+        customer_names = ", ".join([company.company_name for company in self.customer.all()])
+        return f"Inquiry {self.inquiry_id} for {customer_names}"

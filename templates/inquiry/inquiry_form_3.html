@@ -47,9 +47,10 @@
                 </label>
                 <select class="appearance-none block w-3/4 md:w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="payment_terms" name="payment_terms">
                     <!-- Populate options dynamically -->
-                    <option value="1">Credit</option>
-                    <option value="2">Direct</option>
-                    <option value="3">Cash</option>
+                     {% for p in payment_terms %}
+                    <option value="{{ p.p_id }}">{{ p.payment_terms }}</option>
+                    {% endfor %}
+                    
                 </select>
             </div>
             <div>

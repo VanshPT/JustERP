@@ -10,7 +10,9 @@ from .models import (
     Cluster,
     Inquiry,
     OrderQuantity,
-    TruckDetails
+    TruckDetails,
+    PaymentTerms,
+    CreditDays
 )
 
 # Register your models here
@@ -25,3 +27,5 @@ admin.site.register(Cluster)
 admin.site.register(Inquiry)
 admin.site.register(OrderQuantity)
 admin.site.register(TruckDetails)
+admin.site.register(PaymentTerms)
+admin.site.register(CreditDays)

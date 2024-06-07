@@ -4,6 +4,7 @@
 {% block css %}
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <style>
     .custom-flex {
         display: flex;
@@ -20,7 +21,7 @@
         gap: 20px;
     }
     .table-wrapper {
-        width: 48%;
+        width: 70%;
     }
 </style>
 {% endblock %}
@@ -32,6 +33,10 @@
             <div class="custom-flex">
                 <div>
                     <h2 class="text-xl font-bold">Inquiries</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        Merge
+                    </button>
+                    {% include 'inquiry/modal_confirm.html' %}
                 </div>
                 {% include 'inquiry/search.html' %}
             </div>
@@ -51,18 +56,18 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for inq in inquiries %}
-                        {% if inq.truck_type.truck_type %}
+                      
                         <tr>
                             <td class="px-2 py-1 whitespace-nowrap">
                                 <input type="checkbox" class="select-row-left" value="{{ inq.inquiry_id }}">
                             </td>
                             <td class="px-2 py-1 whitespace-nowrap">{{ inq.inquiry_id }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.customer }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.customer.all|join:", " }}</td>
                             <td class="px-2 py-1 whitespace-nowrap">{{ inq.DO_BE_PO_NO }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.order_quantity }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap" data-address-id="{{ inq.destination_address.address_id }}">{{ inq.destination_address }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.order_quantity.all|join:", " }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap" data-address-id="{{ inq.destination_address.all|join:', ' }}">{{ inq.destination_address.all|join:", " }}</td>
                         </tr>
-                        {% endif %}
+                      
                         {% endfor %}
                     </tbody>
                 </table>
@@ -71,50 +76,104 @@
         
         <div class="table-wrapper">
             <div class="custom-flex">
-                <h2 class="text-xl font-bold">Truck Table</h2>
-                <!-- {% include 'inquiry/truck_search.html' %} -->
+                <h2 class="text-xl font-bold">Transporter List</h2>
             </div>
             <div class="overflow-x-auto">
-                <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">
+                <table class="table-auto min-w-full divide-y divide-gray-200 compact-table" id="dummy-table">
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <input type="checkbox" id="select-all-right">
+                                <input type="checkbox" id="select-all-dummy">
                             </th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck ID</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck Type</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truck Number</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Length</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ageing Duration</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expand</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dummy ID</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        {% for truck in truck_details %}
-                        <tr>
+                        <tr class="parent-row bg-gray-100">
                             <td class="px-2 py-1 whitespace-nowrap">
-                                <input type="checkbox" class="select-row-right" value="{{ truck.truck_id }}">
+                                <input type="checkbox" class="select-row-dummy" value="1">
                             </td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.t_id }}</td>
-                            {% for t in truck_types %}
-                            <td class="px-2 py-1 whitespace-nowrap">{{ t.truck_type }}</td>
-                            {% endfor %}
-                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.truck_number }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.truck_capacity }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.truck_length }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ truck.ageing_duration }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
+                            <td class="px-2 py-1 whitespace-nowrap">1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Parent 1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 1</td>
                         </tr>
-                        {% endfor %}
+                        <tr class="child-row hidden bg-gray-50">
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap">1.1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Child 1.1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 1.1</td>
+                        </tr>
+                        <tr class="child-row hidden bg-gray-50">
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap">1.2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Child 1.2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 1.2</td>
+                        </tr>
+                        <tr class="parent-row bg-gray-100">
+                            <td class="px-2 py-1 whitespace-nowrap">
+                                <input type="checkbox" class="select-row-dummy" value="2">
+                            </td>
+                            <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
+                            <td class="px-2 py-1 whitespace-nowrap">2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Parent 2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 2</td>
+                        </tr>
+                        <tr class="child-row hidden bg-gray-50">
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap">2.1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Child 2.1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 2.1</td>
+                        </tr>
+                        <tr class="child-row hidden bg-gray-50">
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap">2.2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Child 2.2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 2.2</td>
+                        </tr>
+                        <tr class="parent-row bg-gray-100">
+                            <td class="px-2 py-1 whitespace-nowrap">
+                                <input type="checkbox" class="select-row-dummy" value="3">
+                            </td>
+                            <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
+                            <td class="px-2 py-1 whitespace-nowrap">3</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Parent 3</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 3</td>
+                        </tr>
+                        <tr class="child-row hidden bg-gray-50">
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap">3.1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Child 3.1</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 3.1</td>
+                        </tr>
+                        <tr class="child-row hidden bg-gray-50">
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap"></td>
+                            <td class="px-2 py-1 whitespace-nowrap">3.2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Child 3.2</td>
+                            <td class="px-2 py-1 whitespace-nowrap">Value 3.2</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        
     </div>
 </div>
 {% endblock %}
 {% block js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
         // Function to perform search for the left table
@@ -127,22 +186,28 @@
 
         // Function to filter based on dropdown selection for the left table
         $('#dropdown').on('change', 'input[type="checkbox"]', function() {
-            var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function(){
-                return $(this).val();
-            }).get();
+    var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function(){
+        return $(this).val();
+    }).get();
 
-            if (selectedDestinations.length > 0) {
-                $('.table-wrapper:nth-child(1) tbody tr').hide();
-                $('.table-wrapper:nth-child(1) tbody tr').each(function() {
-                    var destinationAddressId = $(this).find('td[data-address-id]').data('address-id');
-                    if (selectedDestinations.includes(destinationAddressId.toString())) {
-                        $(this).show();
-                    }
-                });
-            } else {
-                $('.table-wrapper:nth-child(1) tbody tr').show();
+    console.log("Selected Destinations:", selectedDestinations);
+
+    if (selectedDestinations.length > 0) {
+        $('tbody tr').hide();
+        $('tbody tr').each(function() {
+            var destinationAddressIds = $(this).find('td[data-address-id]').map(function() {
+                return $(this).data('address-id').toString();
+            }).get();
+            console.log("Destination Address IDs from Table:", destinationAddressIds);
+            if (destinationAddressIds.some(id => selectedDestinations.includes(id))) {
+                $(this).show();
             }
         });
+    } else {
+        $('tbody tr').show();
+    }
+});
+
 
         // Function to calculate the total order quantity of selected rows
         function calculateTotalOrderQuantity() {
@@ -175,6 +240,107 @@
                 $('.table-wrapper:nth-child(2) tbody tr').show();
             }
         });
+
+        // Update modal content before showing it
+        $('#staticBackdrop').on('show.bs.modal', function (event) {
+            var totalOrderQuantity = calculateTotalOrderQuantity();
+            $('#total-order-quantity').text(totalOrderQuantity);
+        });
     });
+
+    /////////////////////// js for parent child table 
+    $(document).ready(function() {
+    // Function to toggle child rows
+    $('#dummy-table').on('click', '.toggle-row', function() {
+        var $parentRow = $(this).closest('tr');
+        var $childRows = $parentRow.nextUntil('.parent-row');
+
+        // Toggle arrow direction and show/hide child rows
+        if ($(this).text() === '▶') {
+            $(this).text('▼');
+            $childRows.show();
+        } else {
+            $(this).text('▶');
+            $childRows.hide();
+        }
+    });
+
+    // Function to select/deselect all checkboxes in dummy table
+    $('#select-all-dummy').on('change', function() {
+        $('.select-row-dummy').prop('checked', $(this).prop('checked'));
+    });
+
+    // Function to perform search for the left table
+    $('#search-dropdown').on('keyup', function() {
+        var searchText = $(this).val().toLowerCase();
+        $('tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+        });
+    });
+
+    // Function to filter based on dropdown selection for the left table
+    $('#dropdown').on('change', 'input[type="checkbox"]', function() {
+        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function(){
+            return $(this).val();
+        }).get();
+
+        console.log("Selected Destinations:", selectedDestinations);
+
+        if (selectedDestinations.length > 0) {
+            $('tbody tr').hide();
+            $('tbody tr').each(function() {
+                var destinationAddressIds = $(this).find('td[data-address-id]').map(function() {
+                    return $(this).data('address-id').toString();
+                }).get();
+                console.log("Destination Address IDs from Table:", destinationAddressIds);
+                if (destinationAddressIds.some(id => selectedDestinations.includes(id))) {
+                    $(this).show();
+                }
+            });
+        } else {
+            $('tbody tr').show();
+        }
+    });
+
+    // Function to calculate the total order quantity of selected rows
+    function calculateTotalOrderQuantity() {
+        var totalOrderQuantity = 0;
+        $('.select-row-left:checked').each(function() {
+            totalOrderQuantity += parseFloat($(this).closest('tr').find('td:nth-child(5)').text()) || 0;
+        });
+        return totalOrderQuantity;
+    }
+
+    // Function to filter trucks based on total order quantity
+    function filterTrucksByCapacity(totalOrderQuantity) {
+        $('.table-wrapper:nth-child(2) tbody tr').each(function() {
+            var truckCapacity = parseFloat($(this).find('td:nth-child(5)').text().replace(' ton', '')) || 0;
+            if (truckCapacity < totalOrderQuantity) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    }
+
+    // Event listener for checkbox selection in the left inquiry table
+    $('.select-row-left').on('change', function() {
+        var totalOrderQuantity = calculateTotalOrderQuantity();
+        if (totalOrderQuantity > 0) {
+            filterTrucksByCapacity(totalOrderQuantity);
+        } else {
+            // Show all trucks if no inquiries are selected
+            $('.table-wrapper:nth-child(2) tbody tr').show();
+        }
+    });
+
+    // Update modal content before showing it
+    $('#staticBackdrop').on('show.bs.modal', function (event) {
+        var totalOrderQuantity = calculateTotalOrderQuantity();
+        $('#total-order-quantity').text(totalOrderQuantity);
+    });
+});
+
+
 </script>
 {% endblock %}
