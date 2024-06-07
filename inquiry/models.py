@@ -98,10 +98,18 @@ class PaymentTerms(models.Model):
 
 class CreditDays(models.Model):
     cd_id=models.AutoField(primary_key=True)
-    credit_days=models.CharField(max_length=100, default=2)
+    credit_days=models.CharField(max_length=100)
 
     def __str__(self):
         return self.credit_days
+
+class  Transporter(models.Model):
+    tr_id=models.AutoField(primary_key=True)
+    transporter_name=models.CharField(max_length=100, unique=True)
+    truck_details=models.ManyToManyField(TruckDetails)
+
+    def __str__(self):
+        return self.transporter_name
 
 #building models for inquiry form
 class Inquiry(models.Model):

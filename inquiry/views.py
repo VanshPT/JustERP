@@ -193,6 +193,8 @@ def inquiry_uploader(request):
         default_axel_type, _ = AxelType.objects.get_or_create(axel_type='MULTI')
         default_cluster, _ = Cluster.objects.get_or_create(cluster_name='CEMENT BAGS')
         default_truck_type, _ = TruckType.objects.get_or_create(truck_type='Cement Truck')
+        payment_terms,_=PaymentTerms.objects.get_or_create(payment_terms="Credit")
+        credit_days,_=CreditDays.objects.get_or_create(credit_days="30 days")
 
         for index, row in data.iterrows():
             try:
@@ -243,8 +245,6 @@ def inquiry_uploader(request):
                     planned_loading_datetime=planned_loading_datetime.strftime('%Y-%m-%d %H:%M:%S'),
                     price_value=price_value,
                     planned_unloading_datetime=planned_unloading_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-                    payment_terms=PaymentTerms.objects.get(p_id=1).payment_terms,
-                    credit_days=CreditDays.objects.get(cd_id=2).credit_days,
                     insurance='No'
                 )
                 inquiry.save()
@@ -261,6 +261,8 @@ def inquiry_uploader(request):
                 inquiry.destination_address.set([destination_address])
                 inquiry.division.set([division])
                 inquiry.cluster.set([default_cluster])
+                inquiry.payment_terms.set([payment_terms])
+                inquiry.credit_days.set([credit_days])
 
             except Exception as e:
                 return HttpResponseBadRequest(f"Error processing row {index + 1}: {str(e)}")

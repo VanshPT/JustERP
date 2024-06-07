@@ -75,8 +75,8 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.planned_unloading_datetime }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.division.all|join:", " }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.cluster.all|join:", " }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.payment_terms }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.credit_days }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.payment_terms.all|join:", " }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ inq.credit_days.all|join:", " }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ inq.insurance }}</td>
                 </tr>
                 {% endfor %}

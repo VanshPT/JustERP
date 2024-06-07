@@ -12,7 +12,8 @@ from .models import (
     OrderQuantity,
     TruckDetails,
     PaymentTerms,
-    CreditDays
+    CreditDays,
+    Transporter
 )
 
 # Register your models here
@@ -29,3 +30,4 @@ admin.site.register(OrderQuantity)
 admin.site.register(TruckDetails)
 admin.site.register(PaymentTerms)
 admin.site.register(CreditDays)
+admin.site.register(Transporter)
