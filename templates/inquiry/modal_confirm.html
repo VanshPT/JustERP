@@ -11,8 +11,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                <form id="merge-form" action="/inquiry/merge" method="POST" style="display: inline;">{% csrf_token %}
-                    <input type="hidden" name="default_value" value="default">
+                <form id="merge-form" action="/inquiry/merge" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" id="selected-inquiry-ids" name="selected_inquiry_ids">
                     <button type="submit" class="btn btn-success">Yes</button>
                 </form>
             </div>

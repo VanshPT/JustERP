@@ -374,5 +374,8 @@ def placement_table(request):
     
 @login_required
 def merge(request):
+    if request.method == 'POST':
+        selected_inquiry_ids = request.POST.get('selected_inquiry_ids', '').split(',')
+        print("Selected Inquiry IDs:", selected_inquiry_ids)
     
     return redirect("/inquiry/placement-table")
