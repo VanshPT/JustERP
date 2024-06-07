@@ -242,28 +242,36 @@
 
             var formData = $(this).serialize();
             console.log('Form Data:', formData);
-            $.ajax({
-                url: $(this).attr('action'),
-                type: $(this).attr('method'),
-                data: formData,
-                success: function(response) {
-                    console.log('Response:', response);
 
-                    // Reload the page
-                    location.reload();
+            var selectedInquiryIds = getSelectedInquiryIds();
 
-                    // Close the modal
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
-                    modal.hide();
+            if (selectedInquiryIds.length === 0) {
+                // Show the message if no inquiries are selected
+                $('#notification-box').text('No inquiries selected').addClass('show grey').removeClass('hidden');
+            } else {
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: formData,
+                    success: function(response) {
+                        console.log('Response:', response);
 
-                    // Show notification box after the page reloads
-                    showNotification('Merge successful!');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', xhr.responseText);
-                    alert('An error occurred while merging inquiries.');
-                }
-            });
+                        // Reload the page
+                        location.reload();
+
+                        // Close the modal
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
+                        modal.hide();
+
+                        // Show notification box after the page reloads
+                        showNotification('Merge successful!');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        alert('An error occurred while merging inquiries.');
+                    }
+                });
+            }
         });
     }
 
