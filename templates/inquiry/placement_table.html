@@ -56,6 +56,31 @@
     opacity: 1;
     visibility: visible;
   }
+  /* Define transition effects */
+.table-auto {
+  transition: all 0.3s ease-in-out; /* Adjust the duration and timing function as needed */
+}
+
+.hidden {
+  opacity: 0;
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.child-row {
+  opacity: 1;
+  height: auto;
+  padding-top: 0.75rem; /* Adjust the padding as needed */
+  padding-bottom: 0.75rem; /* Adjust the padding as needed */
+}
+
+/* Add transition for opacity and height */
+.table-auto .child-row {
+  transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out, padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
+}
+
 </style>
 {% endblock %} 
 {% block body %}
@@ -126,31 +151,18 @@
           <tbody id="inquiry-tbody" class="bg-white divide-y divide-gray-200">
             {% for inq in inquiries %}
             <tr>
-              <td class="px-2 py-1 whitespace-nowrap">
-                <input
-                  type="checkbox"
-                  class="select-row-left"
-                  value="{{ inq.inquiry_id }}"
-                />
-              </td>
-              <td class="px-2 py-1 whitespace-nowrap inquiry-id">
-                {{ inq.inquiry_id }}
-              </td>
-              <td class="px-2 py-1 whitespace-nowrap customer">
-                {{ inq.customer.all|join:"/ " }}
-              </td>
-              <td class="px-2 py-1 whitespace-nowrap do-be-po-no">
-                {{ inq.DO_BE_PO_NO }}
-              </td>
-              <td class="px-2 py-1 whitespace-nowrap order-qty">
-                {{ inq.order_quantity.all|join:"/ " }}
-              </td>
-              <td class="px-2 py-1 whitespace-nowrap destination-address">
-                {{ inq.destination_address.all|join:"/ " }}
-              </td>
+                <td class="px-2 py-1 whitespace-nowrap">
+                    <input type="checkbox" class="select-row-left" value="{{ inq.inquiry_id }}">
+                </td>
+                <td class="px-2 py-1 whitespace-nowrap inquiry-id">{{ inq.inquiry_id }}</td>
+                <td class="px-2 py-1 whitespace-nowrap customer">{{ inq.customer.all|join:"/ " }}</td>
+                <td class="px-2 py-1 whitespace-nowrap do-be-po-no">{{ inq.DO_BE_PO_NO }}</td>
+                <td class="px-2 py-1 whitespace-nowrap order-qty">{{ inq.order_quantity.all|join:"/ " }}</td>
+                <td class="px-2 py-1 whitespace-nowrap destination-address">{{ inq.destination_address.all|join:"/ " }}</td>
             </tr>
             {% endfor %}
-          </tbody>
+        </tbody>
+        
         </table>
       </div>
     </div>
@@ -171,34 +183,32 @@
                 <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Transporter Name
                 </th>
-                <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Value
-                </th>
+                 
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               {% for transporter in transporters %}
-              <tr class="parent-row bg-gray-100" data-target="child-row-{{ transporter.tr_id }}">
-                <td class="px-2 py-1 whitespace-nowrap">
-                  <input type="checkbox" name="parent_checkbox" class="parent-checkbox" value="{{ transporter.tr_id }}">
-                </td>
-                <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ transporter.tr_id }}</td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ transporter.transporter_name }}</td>
-                <td class="px-2 py-1 whitespace-nowrap">Value 1</td>
-              </tr>
-              {% for truck_detail in transporter.truck_details.all %}
-              <tr class="child-row hidden bg-gray-50 child-row-{{ transporter.tr_id }}">
-                <td class="px-2 py-1 whitespace-nowrap"></td>
-                <td class="px-2 py-1 whitespace-nowrap"></td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_number }}</td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_type }}</td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_capacity }}</td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_length }}</td>
-                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.ageing_duration }}</td>
-              </tr>
-              {% endfor %}
-              {% endfor %}
+<tr class="parent-row bg-gray-100" data-target="child-row-{{ transporter.tr_id }}">
+  <td class="px-2 py-1 whitespace-nowrap">
+    <input type="checkbox" name="parent_checkbox" class="parent-checkbox" value="{{ transporter.tr_id }}">
+  </td>
+  <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
+  <td class="px-2 py-1 whitespace-nowrap">{{ transporter.tr_id }}</td>
+  <td class="px-2 py-1 whitespace-nowrap">{{ transporter.transporter_name }}</td>
+</tr>
+{% for truck_detail in transporter.truck_details.all %}
+<tr class="child-row hidden bg-gray-50 child-row-{{ transporter.tr_id }}">
+  <td class="px-2 py-1 whitespace-nowrap"></td>
+  <td class="px-2 py-1 whitespace-nowrap"></td>
+  <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_number }}</td>
+  <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_type }}</td>
+  <td class="px-2 py-1 whitespace-nowrap truck-capacity">{{ truck_detail.truck_capacity }}</td>
+  <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_length }}</td>
+  <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.ageing_duration }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+
             </tbody>
           </table>
         </div>
@@ -228,193 +238,227 @@
 ></script>
 
 <script>
-  //messages
+    
 
-  $(document).ready(function () {
+    $(document).ready(function () {
     // Search functionality for the left table
     function setupSearchFunctionality() {
-      $("#search-dropdown").on("keyup", function () {
-        var searchText = $(this).val().toLowerCase();
-        $("#inquiry-tbody tr").filter(function () {
-          $(this).toggle(
-            $(this)
-              .find(".inquiry-id")
-              .text()
-              .toLowerCase()
-              .indexOf(searchText) > -1 ||
-              $(this)
-                .find(".customer")
-                .text()
-                .toLowerCase()
-                .indexOf(searchText) > -1 ||
-              $(this)
-                .find(".do-be-po-no")
-                .text()
-                .toLowerCase()
-                .indexOf(searchText) > -1 ||
-              $(this)
-                .find(".order-qty")
-                .text()
-                .toLowerCase()
-                .indexOf(searchText) > -1 ||
-              $(this)
-                .find(".destination-address")
-                .text()
-                .toLowerCase()
-                .indexOf(searchText) > -1
-          );
+        $("#search-dropdown").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#inquiry-tbody tr").filter(function () {
+                $(this).toggle(
+                    $(this).find(".inquiry-id").text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find(".customer").text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find(".do-be-po-no").text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find(".order-qty").text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find(".destination-address").text().toLowerCase().indexOf(searchText) > -1
+                );
+            });
         });
-      });
     }
 
     // Dropdown filtering for the left table
     function setupDropdownFiltering() {
-      $("#dropdown").on("change", 'input[type="checkbox"]', function () {
-        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
-          .map(function () {
-            return $(this).val();
-          })
-          .get();
+        $("#dropdown").on("change", 'input[type="checkbox"]', function () {
+            var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
+                .map(function () {
+                    return $(this).val();
+                })
+                .get();
 
-        if (selectedDestinations.length > 0) {
-          $("#inquiry-tbody tr").hide();
-          $("#inquiry-tbody tr").each(function () {
-            var destinationAddresses = $(this)
-              .find(".destination-address")
-              .text()
-              .split(", ");
-            if (
-              destinationAddresses.some((address) =>
-                selectedDestinations.includes(address)
-              )
-            ) {
-              $(this).show();
+            if (selectedDestinations.length > 0) {
+                $("#inquiry-tbody tr").hide();
+                $("#inquiry-tbody tr").each(function () {
+                    var destinationAddresses = $(this).find(".destination-address").text().split(", ");
+                    if (destinationAddresses.some((address) => selectedDestinations.includes(address))) {
+                        $(this).show();
+                    }
+                });
+            } else {
+                $("#inquiry-tbody tr").show();
             }
-          });
-        } else {
-          $("#inquiry-tbody tr").show();
-        }
-      });
+        });
     }
 
     // Calculate total order quantity
     function calculateTotalOrderQuantity() {
-      var totalOrderQuantity = 0;
-      $(".select-row-left:checked").each(function () {
-        totalOrderQuantity +=
-          parseFloat($(this).closest("tr").find("td:nth-child(5)").text()) || 0;
-      });
-      return totalOrderQuantity;
+        var totalOrderQuantity = 0;
+        $(".select-row-left:checked").each(function () {
+            // Extract the order quantity from the selected row
+            var orderQuantitiesText = $(this).closest("tr").find("td.order-qty").text().trim();
+            var orderQuantitiesArray = orderQuantitiesText.split("/").map(qty => parseFloat(qty) || 0);
+            
+            // Add the first order quantity to the total (assuming the first value is the required one)
+            totalOrderQuantity += orderQuantitiesArray[0];
+        });
+        return totalOrderQuantity;
     }
 
     // Get selected inquiry IDs
     function getSelectedInquiryIds() {
-      var selectedIds = [];
-      $(".select-row-left:checked").each(function () {
-        selectedIds.push($(this).val());
-      });
-      return selectedIds;
+        var selectedIds = [];
+        $(".select-row-left:checked").each(function () {
+            selectedIds.push($(this).val());
+        });
+        return selectedIds;
     }
 
     // Update modal content before showing it
     function setupModalUpdate() {
-      $("#staticBackdrop").on("show.bs.modal", function (event) {
-        var totalOrderQuantity = calculateTotalOrderQuantity();
-        var selectedInquiryIds = getSelectedInquiryIds();
+        $("#staticBackdrop").on("show.bs.modal", function (event) {
+            var totalOrderQuantity = calculateTotalOrderQuantity();
+            var selectedInquiryIds = getSelectedInquiryIds();
 
-        $("#total-order-quantity").text(totalOrderQuantity);
-        $("#selected-inquiry-ids").val(selectedInquiryIds.join(","));
+            $("#total-order-quantity").text(totalOrderQuantity);
+            $("#selected-inquiry-ids").val(selectedInquiryIds.join(","));
 
-        console.log("Total Order Quantity:", totalOrderQuantity);
-        console.log("Selected Inquiry IDs:", selectedInquiryIds);
-      });
+            console.log("Total Order Quantity:", totalOrderQuantity);
+            console.log("Selected Inquiry IDs:", selectedInquiryIds);
+        });
     }
 
     // Handle form submission for merging inquiries
     function setupFormSubmission() {
-      $("#merge-form").on("submit", function (event) {
-        event.preventDefault();
+        $("#merge-form").on("submit", function (event) {
+            event.preventDefault();
 
-        var formData = $(this).serialize();
-        console.log("Form Data:", formData);
+            var formData = $(this).serialize();
+            console.log("Form Data:", formData);
 
-        var selectedInquiryIds = getSelectedInquiryIds();
+            var selectedInquiryIds = getSelectedInquiryIds();
 
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: formData,
-          success: function (response) {
-            console.log("Response:", response);
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                data: formData,
+                success: function (response) {
+                    console.log("Response:", response);
 
-            // Close the modal
-            // $('#staticBackdrop').modal('toggle');
-          },
-          error: function (xhr, status, error) {
-            console.error("Error:", xhr.responseText);
-          },
+                    // Close the modal
+                    // $('#staticBackdrop').modal('toggle');
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", xhr.responseText);
+                },
+            });
         });
-      });
     }
 
-   // Toggle parent and child rows in new table structure
-   function setupParentChildToggle() {
-  $(".table-auto").on("click", ".toggle-row", function () {
-    var $parentRow = $(this).closest("tr.parent-row");
-    var targetClass = $parentRow.attr("data-target");
-    var $childRows = $("." + targetClass);
+    // Toggle parent and child rows in new table structure
+    function setupParentChildToggle() {
+        $(".table-auto").on("click", ".toggle-row", function () {
+            var $parentRow = $(this).closest("tr.parent-row");
+            var targetClass = $parentRow.attr("data-target");
+            var $childRows = $("." + targetClass);
 
-    if ($(this).text() === "▶") {
-      $(this).text("▼");
-      $childRows.removeClass("hidden");
-    } else {
-      $(this).text("▶");
-      $childRows.addClass("hidden");
+            if ($(this).text() === "▶") {
+                $(this).text("▼");
+                $childRows.removeClass("hidden");
+            } else {
+                $(this).text("▶");
+                $childRows.addClass("hidden");
+            }
+        });
     }
-  });
-}
 
     // Select/deselect all checkboxes in dummy table
     function setupSelectAllDummy() {
-      $("#select-all-dummy").on("change", function () {
-        $(".select-row-dummy").prop("checked", $(this).prop("checked"));
-      });
+        $("#select-all-dummy").on("change", function () {
+            $(".select-row-dummy").prop("checked", $(this).prop("checked"));
+        });
     }
+
+    // Filter transporters based on total order quantity
+    function filterTransporters(totalOrderQuantity) {
+        console.log("Starting to filter transporters...");
+        console.log("Total Order Quantity to filter by:", totalOrderQuantity);
+
+        $(".parent-row").each(function () {
+            var $parentRow = $(this);
+            var showParentRow = false;
+            var parentId = $parentRow.find("td:nth-child(3)").text().trim(); // Adjusted index to 3 for transporter ID
+
+            console.log("Checking parent row with ID:", parentId);
+
+            $parentRow.nextUntil(".parent-row").each(function () {
+                var $childRow = $(this);
+                var truckCapacityText = $childRow.find(".truck-capacity").text().trim();
+                
+                // Extract numeric value from truck capacity text (e.g., "2 ton" -> 2.0)
+                var truckCapacity = parseFloat(truckCapacityText.match(/\d+(\.\d+)?/)[0]) || 0;
+
+                console.log("Truck capacity text for child row:", truckCapacityText);
+                console.log("Parsed truck capacity for child row:", truckCapacity);
+
+                if (truckCapacity >= totalOrderQuantity) {
+                    showParentRow = true;
+                    $childRow.show(); // Show child row if it meets the requirement
+                } else {
+                    $childRow.hide(); // Hide child row if it does not meet the requirement
+                }
+            });
+
+            console.log("Show parent row:", showParentRow);
+
+            if (showParentRow) {
+                $parentRow.show();
+            } else {
+                $parentRow.hide();
+                // Hide all child rows if the parent row is not shown
+                $parentRow.nextUntil(".parent-row").hide();
+            }
+        });
+
+        console.log("Finished filtering transporters.");
+    }
+
+    // Update right side table based on selected inquiries
+    function updateRightTable() {
+        var totalOrderQuantity = calculateTotalOrderQuantity();
+        console.log("Calculated total order quantity:", totalOrderQuantity);
+        filterTransporters(totalOrderQuantity);
+    }
+
+    // Handle checkbox change event
+    $(".select-row-left").change(function () {
+        console.log("Checkbox state changed.");
+        updateRightTable();
+    });
 
     // Initialize all functionalities
     function initialize() {
-      setupSearchFunctionality();
-      setupDropdownFiltering();
-      setupModalUpdate();
-      setupFormSubmission();
-      setupParentChildToggle();
-      setupSelectAllDummy();
+        setupSearchFunctionality();
+        setupDropdownFiltering();
+        setupModalUpdate();
+        setupFormSubmission();
+        setupParentChildToggle();
+        setupSelectAllDummy();
     }
 
     // Call the initialize function to set up all functionalities
     initialize();
-  });
-  $(document).ready(function () {
+
     // Check if the session variable 'reload_page' is set
     var reloadPage = "{{ request.session.reload_page }}";
 
     // If 'reload_page' is true, force a page reload and clear the session variable
     if (reloadPage === "True") {
-      location.reload();
-      // Clear the session variable to prevent subsequent reloads
-      $.ajax({
-        url: "/clear-reload-session/",
-        method: "POST",
-        data: { csrfmiddlewaretoken: "{{ csrf_token }}" }, // Ensure CSRF token is included
-        success: function (response) {
-          console.log("Reload session cleared.");
-        },
-        error: function (xhr, status, error) {
-          console.error("Error clearing reload session:", error);
-        },
-      });
+        location.reload();
+        // Clear the session variable to prevent subsequent reloads
+        $.ajax({
+            url: "/clear-reload-session/",
+            method: "POST",
+            data: { csrfmiddlewaretoken: "{{ csrf_token }}" }, // Ensure CSRF token is included
+            success: function (response) {
+                console.log("Reload session cleared.");
+            },
+            error: function (xhr, status, error) {
+                console.error("Error clearing reload session:", error);
+            },
+        });
     }
-  });
+});
+
 </script>
 
 {% endblock %}
