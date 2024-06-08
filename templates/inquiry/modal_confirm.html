@@ -14,7 +14,7 @@
                 <form id="merge-form" action="/inquiry/merge" method="POST" style="display: inline;">
                     {% csrf_token %}
                     <input type="hidden" id="selected-inquiry-ids" name="selected_inquiry_ids">
-                    <button type="submit" class="btn btn-success">Yes</button>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Yes</button>
                 </form>
             </div>
         </div>

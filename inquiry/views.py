@@ -6,6 +6,8 @@ from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, Mo
 from django.http import HttpResponseBadRequest, HttpResponse
 from datetime import datetime, timedelta
 import pandas as pd
+from django.contrib import messages
+from decimal import Decimal
 # Create your views here.
 
 @login_required
@@ -376,6 +378,63 @@ def placement_table(request):
 def merge(request):
     if request.method == 'POST':
         selected_inquiry_ids = request.POST.get('selected_inquiry_ids', '').split(',')
-        print("Selected Inquiry IDs:", selected_inquiry_ids)
-    
+        if len(selected_inquiry_ids) == 0:
+            messages.error(request, "No Inquiries Selected!")
+        elif len(selected_inquiry_ids) > 3:
+            messages.error(request, "No more than 3 Inquiries can be merged!")
+        else:
+            # Initialize the first inquiry as the base for merging
+            base_inquiry = Inquiry.objects.get(inquiry_id=selected_inquiry_ids[0])
+
+            # Check if merging would exceed the limit for any field
+            exceed_limit = False
+            for field in Inquiry._meta.get_fields():
+                field_name = field.name
+                if field_name == 'order_quantity':
+                    # Check if merging would exceed the limit for order_quantity field
+                    base_order_quantity_count = base_inquiry.order_quantity.count()
+                    if base_order_quantity_count >= 3:
+                        exceed_limit = True
+                        break
+
+            if exceed_limit:
+                messages.error(request, "Merging would exceed the limit of 3 items for one or more fields!")
+            else:
+                # Proceed with merging
+                for inquiry_id in selected_inquiry_ids[1:]:
+                    inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
+
+                    # Merge the fields of the current inquiry with the base inquiry
+                    for field in Inquiry._meta.get_fields():
+                        field_name = field.name
+                        if field.get_internal_type() == 'CharField':
+                            # Concatenate the char field values with a '/'
+                            setattr(base_inquiry, field_name, f"{getattr(base_inquiry, field_name)} / {getattr(inquiry, field_name)}")
+                        elif field.get_internal_type() == 'ManyToManyField':
+                            # Check if merging would exceed the limit for this ManyToManyField
+                            base_values_count = getattr(base_inquiry, field_name).count()
+                            inquiry_values_count = getattr(inquiry, field_name).count()
+                            if base_values_count + inquiry_values_count > 3:
+                                exceed_limit = True
+                                break
+
+                            # Add the ManyToManyField values to the base inquiry
+                            base_values = list(getattr(base_inquiry, field_name).all())
+                            inquiry_values = list(getattr(inquiry, field_name).all())
+                            combined_values = base_values + inquiry_values
+                            getattr(base_inquiry, field_name).set(combined_values)
+
+                    if exceed_limit:
+                        break  # Exit the loop if limit exceeded
+
+                    # Delete the merged inquiry
+                    inquiry.delete()
+
+                if exceed_limit:
+                    messages.error(request, "Merging would exceed the limit of 3 items for one or more fields!")
+                else:
+                    # Save the merged base inquiry
+                    base_inquiry.save()
+                    messages.success(request, "Inquiries Merged Successfully!")
+
     return redirect("/inquiry/placement-table")

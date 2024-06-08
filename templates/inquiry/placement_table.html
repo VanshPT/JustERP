@@ -24,7 +24,7 @@
         width: 70%;
     }
     /* Notification Box Styles */
-.notification-box {
+    .notification-box {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -35,17 +35,17 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     font-size: 14px;
     z-index: 1000;
-    display: none;
-    border: 2px solid #28a745;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s;
 }
 
 .notification-box.show {
-    display: block;
+    opacity: 1;
+    visibility: visible;
 }
 
-.notification-box.hidden {
-    display: none;
-}
+
 
 </style>
 {% endblock %}
@@ -143,8 +143,13 @@
 </div>
 <!-- Notification Box -->
 <div id="notification-box" class="notification-box hidden">
-    Merge successful!
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 </div>
+
 
 {% endblock %}
 {% block js %}
@@ -154,101 +159,102 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
 <script>
+    //messages
     $(document).ready(function() {
-    // Search functionality for the left table
-    function setupSearchFunctionality() {
-        $('#search-dropdown').on('keyup', function() {
-            var searchText = $(this).val().toLowerCase();
-            $('tbody tr').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
-            });
-        });
-    }
+    function showNotification(message) {
+        var $notificationBox = $('#notification-box');
+        var $messageDiv = $('<div>').addClass('message').text(message);
+        $notificationBox.append($messageDiv);
 
-    // Dropdown filtering for the left table
-    function setupDropdownFiltering() {
-        $('#dropdown').on('change', 'input[type="checkbox"]', function() {
-            var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function() {
-                return $(this).val();
-            }).get();
+        // Show the notification box
+        $notificationBox.addClass('show');
 
-            if (selectedDestinations.length > 0) {
-                $('tbody tr').hide();
-                $('tbody tr').each(function() {
-                    var destinationAddressIds = $(this).find('td[data-address-id]').map(function() {
-                        return $(this).data('address-id').toString();
-                    }).get();
-                    if (destinationAddressIds.some(id => selectedDestinations.includes(id))) {
-                        $(this).show();
-                    }
-                });
-            } else {
-                $('tbody tr').show();
+        // Hide the message after a certain time (e.g., 3 seconds)
+        setTimeout(function() {
+            $messageDiv.remove();
+            if ($notificationBox.find('.message').length === 0) {
+                $notificationBox.removeClass('show');
             }
-        });
+        }, 3000);
     }
+});
 
-    // Calculate total order quantity
-    function calculateTotalOrderQuantity() {
-        var totalOrderQuantity = 0;
-        $('.select-row-left:checked').each(function() {
-            totalOrderQuantity += parseFloat($(this).closest('tr').find('td:nth-child(5)').text()) || 0;
-        });
-        return totalOrderQuantity;
-    }
+    $(document).ready(function() {
+        // Search functionality for the left table
+        function setupSearchFunctionality() {
+            $('#search-dropdown').on('keyup', function() {
+                var searchText = $(this).val().toLowerCase();
+                $('tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                });
+            });
+        }
 
-    // Get selected inquiry IDs
-    function getSelectedInquiryIds() {
-        var selectedIds = [];
-        $('.select-row-left:checked').each(function() {
-            selectedIds.push($(this).val());
-        });
-        return selectedIds;
-    }
+        // Dropdown filtering for the left table
+        function setupDropdownFiltering() {
+            $('#dropdown').on('change', 'input[type="checkbox"]', function() {
+                var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function() {
+                    return $(this).val();
+                }).get();
 
-    // Update modal content before showing it
-    function setupModalUpdate() {
-        $('#staticBackdrop').on('show.bs.modal', function(event) {
-            var totalOrderQuantity = calculateTotalOrderQuantity();
-            var selectedInquiryIds = getSelectedInquiryIds();
-            
-            if (selectedInquiryIds.length === 0) {
-                $('#notification-box').text('No inquiries selected').addClass('show grey').removeClass('hidden');
-            } else {
-                $('#notification-box').text('').removeClass('show grey').addClass('hidden');
+                if (selectedDestinations.length > 0) {
+                    $('tbody tr').hide();
+                    $('tbody tr').each(function() {
+                        var destinationAddressIds = $(this).find('td[data-address-id]').map(function() {
+                            return $(this).data('address-id').toString();
+                        }).get();
+                        if (destinationAddressIds.some(id => selectedDestinations.includes(id))) {
+                            $(this).show();
+                        }
+                    });
+                } else {
+                    $('tbody tr').show();
+                }
+            });
+        }
+
+        // Calculate total order quantity
+        function calculateTotalOrderQuantity() {
+            var totalOrderQuantity = 0;
+            $('.select-row-left:checked').each(function() {
+                totalOrderQuantity += parseFloat($(this).closest('tr').find('td:nth-child(5)').text()) || 0;
+            });
+            return totalOrderQuantity;
+        }
+
+        // Get selected inquiry IDs
+        function getSelectedInquiryIds() {
+            var selectedIds = [];
+            $('.select-row-left:checked').each(function() {
+                selectedIds.push($(this).val());
+            });
+            return selectedIds;
+        }
+
+        // Update modal content before showing it
+        function setupModalUpdate() {
+            $('#staticBackdrop').on('show.bs.modal', function(event) {
+                var totalOrderQuantity = calculateTotalOrderQuantity();
+                var selectedInquiryIds = getSelectedInquiryIds();
+                
                 $('#total-order-quantity').text(totalOrderQuantity);
                 $('#selected-inquiry-ids').val(selectedInquiryIds.join(','));
 
                 console.log('Total Order Quantity:', totalOrderQuantity);
                 console.log('Selected Inquiry IDs:', selectedInquiryIds);
-            }
-        });
-    }
+            });
+        }
 
-    // Show notification box
-    function showNotification(message) {
-        var $notificationBox = $('#notification-box');
-        $notificationBox.text(message).addClass('show').removeClass('hidden');
+        // Handle form submission for merging inquiries
+        function setupFormSubmission() {
+            $('#merge-form').on('submit', function(event) {
+                event.preventDefault();
 
-        setTimeout(function() {
-            $notificationBox.removeClass('show').addClass('hidden');
-        }, 3000);
-    }
+                var formData = $(this).serialize();
+                console.log('Form Data:', formData);
 
-    // Handle form submission for merging inquiries
-    function setupFormSubmission() {
-        $('#merge-form').on('submit', function(event) {
-            event.preventDefault();
+                var selectedInquiryIds = getSelectedInquiryIds();
 
-            var formData = $(this).serialize();
-            console.log('Form Data:', formData);
-
-            var selectedInquiryIds = getSelectedInquiryIds();
-
-            if (selectedInquiryIds.length === 0) {
-                // Show the message if no inquiries are selected
-                $('#notification-box').text('No inquiries selected').addClass('show grey').removeClass('hidden');
-            } else {
                 $.ajax({
                     url: $(this).attr('action'),
                     type: $(this).attr('method'),
@@ -256,62 +262,53 @@
                     success: function(response) {
                         console.log('Response:', response);
 
-                        // Reload the page
-                        location.reload();
-
                         // Close the modal
-                        var modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
-                        modal.hide();
-
-                        // Show notification box after the page reloads
-                        showNotification('Merge successful!');
+                        // $('#staticBackdrop').modal('toggle');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', xhr.responseText);
-                        alert('An error occurred while merging inquiries.');
+                        
                     }
                 });
-            }
-        });
-    }
+            });
+        }
 
-    // Toggle child rows in dummy table
-    function setupParentChildToggle() {
-        $('.table-auto').on('click', '.toggle-row', function() {
-            var $parentRow = $(this).closest('tr');
-            var $childRows = $parentRow.nextUntil('.parent-row');
+        // Toggle child rows in dummy table
+        function setupParentChildToggle() {
+            $('.table-auto').on('click', '.toggle-row', function() {
+                var $parentRow = $(this).closest('tr');
+                var $childRows = $parentRow.nextUntil('.parent-row');
 
-            if ($(this).text() === '▶') {
-                $(this).text('▼');
-                $childRows.show();
-            } else {
-                $(this).text('▶');
-                $childRows.hide();
-            }
-        });
-    }
+                if ($(this).text() === '▶') {
+                    $(this).text('▼');
+                    $childRows.show();
+                } else {
+                    $(this).text('▶');
+                    $childRows.hide();
+                }
+            });
+        }
 
-    // Select/deselect all checkboxes in dummy table
-    function setupSelectAllDummy() {
-        $('#select-all-dummy').on('change', function() {
-            $('.select-row-dummy').prop('checked', $(this).prop('checked'));
-        });
-    }
+        // Select/deselect all checkboxes in dummy table
+        function setupSelectAllDummy() {
+            $('#select-all-dummy').on('change', function() {
+                $('.select-row-dummy').prop('checked', $(this).prop('checked'));
+            });
+        }
 
-    // Initialize all functionalities
-    function initialize() {
-        setupSearchFunctionality();
-        setupDropdownFiltering();
-        setupModalUpdate();
-        setupFormSubmission();
-        setupParentChildToggle();
-        setupSelectAllDummy();
-    }
+        // Initialize all functionalities
+        function initialize() {
+            setupSearchFunctionality();
+            setupDropdownFiltering();
+            setupModalUpdate();
+            setupFormSubmission();
+            setupParentChildToggle();
+            setupSelectAllDummy();
+        }
 
-    // Call the initialize function to set up all functionalities
-    initialize();
-});
-
+        // Call the initialize function to set up all functionalities
+        initialize();
+    });
 
 </script>
 
