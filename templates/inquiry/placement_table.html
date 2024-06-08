@@ -1,30 +1,42 @@
-{% extends 'inquiry/inquiry_base.html' %}
-{% block title %}Placement Table {% endblock %}
-{% block activeptable %}200{% endblock %}
+{% extends 'inquiry/inquiry_base.html' %} 
+{% block title %}Placement Table {%endblock %}
+{% block activeptable %}200{% endblock %} 
 {% block css %}
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link
+  href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+  crossorigin="anonymous"
+/>
 <style>
-    .custom-flex {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .compact-table th, .compact-table td {
-        padding: 5px;
-    }
-    .table-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-    }
-    .table-wrapper {
-        width: 70%;
-    }
-    /* Notification Box Styles */
-    .notification-box {
+  .custom-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .compact-table th,
+  .compact-table td {
+    padding: 5px;
+  }
+  .table-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .table-wrapper {
+    width: 70%;
+  }
+  /* Notification Box Styles */
+  .notification-box {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -38,288 +50,371 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s, visibility 0.5s;
-}
+  }
 
-.notification-box.show {
+  .notification-box.show {
     opacity: 1;
     visibility: visible;
-}
-
-
-
+  }
 </style>
-{% endblock %}
+{% endblock %} 
 {% block body %}
 
 <div class="">
-    <div class="table-container">
-        <div class="table-wrapper">
-            <div class="custom-flex">
-                <div>
-                    <h2 class="text-xl font-bold">Inquiries</h2>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        Merge
-                    </button>
-                    {% include 'inquiry/modal_confirm.html' %}
-                </div>
-                {% include 'inquiry/search.html' %}
-            </div>
-            <div class="overflow-x-auto">
-                <table id="inquiry-table" class="table-auto min-w-full divide-y divide-gray-200 compact-table">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <input type="checkbox" id="select-all-left">
-                            </th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inquiry ID</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DO_BE_PO_NO</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Qty</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination Address</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inquiry-tbody" class="bg-white divide-y divide-gray-200">
-                        {% for inq in inquiries %}
-                        <tr>
-                            <td class="px-2 py-1 whitespace-nowrap">
-                                <input type="checkbox" class="select-row-left" value="{{ inq.inquiry_id }}">
-                            </td>
-                            <td class="px-2 py-1 whitespace-nowrap inquiry-id">{{ inq.inquiry_id }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap customer">{{ inq.customer.all|join:"/ " }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap do-be-po-no">{{ inq.DO_BE_PO_NO }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap order-qty">{{ inq.order_quantity.all|join:"/ " }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap destination-address">{{ inq.destination_address.all|join:"/ " }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+  <div class="table-container">
+    <div class="table-wrapper">
+      <div class="custom-flex">
+        <div>
+          <h2 class="text-xl font-bold">Inquiries</h2>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
+            Merge
+          </button>
+          {% include 'inquiry/modal_confirm.html' %}
         </div>
-        
-        
-        <div class="table-wrapper">
-            <div class="custom-flex">
-                <h2 class="text-xl font-bold">Transporter List</h2>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Expand
-                            </th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dummy ID</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="parent-row bg-gray-100">
-                            <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
-                            <td class="px-2 py-1 whitespace-nowrap">1</td>
-                            <td class="px-2 py-1 whitespace-nowrap">Parent 1</td>
-                            <td class="px-2 py-1 whitespace-nowrap">Value 1</td>
-                        </tr>
-                        <tr class="child-row hidden bg-gray-50">
-                            <td class="px-2 py-1 whitespace-nowrap"></td>
-                            <td class="px-2 py-1 whitespace-nowrap">1.1</td>
-                            <td class="px-2 py-1 whitespace-nowrap">Child 1.1</td>
-                            <td class="px-2 py-1 whitespace-nowrap">Value 1.1</td>
-                        </tr>
-                        <tr class="child-row hidden bg-gray-50">
-                            <td class="px-2 py-1 whitespace-nowrap"></td>
-                            <td class="px-2 py-1 whitespace-nowrap">1.2</td>
-                            <td class="px-2 py-1 whitespace-nowrap">Child 1.2</td>
-                            <td class="px-2 py-1 whitespace-nowrap">Value 1.2</td>
-                        </tr>
-                        <!-- More parent-child rows here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
+        {% include 'inquiry/search.html' %}
+      </div>
+      <div class="overflow-x-auto">
+        <table
+          id="inquiry-table"
+          class="table-auto min-w-full divide-y divide-gray-200 compact-table"
+        >
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                <input type="checkbox" id="select-all-left" />
+              </th>
+              <th
+                scope="col"
+                class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Inquiry ID
+              </th>
+              <th
+                scope="col"
+                class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Customer
+              </th>
+              <th
+                scope="col"
+                class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                DO_BE_PO_NO
+              </th>
+              <th
+                scope="col"
+                class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Order Qty
+              </th>
+              <th
+                scope="col"
+                class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Destination Address
+              </th>
+            </tr>
+          </thead>
+          <tbody id="inquiry-tbody" class="bg-white divide-y divide-gray-200">
+            {% for inq in inquiries %}
+            <tr>
+              <td class="px-2 py-1 whitespace-nowrap">
+                <input
+                  type="checkbox"
+                  class="select-row-left"
+                  value="{{ inq.inquiry_id }}"
+                />
+              </td>
+              <td class="px-2 py-1 whitespace-nowrap inquiry-id">
+                {{ inq.inquiry_id }}
+              </td>
+              <td class="px-2 py-1 whitespace-nowrap customer">
+                {{ inq.customer.all|join:"/ " }}
+              </td>
+              <td class="px-2 py-1 whitespace-nowrap do-be-po-no">
+                {{ inq.DO_BE_PO_NO }}
+              </td>
+              <td class="px-2 py-1 whitespace-nowrap order-qty">
+                {{ inq.order_quantity.all|join:"/ " }}
+              </td>
+              <td class="px-2 py-1 whitespace-nowrap destination-address">
+                {{ inq.destination_address.all|join:"/ " }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <div class="table-wrapper">
+        <div class="custom-flex">
+          <h2 class="text-xl font-bold">Transporter List</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Select
+                </th>
+                <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Transporter Name
+                </th>
+                <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Value
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              {% for transporter in transporters %}
+              <tr class="parent-row bg-gray-100" data-target="child-row-{{ transporter.tr_id }}">
+                <td class="px-2 py-1 whitespace-nowrap">
+                  <input type="checkbox" name="parent_checkbox" class="parent-checkbox" value="{{ transporter.tr_id }}">
+                </td>
+                <td class="px-2 py-1 whitespace-nowrap cursor-pointer toggle-row">▶</td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ transporter.tr_id }}</td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ transporter.transporter_name }}</td>
+                <td class="px-2 py-1 whitespace-nowrap">Value 1</td>
+              </tr>
+              {% for truck_detail in transporter.truck_details.all %}
+              <tr class="child-row hidden bg-gray-50 child-row-{{ transporter.tr_id }}">
+                <td class="px-2 py-1 whitespace-nowrap"></td>
+                <td class="px-2 py-1 whitespace-nowrap"></td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_number }}</td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_type }}</td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_capacity }}</td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.truck_length }}</td>
+                <td class="px-2 py-1 whitespace-nowrap">{{ truck_detail.ageing_duration }}</td>
+              </tr>
+              {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
 </div>
 <!-- Notification Box -->
 <div id="notification-box" class="notification-box">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="message">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+  {% if messages %} {% for message in messages %}
+  <div class="message">{{ message }}</div>
+  {% endfor %} {% endif %}
 </div>
 
-
 {% endblock %}
-{% block js %}
+ {% block js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+  integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+  integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+  crossorigin="anonymous"
+></script>
 
 <script>
-    
-    //messages
-    
+  //messages
 
-    $(document).ready(function() {
-        // Search functionality for the left table
-        function setupSearchFunctionality() {
-            $('#search-dropdown').on('keyup', function() {
-                var searchText = $(this).val().toLowerCase();
-                $('#inquiry-tbody tr').filter(function() {
-                    $(this).toggle(
-                    $(this).find('.inquiry-id').text().toLowerCase().indexOf(searchText) > -1 ||
-                    $(this).find('.customer').text().toLowerCase().indexOf(searchText) > -1 ||
-                    $(this).find('.do-be-po-no').text().toLowerCase().indexOf(searchText) > -1 ||
-                    $(this).find('.order-qty').text().toLowerCase().indexOf(searchText) > -1 ||
-                    $(this).find('.destination-address').text().toLowerCase().indexOf(searchText) > -1
-                );
-                });
+  $(document).ready(function () {
+    // Search functionality for the left table
+    function setupSearchFunctionality() {
+      $("#search-dropdown").on("keyup", function () {
+        var searchText = $(this).val().toLowerCase();
+        $("#inquiry-tbody tr").filter(function () {
+          $(this).toggle(
+            $(this)
+              .find(".inquiry-id")
+              .text()
+              .toLowerCase()
+              .indexOf(searchText) > -1 ||
+              $(this)
+                .find(".customer")
+                .text()
+                .toLowerCase()
+                .indexOf(searchText) > -1 ||
+              $(this)
+                .find(".do-be-po-no")
+                .text()
+                .toLowerCase()
+                .indexOf(searchText) > -1 ||
+              $(this)
+                .find(".order-qty")
+                .text()
+                .toLowerCase()
+                .indexOf(searchText) > -1 ||
+              $(this)
+                .find(".destination-address")
+                .text()
+                .toLowerCase()
+                .indexOf(searchText) > -1
+          );
         });
+      });
     }
 
-
-
-        // Dropdown filtering for the left table
-        function setupDropdownFiltering() {
-    $('#dropdown').on('change', 'input[type="checkbox"]', function() {
-        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function() {
+    // Dropdown filtering for the left table
+    function setupDropdownFiltering() {
+      $("#dropdown").on("change", 'input[type="checkbox"]', function () {
+        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
+          .map(function () {
             return $(this).val();
-        }).get();
+          })
+          .get();
 
         if (selectedDestinations.length > 0) {
-            $('#inquiry-tbody tr').hide();
-            $('#inquiry-tbody tr').each(function() {
-                var destinationAddresses = $(this).find('.destination-address').text().split(', ');
-                if (destinationAddresses.some(address => selectedDestinations.includes(address))) {
-                    $(this).show();
-                }
-            });
+          $("#inquiry-tbody tr").hide();
+          $("#inquiry-tbody tr").each(function () {
+            var destinationAddresses = $(this)
+              .find(".destination-address")
+              .text()
+              .split(", ");
+            if (
+              destinationAddresses.some((address) =>
+                selectedDestinations.includes(address)
+              )
+            ) {
+              $(this).show();
+            }
+          });
         } else {
-            $('#inquiry-tbody tr').show();
+          $("#inquiry-tbody tr").show();
         }
-    });
+      });
+    }
+
+    // Calculate total order quantity
+    function calculateTotalOrderQuantity() {
+      var totalOrderQuantity = 0;
+      $(".select-row-left:checked").each(function () {
+        totalOrderQuantity +=
+          parseFloat($(this).closest("tr").find("td:nth-child(5)").text()) || 0;
+      });
+      return totalOrderQuantity;
+    }
+
+    // Get selected inquiry IDs
+    function getSelectedInquiryIds() {
+      var selectedIds = [];
+      $(".select-row-left:checked").each(function () {
+        selectedIds.push($(this).val());
+      });
+      return selectedIds;
+    }
+
+    // Update modal content before showing it
+    function setupModalUpdate() {
+      $("#staticBackdrop").on("show.bs.modal", function (event) {
+        var totalOrderQuantity = calculateTotalOrderQuantity();
+        var selectedInquiryIds = getSelectedInquiryIds();
+
+        $("#total-order-quantity").text(totalOrderQuantity);
+        $("#selected-inquiry-ids").val(selectedInquiryIds.join(","));
+
+        console.log("Total Order Quantity:", totalOrderQuantity);
+        console.log("Selected Inquiry IDs:", selectedInquiryIds);
+      });
+    }
+
+    // Handle form submission for merging inquiries
+    function setupFormSubmission() {
+      $("#merge-form").on("submit", function (event) {
+        event.preventDefault();
+
+        var formData = $(this).serialize();
+        console.log("Form Data:", formData);
+
+        var selectedInquiryIds = getSelectedInquiryIds();
+
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: formData,
+          success: function (response) {
+            console.log("Response:", response);
+
+            // Close the modal
+            // $('#staticBackdrop').modal('toggle');
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", xhr.responseText);
+          },
+        });
+      });
+    }
+
+   // Toggle parent and child rows in new table structure
+   function setupParentChildToggle() {
+  $(".table-auto").on("click", ".toggle-row", function () {
+    var $parentRow = $(this).closest("tr.parent-row");
+    var targetClass = $parentRow.attr("data-target");
+    var $childRows = $("." + targetClass);
+
+    if ($(this).text() === "▶") {
+      $(this).text("▼");
+      $childRows.removeClass("hidden");
+    } else {
+      $(this).text("▶");
+      $childRows.addClass("hidden");
+    }
+  });
 }
 
+    // Select/deselect all checkboxes in dummy table
+    function setupSelectAllDummy() {
+      $("#select-all-dummy").on("change", function () {
+        $(".select-row-dummy").prop("checked", $(this).prop("checked"));
+      });
+    }
 
-        // Calculate total order quantity
-        function calculateTotalOrderQuantity() {
-            var totalOrderQuantity = 0;
-            $('.select-row-left:checked').each(function() {
-                totalOrderQuantity += parseFloat($(this).closest('tr').find('td:nth-child(5)').text()) || 0;
-            });
-            return totalOrderQuantity;
-        }
+    // Initialize all functionalities
+    function initialize() {
+      setupSearchFunctionality();
+      setupDropdownFiltering();
+      setupModalUpdate();
+      setupFormSubmission();
+      setupParentChildToggle();
+      setupSelectAllDummy();
+    }
 
-        // Get selected inquiry IDs
-        function getSelectedInquiryIds() {
-            var selectedIds = [];
-            $('.select-row-left:checked').each(function() {
-                selectedIds.push($(this).val());
-            });
-            return selectedIds;
-        }
+    // Call the initialize function to set up all functionalities
+    initialize();
+  });
+  $(document).ready(function () {
+    // Check if the session variable 'reload_page' is set
+    var reloadPage = "{{ request.session.reload_page }}";
 
-        // Update modal content before showing it
-        function setupModalUpdate() {
-            $('#staticBackdrop').on('show.bs.modal', function(event) {
-                var totalOrderQuantity = calculateTotalOrderQuantity();
-                var selectedInquiryIds = getSelectedInquiryIds();
-                
-                $('#total-order-quantity').text(totalOrderQuantity);
-                $('#selected-inquiry-ids').val(selectedInquiryIds.join(','));
-
-                console.log('Total Order Quantity:', totalOrderQuantity);
-                console.log('Selected Inquiry IDs:', selectedInquiryIds);
-            });
-        }
-
-        // Handle form submission for merging inquiries
-        function setupFormSubmission() {
-            $('#merge-form').on('submit', function(event) {
-                event.preventDefault();
-
-                var formData = $(this).serialize();
-                console.log('Form Data:', formData);
-
-                var selectedInquiryIds = getSelectedInquiryIds();
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: $(this).attr('method'),
-                    data: formData,
-                    success: function(response) {
-                        console.log('Response:', response);
-
-                        // Close the modal
-                        // $('#staticBackdrop').modal('toggle');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', xhr.responseText);
-                        
-                    }
-                });
-            });
-        }
-
-        // Toggle child rows in dummy table
-        function setupParentChildToggle() {
-            $('.table-auto').on('click', '.toggle-row', function() {
-                var $parentRow = $(this).closest('tr');
-                var $childRows = $parentRow.nextUntil('.parent-row');
-
-                if ($(this).text() === '▶') {
-                    $(this).text('▼');
-                    $childRows.show();
-                } else {
-                    $(this).text('▶');
-                    $childRows.hide();
-                }
-            });
-        }
-
-        // Select/deselect all checkboxes in dummy table
-        function setupSelectAllDummy() {
-            $('#select-all-dummy').on('change', function() {
-                $('.select-row-dummy').prop('checked', $(this).prop('checked'));
-            });
-        }
-
-        // Initialize all functionalities
-        function initialize() {
-            setupSearchFunctionality();
-            setupDropdownFiltering();
-            setupModalUpdate();
-            setupFormSubmission();
-            setupParentChildToggle();
-            setupSelectAllDummy();
-        }
-
-        // Call the initialize function to set up all functionalities
-        initialize();
-    });
-     $(document).ready(function() {
-        // Check if the session variable 'reload_page' is set
-        var reloadPage = "{{ request.session.reload_page }}";
-        
-        // If 'reload_page' is true, force a page reload and clear the session variable
-        if (reloadPage === "True") {
-            location.reload();
-            // Clear the session variable to prevent subsequent reloads
-            $.ajax({
-                url: '/clear-reload-session/',
-                method: 'POST',
-                data: { csrfmiddlewaretoken: '{{ csrf_token }}' }, // Ensure CSRF token is included
-                success: function(response) {
-                    console.log('Reload session cleared.');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error clearing reload session:', error);
-                }
-            });
-        }
-    });
+    // If 'reload_page' is true, force a page reload and clear the session variable
+    if (reloadPage === "True") {
+      location.reload();
+      // Clear the session variable to prevent subsequent reloads
+      $.ajax({
+        url: "/clear-reload-session/",
+        method: "POST",
+        data: { csrfmiddlewaretoken: "{{ csrf_token }}" }, // Ensure CSRF token is included
+        success: function (response) {
+          console.log("Reload session cleared.");
+        },
+        error: function (xhr, status, error) {
+          console.error("Error clearing reload session:", error);
+        },
+      });
+    }
+  });
 </script>
 
 {% endblock %}

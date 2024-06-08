@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from authapp.models import CompanyProfile
 from . import models
-from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster,OrderQuantity,TruckDetails,CreditDays,PaymentTerms
+from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster,OrderQuantity,TruckDetails,CreditDays,PaymentTerms,Transporter
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
 import pandas as pd
@@ -364,6 +364,7 @@ def placement_table(request):
         addresses = Address.objects.all()
         truck_types = TruckType.objects.all()
         truck_details = TruckDetails.objects.all()
+        transporters=Transporter.objects.all()
         
         context = {
             'company_id': user.company.company_id,
@@ -375,7 +376,8 @@ def placement_table(request):
             'inquiries': inquiries,
             'addresses': addresses,
             'truck_details': truck_details,
-            'truck_types': truck_types
+            'truck_types': truck_types,
+            'transporters':transporters
         }
         
         return render(request, "inquiry/placement_table.html", context)
