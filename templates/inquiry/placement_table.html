@@ -65,7 +65,7 @@
                 {% include 'inquiry/search.html' %}
             </div>
             <div class="overflow-x-auto">
-                <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">
+                <table id="inquiry-table" class="table-auto min-w-full divide-y divide-gray-200 compact-table">
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -78,25 +78,24 @@
                             <th scope="col" class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination Address</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody id="inquiry-tbody" class="bg-white divide-y divide-gray-200">
                         {% for inq in inquiries %}
-                      
                         <tr>
                             <td class="px-2 py-1 whitespace-nowrap">
                                 <input type="checkbox" class="select-row-left" value="{{ inq.inquiry_id }}">
                             </td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.inquiry_id }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.customer.all|join:", " }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.DO_BE_PO_NO }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ inq.order_quantity.all|join:", " }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap" data-address-id="{{ inq.destination_address.all|join:', ' }}">{{ inq.destination_address.all|join:", " }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap inquiry-id">{{ inq.inquiry_id }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap customer">{{ inq.customer.all|join:"/ " }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap do-be-po-no">{{ inq.DO_BE_PO_NO }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap order-qty">{{ inq.order_quantity.all|join:"/ " }}</td>
+                            <td class="px-2 py-1 whitespace-nowrap destination-address">{{ inq.destination_address.all|join:"/ " }}</td>
                         </tr>
-                      
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+        
         
         <div class="table-wrapper">
             <div class="custom-flex">
@@ -175,7 +174,7 @@
             if ($notificationBox.find('.message').length === 0) {
                 $notificationBox.removeClass('show');
             }
-        }, 3000);
+        }, 4000);
     }
 });
 
@@ -184,34 +183,41 @@
         function setupSearchFunctionality() {
             $('#search-dropdown').on('keyup', function() {
                 var searchText = $(this).val().toLowerCase();
-                $('tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                $('#inquiry-tbody tr').filter(function() {
+                    $(this).toggle(
+                    $(this).find('.inquiry-id').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.customer').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.do-be-po-no').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.order-qty').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.destination-address').text().toLowerCase().indexOf(searchText) > -1
+                );
                 });
-            });
-        }
+        });
+    }
+
+
 
         // Dropdown filtering for the left table
         function setupDropdownFiltering() {
-            $('#dropdown').on('change', 'input[type="checkbox"]', function() {
-                var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function() {
-                    return $(this).val();
-                }).get();
+    $('#dropdown').on('change', 'input[type="checkbox"]', function() {
+        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked').map(function() {
+            return $(this).val();
+        }).get();
 
-                if (selectedDestinations.length > 0) {
-                    $('tbody tr').hide();
-                    $('tbody tr').each(function() {
-                        var destinationAddressIds = $(this).find('td[data-address-id]').map(function() {
-                            return $(this).data('address-id').toString();
-                        }).get();
-                        if (destinationAddressIds.some(id => selectedDestinations.includes(id))) {
-                            $(this).show();
-                        }
-                    });
-                } else {
-                    $('tbody tr').show();
+        if (selectedDestinations.length > 0) {
+            $('#inquiry-tbody tr').hide();
+            $('#inquiry-tbody tr').each(function() {
+                var destinationAddresses = $(this).find('.destination-address').text().split(', ');
+                if (destinationAddresses.some(address => selectedDestinations.includes(address))) {
+                    $(this).show();
                 }
             });
+        } else {
+            $('#inquiry-tbody tr').show();
         }
+    });
+}
+
 
         // Calculate total order quantity
         function calculateTotalOrderQuantity() {
