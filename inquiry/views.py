@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from authapp.models import CompanyProfile
 from . import models
 from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster,OrderQuantity,TruckDetails,CreditDays,PaymentTerms
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
 import pandas as pd
 from django.contrib import messages
@@ -270,8 +270,16 @@ def inquiry_uploader(request):
                 return HttpResponseBadRequest(f"Error processing row {index + 1}: {str(e)}")
 
         return redirect('/inquiry/inquiry-table')
+    context = {
+            'company_id': user.company.company_id,
+            'company_name': user.company.company_name,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+    }
 
-    return render(request, 'inquiry/inquiry_uploader.html')
+    return render(request, 'inquiry/inquiry_uploader.html',context)
 
 @login_required
 def inquiry_table(request):
@@ -378,80 +386,110 @@ def merge(request):
     if request.method == 'POST':
         selected_inquiry_ids = request.POST.get('selected_inquiry_ids', '').split(',')
         
+        print("Selected Inquiry IDs:", selected_inquiry_ids)
+
         if not selected_inquiry_ids or selected_inquiry_ids == ['']:
             messages.error(request, "No Inquiries Selected!")
             return redirect("/inquiry/placement-table")
-        elif len(selected_inquiry_ids) > 3:
+        
+        # Check if the number of selected inquiries exceeds the limit
+        if len(selected_inquiry_ids) > 3:
             messages.error(request, "No more than 3 Inquiries can be merged!")
             return redirect("/inquiry/placement-table")
-        else:
-            # Initialize the first inquiry as the base for merging
-            base_inquiry = Inquiry.objects.get(inquiry_id=selected_inquiry_ids[0])
+
+        # Initialize the base inquiry for merging
+        base_inquiry = Inquiry.objects.get(inquiry_id=selected_inquiry_ids[0])
+
+        # Initialize a dictionary to track merged fields counts
+        merged_fields_count = {}
+
+        # Initialize the total do_be_po_no count
+        total_do_be_po_no_count = 0
+
+        # Loop through selected inquiries to calculate the total do_be_po_no count
+        for inquiry_id in selected_inquiry_ids:
+            inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
+            do_be_po_nos = getattr(inquiry, 'DO_BE_PO_NO').split('/')
             
-            # Track if we exceed any limit during merging
-            exceed_limit = False
+            # Update the total do_be_po_no count
+            total_do_be_po_no_count += len(do_be_po_nos)
 
-            # Variables to handle order_quantity summation
-            total_order_quantity = 0
+            print("Inquiry ID:", inquiry_id)
+            print("Do_be_po_no values:", do_be_po_nos)
+            print("Count of do_be_po_no values:", len(do_be_po_nos))
 
-            # Loop through selected inquiries starting from the second one
-            for inquiry_id in selected_inquiry_ids[1:]:
-                inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
+        # Print the total do_be_po_no count
+        print("Total count of do_be_po_no values for all selected inquiries:", total_do_be_po_no_count)
 
-                # Merge CharField and ManyToManyField values
-                for field in Inquiry._meta.get_fields():
-                    field_name = field.name
-                    field_type = field.get_internal_type()
+        # Check if the total do_be_po_no count exceeds the limit
+        if total_do_be_po_no_count > 3:
+            messages.error(request, "Merging would exceed the limit of 3 do_be_po_no values!")
+            return redirect("/inquiry/placement-table")
 
-                    if field_type == 'CharField':
-                        base_value = getattr(base_inquiry, field_name)
-                        inquiry_value = getattr(inquiry, field_name)
-                        if base_value != inquiry_value:
-                            combined_value = f"{base_value} / {inquiry_value}"
+        # Loop through selected inquiries starting from the second one
+        for inquiry_id in selected_inquiry_ids[1:]:
+            inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
+
+            print("Base Inquiry before merging:", base_inquiry)
+            print("Inquiry to merge:", inquiry)
+
+            # Merge CharField and ManyToManyField values
+            for field in Inquiry._meta.get_fields():
+                field_name = field.name
+                field_type = field.get_internal_type()
+
+                if field_type == 'CharField':
+                    base_value = getattr(base_inquiry, field_name)
+                    inquiry_value = getattr(inquiry, field_name)
+                    if base_value != inquiry_value:
+                        combined_value = f"{base_value} / {inquiry_value}"
+                    else:
+                        combined_value = base_value
+                    setattr(base_inquiry, field_name, combined_value)
+
+                elif field_type == 'ManyToManyField':
+                    if field_name == 'order_quantity':
+                        # Sum the order_quantity values
+                        base_order_quantities = getattr(base_inquiry, field_name).all()
+                        inquiry_order_quantities = getattr(inquiry, field_name).all()
+
+                        base_order_quantity_sum = sum(float(qty.order_quantity) for qty in base_order_quantities)
+                        inquiry_order_quantity_sum = sum(float(qty.order_quantity) for qty in inquiry_order_quantities)
+
+                        # Update total_order_quantity
+                        total_order_quantity = base_order_quantity_sum + inquiry_order_quantity_sum
+
+                    else:
+                        # Merge ManyToManyField values
+                        base_values = list(getattr(base_inquiry, field_name).all())
+                        inquiry_values = list(getattr(inquiry, field_name).all())
+                        combined_values = base_values + inquiry_values
+                        unique_combined_values = list(set(combined_values))
+
+                        # Count the number of merged values for the field
+                        merged_fields_count[field_name] = len(unique_combined_values)
+
+                        print(f"Merged values for {field_name}:", unique_combined_values)
+                        print(f"Count of merged values for {field_name}:", merged_fields_count[field_name])
+
+                        # Check if merging exceeds the limit for any field
+                        if merged_fields_count[field_name] > 3:
+                            messages.error(request, f"Merging would exceed the limit of 3 items for field: {field_name}!")
+                            return redirect("/inquiry/placement-table")
                         else:
-                            combined_value = base_value
-                        setattr(base_inquiry, field_name, combined_value)
+                            getattr(base_inquiry, field_name).set(unique_combined_values)
 
-                    elif field_type == 'ManyToManyField':
-                        if field_name == 'order_quantity':
-                            # Sum the order_quantity values
-                            base_order_quantities = getattr(base_inquiry, field_name).all()
-                            inquiry_order_quantities = getattr(inquiry, field_name).all()
+            # Delete the merged inquiry
+            inquiry.delete()
 
-                            base_order_quantity_sum = sum(float(qty.order_quantity) for qty in base_order_quantities)
-                            inquiry_order_quantity_sum = sum(float(qty.order_quantity) for qty in inquiry_order_quantities)
+        # Handle the total order_quantity
+        if total_order_quantity > 0:
+            order_quantity_str = str(total_order_quantity)
+            order_quantity_instance, created = OrderQuantity.objects.get_or_create(order_quantity=order_quantity_str)
+            base_inquiry.order_quantity.set([order_quantity_instance])
 
-                            total_order_quantity = base_order_quantity_sum + inquiry_order_quantity_sum
+        # Save the merged base inquiry
+        base_inquiry.save()
+        messages.success(request, "Inquiries Merged Successfully!")
 
-                        else:
-                            base_values = list(getattr(base_inquiry, field_name).all())
-                            inquiry_values = list(getattr(inquiry, field_name).all())
-                            combined_values = base_values + inquiry_values
-                            unique_combined_values = list(set(combined_values))
-
-                            if len(unique_combined_values) > 3:
-                                exceed_limit = True
-                                break
-                            else:
-                                getattr(base_inquiry, field_name).set(unique_combined_values)
-
-                if exceed_limit:
-                    break
-
-                # Delete the merged inquiry
-                inquiry.delete()
-
-            if exceed_limit:
-                messages.error(request, "Merging would exceed the limit of 3 items for one or more fields!")
-            else:
-                # Handle the total order_quantity
-                if total_order_quantity > 0:
-                    order_quantity_str = str(total_order_quantity)
-                    order_quantity_instance, created = OrderQuantity.objects.get_or_create(order_quantity=order_quantity_str)
-                    base_inquiry.order_quantity.set([order_quantity_instance])
-
-                # Save the merged base inquiry
-                base_inquiry.save()
-                messages.success(request, "Inquiries Merged Successfully!")
-
-    return redirect("/inquiry/placement-table")
+    return HttpResponseRedirect('/inquiry/placement-table')

@@ -141,7 +141,7 @@
     </div>
 </div>
 <!-- Notification Box -->
-<div id="notification-box" class="notification-box hidden">
+<div id="notification-box" class="notification-box">
     {% if messages %}
         {% for message in messages %}
             <div class="message">{{ message }}</div>
@@ -158,25 +158,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
 <script>
+    
     //messages
-    $(document).ready(function() {
-    function showNotification(message) {
-        var $notificationBox = $('#notification-box');
-        var $messageDiv = $('<div>').addClass('message').text(message);
-        $notificationBox.append($messageDiv);
-
-        // Show the notification box
-        $notificationBox.addClass('show');
-
-        // Hide the message after a certain time (e.g., 3 seconds)
-        setTimeout(function() {
-            $messageDiv.remove();
-            if ($notificationBox.find('.message').length === 0) {
-                $notificationBox.removeClass('show');
-            }
-        }, 4000);
-    }
-});
+    
 
     $(document).ready(function() {
         // Search functionality for the left table
@@ -315,7 +299,27 @@
         // Call the initialize function to set up all functionalities
         initialize();
     });
-
+     $(document).ready(function() {
+        // Check if the session variable 'reload_page' is set
+        var reloadPage = "{{ request.session.reload_page }}";
+        
+        // If 'reload_page' is true, force a page reload and clear the session variable
+        if (reloadPage === "True") {
+            location.reload();
+            // Clear the session variable to prevent subsequent reloads
+            $.ajax({
+                url: '/clear-reload-session/',
+                method: 'POST',
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' }, // Ensure CSRF token is included
+                success: function(response) {
+                    console.log('Reload session cleared.');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error clearing reload session:', error);
+                }
+            });
+        }
+    });
 </script>
 
 {% endblock %}
