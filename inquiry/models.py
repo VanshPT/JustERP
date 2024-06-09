@@ -73,7 +73,7 @@ class Address(models.Model):
   
 
     def __str__(self):
-        return f"{self.address_point},{self.city}, {self.state}"
+        return f"{self.address_point},{self.state}"
     
 class Division(models.Model):
     division_id = models.AutoField(primary_key=True)

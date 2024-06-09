@@ -269,27 +269,48 @@
     }
 
     // Dropdown filtering for the left table
-    function setupDropdownFiltering() {
-        $("#dropdown").on("change", 'input[type="checkbox"]', function () {
-            var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
-                .map(function () {
-                    return $(this).val();
-                })
-                .get();
+function setupDropdownFiltering() {
+    $("#dropdown").on("change", 'input[type="checkbox"]', function () {
+        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
+            .map(function () {
+                return $(this).val();
+            })
+            .get();
 
-            if (selectedDestinations.length > 0) {
-                $("#inquiry-tbody tr").hide();
-                $("#inquiry-tbody tr").each(function () {
-                    var destinationAddresses = $(this).find(".destination-address").text().split(", ");
-                    if (destinationAddresses.some((address) => selectedDestinations.includes(address))) {
-                        $(this).show();
-                    }
+        console.log("Selected Destinations:", selectedDestinations);
+
+        if (selectedDestinations.length > 0) {
+            $("#inquiry-tbody tr").hide();
+            $("#inquiry-tbody tr").each(function (index, element) {
+                var $row = $(element);
+                var destinationAddressesText = $row.find(".destination-address").text().trim();
+                var destinationAddressesArray = destinationAddressesText.split("/");
+
+                console.log("Row Index:", index);
+                console.log("Destination Addresses Text:", destinationAddressesText);
+                console.log("Destination Addresses Array:", destinationAddressesArray);
+
+                // Extract address points by splitting at the comma and using the first part
+                var addressPoints = destinationAddressesArray.map(function(address) {
+                    return address.split(",")[0].trim();
                 });
-            } else {
-                $("#inquiry-tbody tr").show();
-            }
-        });
-    }
+
+                console.log("Extracted Address Points:", addressPoints);
+
+                var shouldShow = addressPoints.some((addressPoint) => selectedDestinations.includes(addressPoint));
+                console.log("Row should be shown:", shouldShow);
+
+                if (shouldShow) {
+                    $row.show();
+                }
+            });
+        } else {
+            console.log("No destinations selected, showing all rows.");
+            $("#inquiry-tbody tr").show();
+        }
+    });
+}
+
 
     // Calculate total order quantity
     function calculateTotalOrderQuantity() {
@@ -458,17 +479,17 @@
         // Clear the session variable to prevent subsequent reloads
         $.ajax({
             url: "/clear-reload-session/",
-            method: "POST",
-            data: { csrfmiddlewaretoken: "{{ csrf_token }}" }, // Ensure CSRF token is included
+            type: "POST",
             success: function (response) {
-                console.log("Reload session cleared.");
+                console.log("Session variable 'reload_page' cleared successfully.");
             },
             error: function (xhr, status, error) {
-                console.error("Error clearing reload session:", error);
+                console.error("Error clearing 'reload_page' session variable:", xhr.responseText);
             },
         });
     }
 });
+
 
 </script>
 
