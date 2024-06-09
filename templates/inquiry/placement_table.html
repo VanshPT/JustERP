@@ -430,6 +430,45 @@ function setupDropdownFiltering() {
             var selectedRow = $(`input[value="${inquiryId}"]`).closest("tr");
             var doBePoNo = selectedRow.find(".do-be-po-no").text().trim();
             var orderQuantity = parseFloat(selectedRow.find(".order-qty").text().trim());
+            var rightTableRows;
+
+            if (doBePoNo.includes("/")) {
+                var parts = doBePoNo.split("/").map(part => part.trim());
+                if (parts.length === 2) {
+                    rightTableRows = `
+                        <tr>
+                            <td>${parts[0]}</td>
+                        </tr>
+                        <tr>
+                            <td>${parts[0]}-A</td>
+                        </tr>
+                        <tr>
+                            <td>${parts[1]}</td>
+                        </tr>`;
+                } else if (parts.length === 3) {
+                    rightTableRows = `
+                        <tr>
+                            <td>${parts[0]}</td>
+                        </tr>
+                        <tr>
+                            <td>${parts[1]}</td>
+                        </tr>
+                        <tr>
+                            <td>${parts[2]}</td>
+                        </tr>`;
+                }
+            } else {
+                rightTableRows = `
+                    <tr>
+                        <td>${doBePoNo}-A</td>
+                    </tr>
+                    <tr>
+                        <td>${doBePoNo}-B</td>
+                    </tr>
+                    <tr>
+                        <td>${doBePoNo}-C</td>
+                    </tr>`;
+            }
 
             $modalBody.append(`
                 <div style="display: flex; flex-direction: row; gap: 2rem;">
@@ -466,15 +505,7 @@ function setupDropdownFiltering() {
                         </div>
                         <table class="table" style="flex: 1;">
                             <tbody>
-                                <tr>
-                                    <td>${doBePoNo}-A</td>
-                                </tr>
-                                <tr>
-                                    <td>${doBePoNo}-B</td>
-                                </tr>
-                                <tr>
-                                    <td>${doBePoNo}-C</td>
-                                </tr>
+                                ${rightTableRows}
                             </tbody>
                         </table>
                     </div>
