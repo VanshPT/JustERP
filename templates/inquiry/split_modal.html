@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="staticBackdropSplit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 800px;"> <!-- Increased width -->
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabelSplit">Fill details about your split below.</h1>
@@ -11,10 +11,13 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                <form id="merge-form" action="/inquiry/split" method="POST" style="display: inline;">
+                <button type="button" class="btn btn-success" id="confirm-split">Yes</button>
+                <form id="split-form" action="/inquiry/split" method="POST" style="display: none;">
                     {% csrf_token %}
-                    <!-- <input type="hidden" id="selected-inquiry-ids" name="selected_inquiry_ids"> -->
-                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Yes</button>
+                    <input type="hidden" id="unsplit-inquiry-id" name="inquiry_id">
+                    <input type="hidden" id="split-input-1" name="split_input_1">
+                    <input type="hidden" id="split-input-2" name="split_input_2">
+                    <input type="hidden" id="split-input-3" name="split_input_3">
                 </form>
             </div>
         </div>

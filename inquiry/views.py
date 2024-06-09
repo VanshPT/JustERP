@@ -494,3 +494,8 @@ def merge(request):
         messages.success(request, "Inquiries Merged Successfully!")
 
     return HttpResponseRedirect('/inquiry/placement-table')
+
+
+@login_required
+def split(reqeust):
+    return HttpResponseRedirect('/inquiry/placement-table')

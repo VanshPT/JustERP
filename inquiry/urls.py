@@ -8,5 +8,6 @@ urlpatterns = [
     path('uploader', views.inquiry_uploader, name="Inquiry uploader"),
     path('inquiry-table', views.inquiry_table, name="Inquiry Table"),
     path('placement-table', views.placement_table, name="Placement Table"),
-    path('merge', views.merge, name="Merge View")
+    path('merge', views.merge, name="Merge View"),
+    path('split', views.split, name="Split view")
 ]

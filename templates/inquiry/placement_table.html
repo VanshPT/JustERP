@@ -413,7 +413,7 @@ function setupDropdownFiltering() {
     $("#staticBackdropSplit").on("show.bs.modal", function (event) {
         var selectedInquiryIds = getSelectedInquiryIds();
         var $modalBody = $(this).find(".modal-body");
-        var $yesButton = $(this).find(".modal-footer .btn-primary");
+        var $yesButton = $(this).find(".modal-footer .btn-success");
 
         // Clear previous content
         $modalBody.empty();
@@ -429,16 +429,16 @@ function setupDropdownFiltering() {
             var inquiryId = selectedInquiryIds[0];
             var selectedRow = $(`input[value="${inquiryId}"]`).closest("tr");
             var doBePoNo = selectedRow.find(".do-be-po-no").text().trim();
-            var orderQuantity = selectedRow.find(".order-qty").text().trim();
+            var orderQuantity = parseFloat(selectedRow.find(".order-qty").text().trim());
 
             $modalBody.append(`
-                <div style="display: flex; flex-direction: row; gap: 1rem;">
+                <div style="display: flex; flex-direction: row; gap: 2rem;">
                     <div style="flex: 1;">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th class="modal-table-header" >DO_BE_PO_NO</th>
-                                    <th class="modal-table-header" >Order Quantity</th>
+                                    <th class="modal-table-header">DO_BE_PO_NO</th>
+                                    <th class="modal-table-header">Order Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -449,21 +449,21 @@ function setupDropdownFiltering() {
                             </tbody>
                         </table>
                     </div>
-                    <div style="flex: 1; display: flex;">
-                      <div>
-                        <span class="modal-form-header">Split into:</span>
-                        <form id="split-form" style="flex: 1;">
-                            <div class="form-group">
-                                <input type="number" step="0.01" class="form-control" id="input1" name="split-input-2" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="number" step="0.01" class="form-control" id="input2" name="split-input-2">
-                            </div>
-                            <div class="form-group">
-                                <input type="number" step="0.01" class="form-control" id="input3" required>
-                            </div>
-                        </form>
-                      </div>
+                    <div style="flex: 2; display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <span class="modal-form-header">Split into:</span>
+                            <form>
+                                <div class="form-group">
+                                    <input type="number" step="0.01" class="form-control split-input" id="input1" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" step="0.01" class="form-control split-input" id="input2">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" step="0.01" class="form-control" id="input3" readonly>
+                                </div>
+                            </form>
+                        </div>
                         <table class="table" style="flex: 1;">
                             <tbody>
                                 <tr>
@@ -481,20 +481,43 @@ function setupDropdownFiltering() {
                 </div>
             `);
             $yesButton.prop("disabled", false);
+
+            // Update input fields
+            $(".split-input").on("input", function() {
+                var input1 = parseFloat($("#input1").val()) || 0;
+                var input2 = parseFloat($("#input2").val()) || 0;
+                var remaining = orderQuantity - input1 - input2;
+                $("#input3").val(remaining.toFixed(2));
+
+                // Check if the total sum matches the order quantity
+                var total = input1 + input2 + remaining;
+                if (total.toFixed(2) != orderQuantity.toFixed(2)) {
+                    $yesButton.prop("disabled", true);
+                } else {
+                    $yesButton.prop("disabled", false);
+                }
+            });
+
+            // Initialize inputs
+            $("#input1, #input2").trigger("input");
         }
     });
 
-    $("#staticBackdropSplit .btn-primary").on("click", function () {
-        if ($("#split-form")[0].checkValidity()) {
-            // Handle form submission
-            // Add your form submission logic here
-        } else {
-            // If the form is invalid, prevent submission
-            $("#split-form")[0].reportValidity();
-        }
+    $("#confirm-split").on("click", function () {
+        var inquiryId = getSelectedInquiryIds()[0];
+        var input1 = parseFloat($("#input1").val()) || 0;
+        var input2 = parseFloat($("#input2").val()) || 0;
+        var input3 = parseFloat($("#input3").val()) || 0;
+
+        $("#unsplit-inquiry-id").val(inquiryId);
+        $("#split-input-1").val(input1);
+        $("#split-input-2").val(input2);
+        $("#split-input-3").val(input3);
+
+        // Submit the form
+        $("#split-form").submit();
     });
 }
-
     // Filter transporters based on total order quantity
     function filterTransporters(totalOrderQuantity) {
         console.log("Starting to filter transporters...");
