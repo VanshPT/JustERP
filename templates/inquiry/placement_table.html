@@ -99,14 +99,16 @@
           >
             Merge
           </button>
+          {% include 'inquiry/modal_confirm.html' %}
           <button
             type="button"
             class="btn btn-success"
-           
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdropSplit"
           >
             Split
           </button>
-          {% include 'inquiry/modal_confirm.html' %}
+          {% include 'inquiry/split_modal.html' %}
         </div>
         {% include 'inquiry/search.html' %}
       </div>
