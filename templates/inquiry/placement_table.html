@@ -401,7 +401,30 @@ function setupDropdownFiltering() {
             $(".select-row-dummy").prop("checked", $(this).prop("checked"));
         });
     }
+    function setupSplitModal() {
+    $("#staticBackdropSplit").on("show.bs.modal", function (event) {
+        var selectedInquiryIds = getSelectedInquiryIds();
+        var $modalBody = $(this).find(".modal-body");
 
+        // Clear previous content
+        $modalBody.empty();
+
+        // Check the number of selected inquiries and update the modal content accordingly
+        if (selectedInquiryIds.length === 0) {
+            $modalBody.append('<span>Please select one inquiry to split.</span>');
+        } else if (selectedInquiryIds.length > 1) {
+            $modalBody.append('<span>Only one inquiry can be split at a time. Please select only one inquiry.</span>');
+        } else {
+            var inquiryId = selectedInquiryIds[0];
+            $modalBody.append(`
+                <div>
+                    <p>Now split will happen for inquiry ID: ${inquiryId}</p>
+                    <!-- Additional content for splitting the inquiry can be added here -->
+                </div>
+            `);
+        }
+    });
+}
     // Filter transporters based on total order quantity
     function filterTransporters(totalOrderQuantity) {
         console.log("Starting to filter transporters...");
@@ -467,6 +490,7 @@ function setupDropdownFiltering() {
         setupFormSubmission();
         setupParentChildToggle();
         setupSelectAllDummy();
+        setupSplitModal();
     }
 
     // Call the initialize function to set up all functionalities
