@@ -408,8 +408,9 @@ def merge(request):
         # Initialize the total do_be_po_no count
         total_do_be_po_no_count = 0
 
-        # Initialize the total order quantity
+        # Initialize the total order quantity and collect individual order quantities
         total_order_quantity = 0
+        individual_order_quantities = []
 
         # Loop through selected inquiries to calculate the total do_be_po_no count
         for inquiry_id in selected_inquiry_ids:
@@ -445,6 +446,7 @@ def merge(request):
             print(f"Sum of order quantities for Inquiry {inquiry_id}: {inquiry_order_quantity_sum}")
             
             total_order_quantity += inquiry_order_quantity_sum
+            individual_order_quantities.append(inquiry_order_quantity_sum)
             print(f"Running total of order quantities: {total_order_quantity}")
 
             # Merge CharField and ManyToManyField values
@@ -489,8 +491,16 @@ def merge(request):
             order_quantity_instance, created = OrderQuantity.objects.get_or_create(order_quantity=order_quantity_str)
             base_inquiry.order_quantity.set([order_quantity_instance])
 
+        # Store individual order quantities in unmerged_order_quantities
+        base_inquiry.unmerged_order_quantities = ",".join(map(str, individual_order_quantities))
+
         # Save the merged base inquiry
         base_inquiry.save()
+
+        # Delete the individual inquiries
+        for inquiry_id in selected_inquiry_ids[1:]:
+            Inquiry.objects.get(inquiry_id=inquiry_id).delete()
+
         messages.success(request, "Inquiries Merged Successfully!")
 
     return HttpResponseRedirect('/inquiry/placement-table')

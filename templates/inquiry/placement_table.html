@@ -476,7 +476,7 @@ function setupDropdownFiltering() {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th class="modal-table-header">DO_BE_PO_NO</th>
+                                    <th class="modal-table-header">Order</th>
                                     <th class="modal-table-header">Order Quantity</th>
                                 </tr>
                             </thead>
@@ -503,7 +503,13 @@ function setupDropdownFiltering() {
                                 </div>
                             </form>
                         </div>
+
                         <table class="table" style="flex: 1;">
+                          <thead>
+                                <tr>
+                                    <th class="modal-table-header">New Order</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 ${rightTableRows}
                             </tbody>
