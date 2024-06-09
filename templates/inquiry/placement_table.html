@@ -80,7 +80,15 @@
 .table-auto .child-row {
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out, padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 }
-
+.modal-table-header{
+  font-size: 0.7rem;
+}
+.modal-form-header{
+  font-size: 0.9rem;
+}
+#split-form{
+  margin-top:0.9rem;
+}
 </style>
 {% endblock %} 
 {% block body %}
@@ -405,6 +413,7 @@ function setupDropdownFiltering() {
     $("#staticBackdropSplit").on("show.bs.modal", function (event) {
         var selectedInquiryIds = getSelectedInquiryIds();
         var $modalBody = $(this).find(".modal-body");
+        var $yesButton = $(this).find(".modal-footer .btn-primary");
 
         // Clear previous content
         $modalBody.empty();
@@ -412,19 +421,80 @@ function setupDropdownFiltering() {
         // Check the number of selected inquiries and update the modal content accordingly
         if (selectedInquiryIds.length === 0) {
             $modalBody.append('<span>Please select one inquiry to split.</span>');
+            $yesButton.prop("disabled", true);
         } else if (selectedInquiryIds.length > 1) {
             $modalBody.append('<span>Only one inquiry can be split at a time. Please select only one inquiry.</span>');
+            $yesButton.prop("disabled", true);
         } else {
             var inquiryId = selectedInquiryIds[0];
+            var selectedRow = $(`input[value="${inquiryId}"]`).closest("tr");
+            var doBePoNo = selectedRow.find(".do-be-po-no").text().trim();
+            var orderQuantity = selectedRow.find(".order-qty").text().trim();
+
             $modalBody.append(`
-                <div>
-                    <p>Now split will happen for inquiry ID: ${inquiryId}</p>
-                    <!-- Additional content for splitting the inquiry can be added here -->
+                <div style="display: flex; flex-direction: row; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="modal-table-header" >DO_BE_PO_NO</th>
+                                    <th class="modal-table-header" >Order Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${doBePoNo}</td>
+                                    <td>${orderQuantity}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="flex: 1; display: flex;">
+                      <div>
+                        <span class="modal-form-header">Split into:</span>
+                        <form id="split-form" style="flex: 1;">
+                            <div class="form-group">
+                                <input type="number" step="0.01" class="form-control" id="input1" name="split-input-2" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" step="0.01" class="form-control" id="input2" name="split-input-2">
+                            </div>
+                            <div class="form-group">
+                                <input type="number" step="0.01" class="form-control" id="input3" required>
+                            </div>
+                        </form>
+                      </div>
+                        <table class="table" style="flex: 1;">
+                            <tbody>
+                                <tr>
+                                    <td>${doBePoNo}-A</td>
+                                </tr>
+                                <tr>
+                                    <td>${doBePoNo}-B</td>
+                                </tr>
+                                <tr>
+                                    <td>${doBePoNo}-C</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             `);
+            $yesButton.prop("disabled", false);
+        }
+    });
+
+    $("#staticBackdropSplit .btn-primary").on("click", function () {
+        if ($("#split-form")[0].checkValidity()) {
+            // Handle form submission
+            // Add your form submission logic here
+        } else {
+            // If the form is invalid, prevent submission
+            $("#split-form")[0].reportValidity();
         }
     });
 }
+
     // Filter transporters based on total order quantity
     function filterTransporters(totalOrderQuantity) {
         console.log("Starting to filter transporters...");
