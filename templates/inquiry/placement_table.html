@@ -90,7 +90,7 @@
     <div class="table-wrapper">
       <div class="custom-flex">
         <div>
-          <h2 class="text-xl font-bold">Inquiries</h2>
+          <h2 class="text-xl font-bold">Orders</h2>
           <button
             type="button"
             class="btn btn-primary"
@@ -98,6 +98,13 @@
             data-bs-target="#staticBackdrop"
           >
             Merge
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+           
+          >
+            Split
           </button>
           {% include 'inquiry/modal_confirm.html' %}
         </div>
@@ -120,7 +127,7 @@
                 scope="col"
                 class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Inquiry ID
+                Freight Value
               </th>
               <th
                 scope="col"
@@ -132,7 +139,7 @@
                 scope="col"
                 class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                DO_BE_PO_NO
+                Order
               </th>
               <th
                 scope="col"
@@ -144,7 +151,7 @@
                 scope="col"
                 class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Destination Address
+                District
               </th>
             </tr>
           </thead>
@@ -154,7 +161,7 @@
                 <td class="px-2 py-1 whitespace-nowrap">
                     <input type="checkbox" class="select-row-left" value="{{ inq.inquiry_id }}">
                 </td>
-                <td class="px-2 py-1 whitespace-nowrap inquiry-id">{{ inq.inquiry_id }}</td>
+                <td class="px-2 py-1 whitespace-nowrap inquiry-id">{{ inq.freight_value }}</td>
                 <td class="px-2 py-1 whitespace-nowrap customer">{{ inq.customer.all|join:"/ " }}</td>
                 <td class="px-2 py-1 whitespace-nowrap do-be-po-no">{{ inq.DO_BE_PO_NO }}</td>
                 <td class="px-2 py-1 whitespace-nowrap order-qty">{{ inq.order_quantity.all|join:"/ " }}</td>
@@ -169,7 +176,11 @@
 
     <div class="table-wrapper">
         <div class="custom-flex">
-          <h2 class="text-xl font-bold">Transporter List</h2>
+          <div class="custom-flex">
+            <button class="btn btn-info">Assign</button>
+            <h2 class="text-xl font-bold">Transporter List</h2>
+          </div>
+          
         </div>
         <div class="overflow-x-auto">
           <table class="table-auto min-w-full divide-y divide-gray-200 compact-table">

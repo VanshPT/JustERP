@@ -408,6 +408,9 @@ def merge(request):
         # Initialize the total do_be_po_no count
         total_do_be_po_no_count = 0
 
+        # Initialize the total order quantity
+        total_order_quantity = 0
+
         # Loop through selected inquiries to calculate the total do_be_po_no count
         for inquiry_id in selected_inquiry_ids:
             inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
@@ -428,12 +431,21 @@ def merge(request):
             messages.error(request, "Merging would exceed the limit of 3 do_be_po_no values!")
             return redirect("/inquiry/placement-table")
 
-        # Loop through selected inquiries starting from the second one
-        for inquiry_id in selected_inquiry_ids[1:]:
+        # Loop through selected inquiries starting from the first one
+        for inquiry_id in selected_inquiry_ids:
             inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
 
             print("Base Inquiry before merging:", base_inquiry)
             print("Inquiry to merge:", inquiry)
+
+            # Calculate the order_quantity sum
+            order_quantities = inquiry.order_quantity.all()
+            inquiry_order_quantity_sum = sum(float(qty.order_quantity) for qty in order_quantities)
+            print(f"Order quantities for Inquiry {inquiry_id}: {[qty.order_quantity for qty in order_quantities]}")
+            print(f"Sum of order quantities for Inquiry {inquiry_id}: {inquiry_order_quantity_sum}")
+            
+            total_order_quantity += inquiry_order_quantity_sum
+            print(f"Running total of order quantities: {total_order_quantity}")
 
             # Merge CharField and ManyToManyField values
             for field in Inquiry._meta.get_fields():
@@ -450,18 +462,7 @@ def merge(request):
                     setattr(base_inquiry, field_name, combined_value)
 
                 elif field_type == 'ManyToManyField':
-                    if field_name == 'order_quantity':
-                        # Sum the order_quantity values
-                        base_order_quantities = getattr(base_inquiry, field_name).all()
-                        inquiry_order_quantities = getattr(inquiry, field_name).all()
-
-                        base_order_quantity_sum = sum(float(qty.order_quantity) for qty in base_order_quantities)
-                        inquiry_order_quantity_sum = sum(float(qty.order_quantity) for qty in inquiry_order_quantities)
-
-                        # Update total_order_quantity
-                        total_order_quantity = base_order_quantity_sum + inquiry_order_quantity_sum
-
-                    else:
+                    if field_name != 'order_quantity':
                         # Merge ManyToManyField values
                         base_values = list(getattr(base_inquiry, field_name).all())
                         inquiry_values = list(getattr(inquiry, field_name).all())
@@ -481,10 +482,8 @@ def merge(request):
                         else:
                             getattr(base_inquiry, field_name).set(unique_combined_values)
 
-            # Delete the merged inquiry
-            inquiry.delete()
-
         # Handle the total order_quantity
+        print(f"Total order quantity after merging all selected inquiries: {total_order_quantity}")
         if total_order_quantity > 0:
             order_quantity_str = str(total_order_quantity)
             order_quantity_instance, created = OrderQuantity.objects.get_or_create(order_quantity=order_quantity_str)
