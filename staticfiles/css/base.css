@@ -1,0 +1,146 @@
+::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  body{
+    background: rgb(255, 231, 241)!important;
+    background: radial-gradient(
+      circle,
+      rgba(255, 227, 239, 0.01) 0%,
+      #e3f0ff 100%
+    )!important;
+  }
+  .main-logo-design {
+    font-size: 1.8rem;
+    color: navy;
+    font-weight: bold;
+    font-family: "Satisfy", cursive;
+  }
+  .custom-font{
+    font-family: "Hind Siliguri", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  .size-custom{
+    height:75%;
+  }
+  #custom-flex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .custom-icon{
+    width: 12%;
+    margin-right: 1rem;
+  }
+  .custt{
+    display: flex;
+    justify-content: center;
+  }
+  .custt-outer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .main-area{
+   margin-left: 10rem; 
+  }
+  body.transitioning aside {
+    transition: transform 0.3s ease;
+  }
+
+  body.transitioning main {
+    transition: margin-left 0.3s ease;
+  }
+
+  body.transitioning header {
+    transition: left 0.3s ease;
+  }
+  #popover-box {
+    background-color: white;
+    border-radius: 5px;
+    padding: 1rem;
+    box-shadow: 1.5px 1.5px 1.5px rgba(0, 0, 0, 0.15);
+  }
+
+  #inner-content-user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+.user-details {
+  margin-top: 1rem;
+}
+
+.user-details p {
+margin: 0;
+}
+
+.user-name {
+font-weight: bold;
+font-size: 1.5rem;
+}
+.username{
+font-weight: bold;
+color: grey;
+}
+.company-profile-link {
+display: block;
+margin-top: 0.5rem;
+}
+#right-partition-user{
+margin-left:1rem;
+}
+#left-partition-user{
+margin-right: 10rem;
+}
+.user-email{
+color: rgb(63, 63, 229);
+font-size: 0.8rem;
+font-weight: bold;
+}
+.left-side-breaker{
+padding: 2px;
+margin: 10px 0;
+}
+#company-written{
+font-weight: bold;
+}
+.img-border{
+border: 1px solid grey;
+border-radius: 10px;
+padding:5px;
+}
+
+#toggle-sidebar {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background-color: #ffffff; 
+  border: 1px solid #ccc; 
+  border-radius: 0 5px 5px 0; 
+  padding: 10px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.popover {
+  transition: opacity 0.3s ease;
+}
+
+
+.popover.fade {
+  opacity: 0;
+}
+
+.popover.show {
+  opacity: 1;
+}
