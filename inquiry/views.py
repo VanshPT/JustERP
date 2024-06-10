@@ -201,7 +201,7 @@ def inquiry_uploader(request):
         for index, row in data.iterrows():
             try:
                 customer = user.company
-                do_be_po_no = row['Contract']
+                do_be_po_no = str(row['Contract'])
                 consignment_description = row['Material']
                 seal_no = row['Contract Qty']
                 container_no = row['SO Qty']
@@ -213,7 +213,7 @@ def inquiry_uploader(request):
                 # Find or create pickup and destination addresses
                 pickup_address, _ = Address.objects.get_or_create(
                     customer=customer,
-                    address_point=row['District'],
+                    address_point=row['Center'],
                     state=row['State'],
                     defaults={'customer': customer}
                 )
