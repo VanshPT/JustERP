@@ -382,93 +382,77 @@ def placement_table(request):
         
         return render(request, "inquiry/placement_table.html", context)
 
-
 @login_required
 def merge(request):
     if request.method == 'POST':
         selected_inquiry_ids = request.POST.get('selected_inquiry_ids', '').split(',')
-        
+
         print("Selected Inquiry IDs:", selected_inquiry_ids)
 
         if not selected_inquiry_ids or selected_inquiry_ids == ['']:
             messages.error(request, "No Inquiries Selected!")
             return redirect("/inquiry/placement-table")
-        
-        # Check if the number of selected inquiries exceeds the limit
+
         if len(selected_inquiry_ids) > 3:
             messages.error(request, "No more than 3 Inquiries can be merged!")
             return redirect("/inquiry/placement-table")
 
-        # Initialize the base inquiry for merging
         base_inquiry = Inquiry.objects.get(inquiry_id=selected_inquiry_ids[0])
 
-        # Initialize a dictionary to store metadata for each inquiry
         metadata = {
             "inquiries": {}
         }
 
-        # Initialize a dictionary to track merged fields counts
         merged_fields_count = {}
-
-        # Initialize the total do_be_po_no count
         total_do_be_po_no_count = 0
-
-        # Initialize the total order quantity and collect individual order quantities
         total_order_quantity = 0
         individual_order_quantities = []
 
-        # Loop through selected inquiries to calculate the total do_be_po_no count
         for inquiry_id in selected_inquiry_ids:
             inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
             do_be_po_nos = getattr(inquiry, 'DO_BE_PO_NO').split('/')
-            
-            # Update the total do_be_po_no count
+
             total_do_be_po_no_count += len(do_be_po_nos)
 
             print("Inquiry ID:", inquiry_id)
             print("Do_be_po_no values:", do_be_po_nos)
             print("Count of do_be_po_no values:", len(do_be_po_nos))
 
-            # Collect metadata for each inquiry
-            inquiry_data = {}
-            for field in Inquiry._meta.get_fields():
-                field_name = field.name
-                field_type = field.get_internal_type()
-                
-                if field_type == 'ManyToManyField':
-                    related_model_primary_key = getattr(inquiry, field_name).model._meta.pk.name
-                    inquiry_data[field_name] = list(getattr(inquiry, field_name).values_list(related_model_primary_key, flat=True))
-                else:
-                    inquiry_data[field_name] = getattr(inquiry, field_name)
-            
-            metadata["inquiries"][inquiry_id] = inquiry_data
+            for do_be_po_no in do_be_po_nos:
+                inquiry_data = {}
+                for field in Inquiry._meta.get_fields():
+                    field_name = field.name
+                    field_type = field.get_internal_type()
 
-        # Print the total do_be_po_no count
+                    if field_type == 'ManyToManyField':
+                        related_model_primary_key = getattr(inquiry, field_name).model._meta.pk.name
+                        inquiry_data[field_name] = list(getattr(inquiry, field_name).values_list(related_model_primary_key, flat=True))
+                    else:
+                        inquiry_data[field_name] = getattr(inquiry, field_name)
+
+                metadata["inquiries"][do_be_po_no] = inquiry_data
+
         print("Total count of do_be_po_no values for all selected inquiries:", total_do_be_po_no_count)
 
-        # Check if the total do_be_po_no count exceeds the limit
         if total_do_be_po_no_count > 3:
             messages.error(request, "Merging would exceed the limit of 3 do_be_po_no values!")
             return redirect("/inquiry/placement-table")
 
-        # Loop through selected inquiries starting from the first one
         for inquiry_id in selected_inquiry_ids:
             inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
 
             print("Base Inquiry before merging:", base_inquiry)
             print("Inquiry to merge:", inquiry)
 
-            # Calculate the order_quantity sum
             order_quantities = inquiry.order_quantity.all()
             inquiry_order_quantity_sum = sum(float(qty.order_quantity) for qty in order_quantities)
             print(f"Order quantities for Inquiry {inquiry_id}: {[qty.order_quantity for qty in order_quantities]}")
             print(f"Sum of order quantities for Inquiry {inquiry_id}: {inquiry_order_quantity_sum}")
-            
+
             total_order_quantity += inquiry_order_quantity_sum
             individual_order_quantities.append(inquiry_order_quantity_sum)
             print(f"Running total of order quantities: {total_order_quantity}")
 
-            # Merge CharField and ManyToManyField values
             for field in Inquiry._meta.get_fields():
                 field_name = field.name
                 field_type = field.get_internal_type()
@@ -484,42 +468,32 @@ def merge(request):
 
                 elif field_type == 'ManyToManyField':
                     if field_name != 'order_quantity':
-                        # Merge ManyToManyField values
                         base_values = list(getattr(base_inquiry, field_name).all())
                         inquiry_values = list(getattr(inquiry, field_name).all())
                         combined_values = base_values + inquiry_values
                         unique_combined_values = list(set(combined_values))
 
-                        # Count the number of merged values for the field
                         merged_fields_count[field_name] = len(unique_combined_values)
 
                         print(f"Merged values for {field_name}:", unique_combined_values)
                         print(f"Count of merged values for {field_name}:", merged_fields_count[field_name])
 
-                        # Check if merging exceeds the limit for any field
                         if merged_fields_count[field_name] > 3:
                             messages.error(request, f"Merging would exceed the limit of 3 items for field: {field_name}!")
                             return redirect("/inquiry/placement-table")
                         else:
                             getattr(base_inquiry, field_name).set(unique_combined_values)
 
-        # Handle the total order_quantity
         print(f"Total order quantity after merging all selected inquiries: {total_order_quantity}")
         if total_order_quantity > 0:
             order_quantity_str = str(total_order_quantity)
             order_quantity_instance, created = OrderQuantity.objects.get_or_create(order_quantity=order_quantity_str)
             base_inquiry.order_quantity.set([order_quantity_instance])
 
-        # Store individual order quantities in unmerged_order_quantities
         base_inquiry.unmerged_order_quantities = ",".join(map(str, individual_order_quantities))
-
-        # Store the metadata in the base inquiry
         base_inquiry.metadata = metadata
-
-        # Save the merged base inquiry
         base_inquiry.save()
 
-        # Delete the individual inquiries
         for inquiry_id in selected_inquiry_ids[1:]:
             Inquiry.objects.get(inquiry_id=inquiry_id).delete()
 
@@ -536,18 +510,124 @@ def split(request):
         split_input_2 = request.POST.get('split_input_2')
         split_input_3 = request.POST.get('split_input_3')
 
-        inquiry=Inquiry.objects.get(inquiry_id=inquiry_id)
-        # if len(inquiry.DO_BE_PO_NO.split(" / ")) ==3:
-            #if charfield, then split by (" / "), you will get 3 values, initiate three Inquiry objects, first inquiry object will have its DO_BE_PO_NO setup as inquiry.DO_BE_PO_NO.split(" / ")[0], second with [1] and third with [2]. do same split and assing with all the charfields coz we are storing values of all charfields in same format
-            #elif ManytoManyField, 
+        inquiry = Inquiry.objects.get(inquiry_id=inquiry_id)
+        do_be_po_no_list = inquiry.DO_BE_PO_NO.split(" / ")
 
+        inquiries_to_save = []
+        def get_or_create_order_quantity(order_quantity):
+            obj, created = OrderQuantity.objects.get_or_create(order_quantity=order_quantity)
+            return obj
+
+        def create_inquiry(data):
+            new_inquiry = Inquiry(
+                DO_BE_PO_NO=data['DO_BE_PO_NO'],
+                CONSIGNMENT_DESCRIPTION=data['CONSIGNMENT_DESCRIPTION'],
+                seal_no=data['seal_no'],
+                container_no=data['container_no'],
+                loading_by_consignor=data['loading_by_consignor'],
+                unloading_by_consignee=data['unloading_by_consignee'],
+                freight_value=data['freight_value'],
+                planned_loading_datetime=data['planned_loading_datetime'],
+                price_value=data['price_value'],
+                planned_unloading_datetime=data['planned_unloading_datetime'],
+                insurance=data['insurance'],
+                unmerged_order_quantities=data['unmerged_order_quantities'],
+                metadata=data['metadata']
+            )
+            new_inquiry.save()  # Save first to create an ID
+            new_inquiry.customer.set(data['customer'])
+            new_inquiry.truck_details.set(data['truck_details'])
+            new_inquiry.truck_type.set(data['truck_type'])
+            new_inquiry.order_quantity.set(data['order_quantity'])
+            new_inquiry.length.set(data['length'])
+            new_inquiry.axel_type.set(data['axel_type'])
+            new_inquiry.mode_of_shipment.set(data['mode_of_shipment'])
+            new_inquiry.pickup_address.set(data['pickup_address'])
+            new_inquiry.destination_address.set(data['destination_address'])
+            new_inquiry.division.set(data['division'])
+            new_inquiry.cluster.set(data['cluster'])
+            new_inquiry.payment_terms.set(data['payment_terms'])
+            new_inquiry.credit_days.set(data['credit_days'])
+            return new_inquiry
+
+        if len(do_be_po_no_list) == 3:
+            inq0 = inquiry.metadata['inquiries'][do_be_po_no_list[0]]
+            inq1 = inquiry.metadata['inquiries'][do_be_po_no_list[1]]
+            inq2 = inquiry.metadata['inquiries'][do_be_po_no_list[2]]
+
+            if not Inquiry.objects.filter(DO_BE_PO_NO=inq0['DO_BE_PO_NO']).exists():
+                inquiries_to_save.append(create_inquiry(inq0))
+            if not Inquiry.objects.filter(DO_BE_PO_NO=inq1['DO_BE_PO_NO']).exists():
+                inquiries_to_save.append(create_inquiry(inq1))
+            if not Inquiry.objects.filter(DO_BE_PO_NO=inq2['DO_BE_PO_NO']).exists():
+                inquiries_to_save.append(create_inquiry(inq2))
+
+        elif len(do_be_po_no_list) == 2:
+            inq0 = inquiry.metadata['inquiries'][do_be_po_no_list[0]]
+            inq1 = inquiry.metadata['inquiries'][do_be_po_no_list[1]]
+
+            if not Inquiry.objects.filter(DO_BE_PO_NO=inq0['DO_BE_PO_NO']).exists():
+                inquiries_to_save.append(create_inquiry(inq0))
+            if not Inquiry.objects.filter(DO_BE_PO_NO=inq1['DO_BE_PO_NO']).exists():
+                inquiries_to_save.append(create_inquiry(inq1))
+
+        if len(do_be_po_no_list) == 1:
+            if split_input_2 != '0':
+                order_quantity_1 = get_or_create_order_quantity(split_input_1)
+                order_quantity_2 = get_or_create_order_quantity(split_input_2)
+                
+                inq0_data = {
+                    "DO_BE_PO_NO": f"{do_be_po_no_list[0]}-A",
+                    "CONSIGNMENT_DESCRIPTION": inquiry.CONSIGNMENT_DESCRIPTION,
+                    "seal_no": inquiry.seal_no,
+                    "container_no": inquiry.container_no,
+                    "loading_by_consignor": inquiry.loading_by_consignor,
+                    "unloading_by_consignee": inquiry.unloading_by_consignee,
+                    "freight_value": inquiry.freight_value,
+                    "planned_loading_datetime": inquiry.planned_loading_datetime,
+                    "price_value": inquiry.price_value,
+                    "planned_unloading_datetime": inquiry.planned_unloading_datetime,
+                    "insurance": inquiry.insurance,
+                    "unmerged_order_quantities": inquiry.unmerged_order_quantities,
+                    "metadata": inquiry.metadata,
+                    "customer": inquiry.customer.all(),
+                    "truck_details": inquiry.truck_details.all(),
+                    "truck_type": inquiry.truck_type.all(),
+                    "order_quantity": [order_quantity_1],
+                    "length": inquiry.length.all(),
+                    "axel_type": inquiry.axel_type.all(),
+                    "mode_of_shipment": inquiry.mode_of_shipment.all(),
+                    "pickup_address": inquiry.pickup_address.all(),
+                    "destination_address": inquiry.destination_address.all(),
+                    "division": inquiry.division.all(),
+                    "cluster": inquiry.cluster.all(),
+                    "payment_terms": inquiry.payment_terms.all(),
+                    "credit_days": inquiry.credit_days.all()
+                }
+
+                inq1_data = inq0_data.copy()
+                inq1_data['DO_BE_PO_NO'] = f"{do_be_po_no_list[0]}-B"
+                inq1_data['order_quantity'] = [order_quantity_2]
+
+                inquiries_to_save.append(create_inquiry(inq0_data))
+                inquiries_to_save.append(create_inquiry(inq1_data))
+
+                if split_input_3 != '0':
+                    order_quantity_3 = get_or_create_order_quantity(split_input_3)
+                    inq2_data = inq0_data.copy()
+                    inq2_data['DO_BE_PO_NO'] = f"{do_be_po_no_list[0]}-C"
+                    inq2_data['order_quantity'] = [order_quantity_3]
+                    inquiries_to_save.append(create_inquiry(inq2_data))
+        # Save the split inquiries and delete the original merged inquiry
+        for inq in inquiries_to_save:
+            inq.save()
+
+        inquiry.delete()
+
+        # Log details for debugging
         print(f'Inquiry ID: {inquiry_id}')
         print(f'Split Input 1: {split_input_1}')
         print(f'Split Input 2: {split_input_2}')
         print(f'Split Input 3: {split_input_3}')
-
-        
-
-        return HttpResponseRedirect('/inquiry/placement-table')
 
     return HttpResponseRedirect('/inquiry/placement-table')
