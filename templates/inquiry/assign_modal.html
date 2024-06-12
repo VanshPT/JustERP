@@ -1,0 +1,23 @@
+<!-- Modal -->
+<div class="modal fade" id="staticBackdropAssign" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabelAssign" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabelAssign">Confirm Assign of the selected Inquiry with the Transporter?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                content
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-success" id="confirm-assign">Yes</button>
+                <form id="assign-form" action="/inquiry/assigned" method="POST" style="display: none;">
+                    {% csrf_token %}
+                    <!-- input fields  -->
+                    <button type="submit" class="btn btn-success" id="confirm-assign">Yes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

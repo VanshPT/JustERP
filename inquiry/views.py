@@ -631,3 +631,17 @@ def split(request):
         print(f'Split Input 3: {split_input_3}')
 
     return HttpResponseRedirect('/inquiry/placement-table')
+
+
+def assign(request):
+    user=request.user
+    if user.is_authenticated:
+        context = {
+            'company_id': user.company.company_id,
+            'company_name': user.company.company_name,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+        }
+    return render(request,'inquiry/assigned.html',context)

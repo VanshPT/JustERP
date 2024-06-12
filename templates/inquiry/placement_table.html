@@ -89,6 +89,9 @@
 #split-form{
   margin-top:0.9rem;
 }
+.margg-right{
+    margin-right:0.5rem;
+}
 </style>
 {% endblock %} 
 {% block body %}
@@ -165,8 +168,7 @@
             </th>
             <th
                 scope="col"
-                class="hidden"  <!-- Invisible column header -->
-            >
+                class="hidden" 
                 Unmerged Order Quantities
             </th>
         </tr>
@@ -194,7 +196,13 @@
     <div class="table-wrapper">
         <div class="custom-flex">
           <div class="custom-flex">
-            <button class="btn btn-info">Assign</button>
+            <button
+            type="button" 
+            class="btn btn-info margg-right"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdropAssign"
+            >Assign</button>
+            {% include 'inquiry/assign_modal.html' %}
             <h2 class="text-xl font-bold">Transporter List</h2>
           </div>
           

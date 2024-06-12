@@ -147,3 +147,8 @@ class Inquiry(models.Model):
     def __str__(self):
         customer_names = ", ".join([company.company_name for company in self.customer.all()])
         return f"Inquiry {self.inquiry_id} for {customer_names}"
+    
+class Assign(models.Model):
+    assign_id=models.AutoField(primary_key=True)
+    inquiry=models.ForeignKey(Inquiry, on_delete=models.PROTECT)
+    transporter=models.ForeignKey(Transporter, on_delete=models.PROTECT)
