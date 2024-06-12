@@ -267,6 +267,7 @@
 
 <script>
     
+
     $(document).ready(function () {
     // Search functionality for the left table
     function setupSearchFunctionality() {
@@ -285,47 +286,48 @@
     }
 
     // Dropdown filtering for the left table
-    function setupDropdownFiltering() {
-        $("#dropdown").on("change", 'input[type="checkbox"]', function () {
-            var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
-                .map(function () {
-                    return $(this).val();
-                })
-                .get();
+function setupDropdownFiltering() {
+    $("#dropdown").on("change", 'input[type="checkbox"]', function () {
+        var selectedDestinations = $('#dropdown input[type="checkbox"]:checked')
+            .map(function () {
+                return $(this).val();
+            })
+            .get();
 
-            console.log("Selected Destinations:", selectedDestinations);
+        console.log("Selected Destinations:", selectedDestinations);
 
-            if (selectedDestinations.length > 0) {
-                $("#inquiry-tbody tr").hide();
-                $("#inquiry-tbody tr").each(function (index, element) {
-                    var $row = $(element);
-                    var destinationAddressesText = $row.find(".destination-address").text().trim();
-                    var destinationAddressesArray = destinationAddressesText.split("/");
+        if (selectedDestinations.length > 0) {
+            $("#inquiry-tbody tr").hide();
+            $("#inquiry-tbody tr").each(function (index, element) {
+                var $row = $(element);
+                var destinationAddressesText = $row.find(".destination-address").text().trim();
+                var destinationAddressesArray = destinationAddressesText.split("/");
 
-                    console.log("Row Index:", index);
-                    console.log("Destination Addresses Text:", destinationAddressesText);
-                    console.log("Destination Addresses Array:", destinationAddressesArray);
+                console.log("Row Index:", index);
+                console.log("Destination Addresses Text:", destinationAddressesText);
+                console.log("Destination Addresses Array:", destinationAddressesArray);
 
-                    // Extract address points by splitting at the comma and using the first part
-                    var addressPoints = destinationAddressesArray.map(function (address) {
-                        return address.split(",")[0].trim();
-                    });
-
-                    console.log("Extracted Address Points:", addressPoints);
-
-                    var shouldShow = addressPoints.some((addressPoint) => selectedDestinations.includes(addressPoint));
-                    console.log("Row should be shown:", shouldShow);
-
-                    if (shouldShow) {
-                        $row.show();
-                    }
+                // Extract address points by splitting at the comma and using the first part
+                var addressPoints = destinationAddressesArray.map(function(address) {
+                    return address.split(",")[0].trim();
                 });
-            } else {
-                console.log("No destinations selected, showing all rows.");
-                $("#inquiry-tbody tr").show();
-            }
-        });
-    }
+
+                console.log("Extracted Address Points:", addressPoints);
+
+                var shouldShow = addressPoints.some((addressPoint) => selectedDestinations.includes(addressPoint));
+                console.log("Row should be shown:", shouldShow);
+
+                if (shouldShow) {
+                    $row.show();
+                }
+            });
+        } else {
+            console.log("No destinations selected, showing all rows.");
+            $("#inquiry-tbody tr").show();
+        }
+    });
+}
+
 
     // Calculate total order quantity
     function calculateTotalOrderQuantity() {
@@ -334,7 +336,7 @@
             // Extract the order quantity from the selected row
             var orderQuantitiesText = $(this).closest("tr").find("td.order-qty").text().trim();
             var orderQuantitiesArray = orderQuantitiesText.split("/").map(qty => parseFloat(qty) || 0);
-
+            
             // Add the first order quantity to the total (assuming the first value is the required one)
             totalOrderQuantity += orderQuantitiesArray[0];
         });
@@ -364,49 +366,25 @@
         });
     }
 
-    // Handle form submission for merging inquiries
-    function setupFormSubmission() {
-        $("#merge-form").on("submit", function (event) {
-            event.preventDefault();
-
-            var formData = $(this).serialize();
-            console.log("Form Data:", formData);
-
-            var selectedInquiryIds = getSelectedInquiryIds();
-
-            $.ajax({
-                url: $(this).attr("action"),
-                type: $(this).attr("method"),
-                data: formData,
-                success: function (response) {
-                    console.log("Response:", response);
-
-                    // Close the modal
-                    // $('#staticBackdrop').modal('toggle');
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", xhr.responseText);
-                },
-            });
-        });
-    }
+    
+    
 
     // Toggle parent and child rows in new table structure
-function setupParentChildToggle() {
-    $(".table-auto").on("click", ".toggle-row", function () {
-        var $parentRow = $(this).closest("tr.parent-row");
-        var targetClass = $parentRow.attr("data-target");
-        var $childRows = $("." + targetClass + ":visible"); // Only visible child rows
+    function setupParentChildToggle() {
+        $(".table-auto").on("click", ".toggle-row", function () {
+            var $parentRow = $(this).closest("tr.parent-row");
+            var targetClass = $parentRow.attr("data-target");
+            var $childRows = $("." + targetClass);
 
-        if ($(this).text() === "▶") {
-            $(this).text("▼");
-            $childRows.removeClass("hidden");
-        } else {
-            $(this).text("▶");
-            $childRows.addClass("hidden");
-        }
-    });
-}
+            if ($(this).text() === "▶") {
+                $(this).text("▼");
+                $childRows.removeClass("hidden");
+            } else {
+                $(this).text("▶");
+                $childRows.addClass("hidden");
+            }
+        });
+    }
 
     // Select/deselect all checkboxes in dummy table
     function setupSelectAllDummy() {
@@ -414,229 +392,227 @@ function setupParentChildToggle() {
             $(".select-row-dummy").prop("checked", $(this).prop("checked"));
         });
     }
-
     function setupSplitModal() {
-        $("#staticBackdropSplit").on("show.bs.modal", function (event) {
-            var selectedInquiryIds = getSelectedInquiryIds();
-            var $modalBody = $(this).find(".modal-body");
-            var $yesButton = $(this).find(".modal-footer .btn-success");
+    $("#staticBackdropSplit").on("show.bs.modal", function (event) {
+        var selectedInquiryIds = getSelectedInquiryIds();
+        var $modalBody = $(this).find(".modal-body");
+        var $yesButton = $(this).find(".modal-footer .btn-success");
 
-            // Clear previous content
-            $modalBody.empty();
+        // Clear previous content
+        $modalBody.empty();
 
-            // Check the number of selected inquiries and update the modal content accordingly
-            if (selectedInquiryIds.length === 0) {
-                $modalBody.append('<span>Please select one inquiry to split.</span>');
-                $yesButton.prop("disabled", true);
-            } else if (selectedInquiryIds.length > 1) {
-                $modalBody.append('<span>Only one inquiry can be split at a time. Please select only one inquiry.</span>');
-                $yesButton.prop("disabled", true);
-            } else {
-                var inquiryId = selectedInquiryIds[0];
-                var selectedRow = $(`input[value="${inquiryId}"]`).closest("tr");
-                var doBePoNo = selectedRow.find(".do-be-po-no").text().trim();
-                var orderQuantity = parseFloat(selectedRow.find(".order-qty").text().trim());
-                var unmergedOrderQuantities = selectedRow.find(".unmerged-order-quantities").text().trim();
-                var rightTableRows;
+        // Check the number of selected inquiries and update the modal content accordingly
+        if (selectedInquiryIds.length === 0) {
+            $modalBody.append('<span>Please select one inquiry to split.</span>');
+            $yesButton.prop("disabled", true);
+        } else if (selectedInquiryIds.length > 1) {
+            $modalBody.append('<span>Only one inquiry can be split at a time. Please select only one inquiry.</span>');
+            $yesButton.prop("disabled", true);
+        } else {
+            var inquiryId = selectedInquiryIds[0];
+            var selectedRow = $(`input[value="${inquiryId}"]`).closest("tr");
+            var doBePoNo = selectedRow.find(".do-be-po-no").text().trim();
+            var orderQuantity = parseFloat(selectedRow.find(".order-qty").text().trim());
+            var unmergedOrderQuantities = selectedRow.find(".unmerged-order-quantities").text().trim();
+            var rightTableRows;
 
-                var inputValues = [0, 0, 0];
+            var inputValues = [0, 0, 0];
 
-                if (unmergedOrderQuantities) {
-                    var parts = unmergedOrderQuantities.split(",").map(val => parseFloat(val));
-                    if (parts.length === 2) {
-                        inputValues = [parts[0], 0, parts[1]];
-                    } else if (parts.length === 3) {
-                        inputValues = parts;
-                    }
+            if (unmergedOrderQuantities) {
+                var parts = unmergedOrderQuantities.split(",").map(val => parseFloat(val));
+                if (parts.length === 2) {
+                    inputValues = [parts[0], 0, parts[1]];
+                } else if (parts.length === 3) {
+                    inputValues = parts;
                 }
+            }
 
-                if (doBePoNo.includes("/")) {
-                    var parts = doBePoNo.split("/").map(part => part.trim());
-                    if (parts.length === 2) {
-                        rightTableRows = `
-                            <tr>
-                                <td>${parts[0]}</td>
-                            </tr>
-                            <tr>
-                                <td>${parts[0]}-A</td>
-                            </tr>
-                            <tr>
-                                <td>${parts[1]}</td>
-                            </tr>`;
-                    } else if (parts.length === 3) {
-                        rightTableRows = `
-                            <tr>
-                                <td>${parts[0]}</td>
-                            </tr>
-                            <tr>
-                                <td>${parts[1]}</td>
-                            </tr>
-                            <tr>
-                                <td>${parts[2]}</td>
-                            </tr>`;
-                    }
-                } else {
+            if (doBePoNo.includes("/")) {
+                var parts = doBePoNo.split("/").map(part => part.trim());
+                if (parts.length === 2) {
                     rightTableRows = `
                         <tr>
-                            <td>${doBePoNo}-A</td>
+                            <td>${parts[0]}</td>
                         </tr>
                         <tr>
-                            <td>${doBePoNo}-B</td>
+                            <td>${parts[0]}-A</td>
                         </tr>
                         <tr>
-                            <td>${doBePoNo}-C</td>
+                            <td>${parts[1]}</td>
+                        </tr>`;
+                } else if (parts.length === 3) {
+                    rightTableRows = `
+                        <tr>
+                            <td>${parts[0]}</td>
+                        </tr>
+                        <tr>
+                            <td>${parts[1]}</td>
+                        </tr>
+                        <tr>
+                            <td>${parts[2]}</td>
                         </tr>`;
                 }
-
-                $modalBody.append(`
-                    <div style="display: flex; flex-direction: row; gap: 2rem;">
-                        <div style="flex: 1;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="modal-table-header">Order</th>
-                                        <th class="modal-table-header">Order Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>${doBePoNo}</td>
-                                        <td>${orderQuantity}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="flex: 2; display: flex; gap: 1rem;">
-                            <div style="flex: 1;">
-                                <span class="modal-form-header">Split into:</span>
-                                <form>
-                                    <div class="form-group">
-                                        <input type="number" step="0.01" class="form-control split-input" id="input1" value="${inputValues[0]}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" step="0.01" class="form-control split-input" id="input2" value="${inputValues[1]}">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" step="0.01" class="form-control" id="input3" value="${(orderQuantity - inputValues[0] - inputValues[1]).toFixed(2)}" readonly>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <table class="table" style="flex: 1;">
-                                <thead>
-                                    <tr>
-                                        <th class="modal-table-header">New Order</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${rightTableRows}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `);
-                $yesButton.prop("disabled", false);
-
-                // Update input fields
-                $(".split-input").on("input", function () {
-                    var input1 = parseFloat($("#input1").val()) || 0;
-                    var input2 = parseFloat($("#input2").val()) || 0;
-                    var remaining = orderQuantity - input1 - input2;
-                    $("#input3").val(remaining.toFixed(2));
-
-                    // Check if the total sum matches the order quantity
-                    var total = input1 + input2 + remaining;
-                    if (total.toFixed(2) != orderQuantity.toFixed(2)) {
-                        $yesButton.prop("disabled", true);
-                    } else {
-                        $yesButton.prop("disabled", false);
-                    }
-                });
-
-                // Initialize inputs
-                $("#input1, #input2").trigger("input");
-            }
-        });
-
-        $("#confirm-split").on("click", function () {
-            var inquiryId = getSelectedInquiryIds()[0];
-            var input1 = parseFloat($("#input1").val()) || 0;
-            var input2 = parseFloat($("#input2").val()) || 0;
-            var input3 = parseFloat($("#input3").val()) || 0;
-
-            $("#unsplit-inquiry-id").val(inquiryId);
-            $("#split-input-1").val(input1);
-            $("#split-input-2").val(input2);
-            $("#split-input-3").val(input3);
-
-            // Submit the form
-            $("#split-form").submit();
-        });
-    }
-
-    // Update right side table based on selected inquiries
-function updateRightTable() {
-    var totalOrderQuantity = calculateTotalOrderQuantity();
-    console.log("Calculated total order quantity:", totalOrderQuantity);
-    filterTransporters(totalOrderQuantity);
-}
-
-// Filter transporters based on total order quantity
-function filterTransporters(totalOrderQuantity) {
-    console.log("Starting to filter transporters...");
-    console.log("Total Order Quantity to filter by:", totalOrderQuantity);
-
-    $(".parent-row").each(function () {
-        var $parentRow = $(this);
-        var showParentRow = false;
-        var parentId = $parentRow.find("td:nth-child(3)").text().trim(); // Adjusted index to 3 for transporter ID
-
-        console.log("Checking parent row with ID:", parentId);
-
-        $parentRow.nextUntil(".parent-row").each(function () {
-            var $childRow = $(this);
-            var truckCapacityText = $childRow.find(".truck-capacity").text().trim();
-            
-            // Extract numeric value from truck capacity text (e.g., "2 ton" -> 2.0)
-            var truckCapacity = parseFloat(truckCapacityText.match(/\d+(\.\d+)?/)[0]) || 0;
-
-            console.log("Truck capacity text for child row:", truckCapacityText);
-            console.log("Parsed truck capacity for child row:", truckCapacity);
-
-            if (truckCapacity >= totalOrderQuantity) {
-                showParentRow = true;
-                $childRow.show(); // Show child row if it meets the requirement
             } else {
-                $childRow.hide(); // Hide child row if it does not meet the requirement
+                rightTableRows = `
+                    <tr>
+                        <td>${doBePoNo}-A</td>
+                    </tr>
+                    <tr>
+                        <td>${doBePoNo}-B</td>
+                    </tr>
+                    <tr>
+                        <td>${doBePoNo}-C</td>
+                    </tr>`;
             }
-        });
 
-        console.log("Show parent row:", showParentRow);
+            $modalBody.append(`
+                <div style="display: flex; flex-direction: row; gap: 2rem;">
+                    <div style="flex: 1;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="modal-table-header">Order</th>
+                                    <th class="modal-table-header">Order Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${doBePoNo}</td>
+                                    <td>${orderQuantity}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="flex: 2; display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <span class="modal-form-header">Split into:</span>
+                            <form>
+                                <div class="form-group">
+                                    <input type="number" step="0.01" class="form-control split-input" id="input1" value="${inputValues[0]}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" step="0.01" class="form-control split-input" id="input2" value="${inputValues[1]}">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" step="0.01" class="form-control" id="input3" value="${(orderQuantity - inputValues[0] - inputValues[1]).toFixed(2)}" readonly>
+                                </div>
+                            </form>
+                        </div>
 
-        if (showParentRow) {
-            $parentRow.show();
-        } else {
-            $parentRow.hide();
-            // Hide all child rows if the parent row is not shown
-            $parentRow.nextUntil(".parent-row").hide();
+                        <table class="table" style="flex: 1;">
+                          <thead>
+                                <tr>
+                                    <th class="modal-table-header">New Order</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rightTableRows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `);
+            $yesButton.prop("disabled", false);
+
+            // Update input fields
+            $(".split-input").on("input", function() {
+                var input1 = parseFloat($("#input1").val()) || 0;
+                var input2 = parseFloat($("#input2").val()) || 0;
+                var remaining = orderQuantity - input1 - input2;
+                $("#input3").val(remaining.toFixed(2));
+
+                // Check if the total sum matches the order quantity
+                var total = input1 + input2 + remaining;
+                if (total.toFixed(2) != orderQuantity.toFixed(2)) {
+                    $yesButton.prop("disabled", true);
+                } else {
+                    $yesButton.prop("disabled", false);
+                }
+            });
+
+            // Initialize inputs
+            $("#input1, #input2").trigger("input");
         }
     });
 
-    console.log("Finished filtering transporters.");
+    $("#confirm-split").on("click", function () {
+        var inquiryId = getSelectedInquiryIds()[0];
+        var input1 = parseFloat($("#input1").val()) || 0;
+        var input2 = parseFloat($("#input2").val()) || 0;
+        var input3 = parseFloat($("#input3").val()) || 0;
+
+        $("#unsplit-inquiry-id").val(inquiryId);
+        $("#split-input-1").val(input1);
+        $("#split-input-2").val(input2);
+        $("#split-input-3").val(input3);
+
+        // Submit the form
+        $("#split-form").submit();
+    });
 }
 
-// Handle checkbox change event
-$(".select-row-left").change(function () {
-    console.log("Checkbox state changed.");
-    updateRightTable();
-});
+    // Filter transporters based on total order quantity
+    function filterTransporters(totalOrderQuantity) {
+        console.log("Starting to filter transporters...");
+        console.log("Total Order Quantity to filter by:", totalOrderQuantity);
+
+        $(".parent-row").each(function () {
+            var $parentRow = $(this);
+            var showParentRow = false;
+            var parentId = $parentRow.find("td:nth-child(3)").text().trim(); // Adjusted index to 3 for transporter ID
+
+            console.log("Checking parent row with ID:", parentId);
+
+            $parentRow.nextUntil(".parent-row").each(function () {
+                var $childRow = $(this);
+                var truckCapacityText = $childRow.find(".truck-capacity").text().trim();
+                
+                // Extract numeric value from truck capacity text (e.g., "2 ton" -> 2.0)
+                var truckCapacity = parseFloat(truckCapacityText.match(/\d+(\.\d+)?/)[0]) || 0;
+
+                console.log("Truck capacity text for child row:", truckCapacityText);
+                console.log("Parsed truck capacity for child row:", truckCapacity);
+
+                if (truckCapacity >= totalOrderQuantity) {
+                    showParentRow = true;
+                    $childRow.show(); // Show child row if it meets the requirement
+                } else {
+                    $childRow.hide(); // Hide child row if it does not meet the requirement
+                }
+            });
+
+            console.log("Show parent row:", showParentRow);
+
+            if (showParentRow) {
+                $parentRow.show();
+            } else {
+                $parentRow.hide();
+                // Hide all child rows if the parent row is not shown
+                $parentRow.nextUntil(".parent-row").hide();
+            }
+        });
+
+        console.log("Finished filtering transporters.");
+    }
+
+    // Update right side table based on selected inquiries
+    function updateRightTable() {
+        var totalOrderQuantity = calculateTotalOrderQuantity();
+        console.log("Calculated total order quantity:", totalOrderQuantity);
+        filterTransporters(totalOrderQuantity);
+    }
+
+    // Handle checkbox change event
+    $(".select-row-left").change(function () {
+        console.log("Checkbox state changed.");
+        updateRightTable();
+    });
 
     // Initialize all functionalities
     function initialize() {
         setupSearchFunctionality();
         setupDropdownFiltering();
         setupModalUpdate();
-        setupFormSubmission();
         setupParentChildToggle();
         setupSelectAllDummy();
         setupSplitModal();
@@ -664,6 +640,7 @@ $(".select-row-left").change(function () {
         });
     }
 });
+
 
 </script>
 

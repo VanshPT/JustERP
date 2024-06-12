@@ -142,6 +142,7 @@ class Inquiry(models.Model):
     credit_days = models.ManyToManyField(CreditDays, blank=True, null=True)
     insurance = models.CharField(max_length=100, blank=True, null=True)
     unmerged_order_quantities=models.CharField(max_length=200, blank=True, null=True)
+    metadata = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         customer_names = ", ".join([company.company_name for company in self.customer.all()])

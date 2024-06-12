@@ -402,6 +402,11 @@ def merge(request):
         # Initialize the base inquiry for merging
         base_inquiry = Inquiry.objects.get(inquiry_id=selected_inquiry_ids[0])
 
+        # Initialize a dictionary to store metadata for each inquiry
+        metadata = {
+            "inquiries": {}
+        }
+
         # Initialize a dictionary to track merged fields counts
         merged_fields_count = {}
 
@@ -423,6 +428,20 @@ def merge(request):
             print("Inquiry ID:", inquiry_id)
             print("Do_be_po_no values:", do_be_po_nos)
             print("Count of do_be_po_no values:", len(do_be_po_nos))
+
+            # Collect metadata for each inquiry
+            inquiry_data = {}
+            for field in Inquiry._meta.get_fields():
+                field_name = field.name
+                field_type = field.get_internal_type()
+                
+                if field_type == 'ManyToManyField':
+                    related_model_primary_key = getattr(inquiry, field_name).model._meta.pk.name
+                    inquiry_data[field_name] = list(getattr(inquiry, field_name).values_list(related_model_primary_key, flat=True))
+                else:
+                    inquiry_data[field_name] = getattr(inquiry, field_name)
+            
+            metadata["inquiries"][inquiry_id] = inquiry_data
 
         # Print the total do_be_po_no count
         print("Total count of do_be_po_no values for all selected inquiries:", total_do_be_po_no_count)
@@ -494,6 +513,9 @@ def merge(request):
         # Store individual order quantities in unmerged_order_quantities
         base_inquiry.unmerged_order_quantities = ",".join(map(str, individual_order_quantities))
 
+        # Store the metadata in the base inquiry
+        base_inquiry.metadata = metadata
+
         # Save the merged base inquiry
         base_inquiry.save()
 
@@ -507,5 +529,25 @@ def merge(request):
 
 
 @login_required
-def split(reqeust):
+def split(request):
+    if request.method == 'POST':
+        inquiry_id = request.POST.get('inquiry_id')
+        split_input_1 = request.POST.get('split_input_1')
+        split_input_2 = request.POST.get('split_input_2')
+        split_input_3 = request.POST.get('split_input_3')
+
+        inquiry=Inquiry.objects.get(inquiry_id=inquiry_id)
+        # if len(inquiry.DO_BE_PO_NO.split(" / ")) ==3:
+            #if charfield, then split by (" / "), you will get 3 values, initiate three Inquiry objects, first inquiry object will have its DO_BE_PO_NO setup as inquiry.DO_BE_PO_NO.split(" / ")[0], second with [1] and third with [2]. do same split and assing with all the charfields coz we are storing values of all charfields in same format
+            #elif ManytoManyField, 
+
+        print(f'Inquiry ID: {inquiry_id}')
+        print(f'Split Input 1: {split_input_1}')
+        print(f'Split Input 2: {split_input_2}')
+        print(f'Split Input 3: {split_input_3}')
+
+        
+
+        return HttpResponseRedirect('/inquiry/placement-table')
+
     return HttpResponseRedirect('/inquiry/placement-table')
