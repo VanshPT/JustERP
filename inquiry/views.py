@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from authapp.models import CompanyProfile
 from . import models
-from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster,OrderQuantity,TruckDetails,CreditDays,PaymentTerms,Transporter
+from .models import Inquiry, TruckType, TruckCapacity, TruckLength, AxelType, ModeOfShipment , Address,Division, Cluster,OrderQuantity,TruckDetails,CreditDays,PaymentTerms,Transporter,Assign
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
 import pandas as pd
@@ -634,28 +634,81 @@ def split(request):
     return HttpResponseRedirect('/inquiry/placement-table')
 
 
-@require_POST
+@login_required
 def assign(request):
     if request.user.is_authenticated:
-        # Assuming you're using POST method to submit the form data
-        inquiry_id = request.POST.get('inquiry_id')
-        transporter_id = request.POST.get('transporter_id')
+        if request.method == 'POST':
+            inquiry_id = request.POST.get('inquiry_id')
+            transporter_id = request.POST.get('transporter_id')
 
-        # Assuming you want to print the received data for debugging or logging purposes
-        print(f"Inquiry ID: {inquiry_id}, Transporter ID: {transporter_id}")
+            # Retrieve the Inquiry and Transporter objects
+            try:
+                inquiry = Inquiry.objects.get(DO_BE_PO_NO=inquiry_id)
+                transporter = Transporter.objects.get(tr_id=transporter_id)
+            except Inquiry.DoesNotExist:
+                return HttpResponse("Inquiry not found", status=404)
+            except Transporter.DoesNotExist:
+                return HttpResponse("Transporter not found", status=404)
 
-        # Prepare context data as needed for rendering the assigned.html template
-        context = {
-            'company_id': request.user.company.company_id,
-            'company_name': request.user.company.company_name,
-            'username': request.user.username,
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name,
-            'email': request.user.email,
-            'inquiry_id': inquiry_id,  # Include these if needed in your assigned.html template
-            'transporter_id': transporter_id,
-        }
-        return render(request, 'inquiry/assigned.html', context)
+            # Create an Assign object and save it
+            assign = Assign.objects.create(
+                DO_BE_PO_NO=inquiry_id,
+                CONSIGNMENT_DESCRIPTION=inquiry.CONSIGNMENT_DESCRIPTION,
+                seal_no=inquiry.seal_no,
+                container_no=inquiry.container_no,
+                loading_by_consignor=inquiry.loading_by_consignor,
+                unloading_by_consignee=inquiry.unloading_by_consignee,
+                insurance=inquiry.insurance,
+                unmerged_order_quantities=inquiry.unmerged_order_quantities,
+                transporter=transporter
+                # Add other fields from Inquiry model as needed
+            )
+
+            # Copy ManyToMany relationships from Inquiry to Assign
+            assign.truck_details.set(inquiry.truck_details.all())
+            assign.truck_type.set(inquiry.truck_type.all())
+            assign.order_quantity.set(inquiry.order_quantity.all())
+            assign.length.set(inquiry.length.all())
+            assign.axel_type.set(inquiry.axel_type.all())
+            assign.mode_of_shipment.set(inquiry.mode_of_shipment.all())
+            assign.pickup_addresses.set(inquiry.pickup_address.all())
+            assign.destination_addresses.set(inquiry.destination_address.all())
+            assign.divisions.set(inquiry.division.all())
+            assign.clusters.set(inquiry.cluster.all())
+            assign.payment_terms.set(inquiry.payment_terms.all())
+            assign.credit_days.set(inquiry.credit_days.all())
+
+            # Optionally, delete the Inquiry after assigning
+            inquiry.delete()
+
+            # Prepare context data for rendering the assigned.html template
+            context = {
+                'company_id': request.user.company.company_id,
+                'company_name': request.user.company.company_name,
+                'username': request.user.username,
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'email': request.user.email,
+                'inquiry_id': inquiry_id,
+                'transporter_id': transporter_id,
+            }
+            return render(request, 'inquiry/assigned.html', context)
+        elif request.method == 'GET':
+            # Fetch all Assign objects and related details
+            assigned_objects = Assign.objects.all()
+
+            # Prepare context data for rendering the assigned.html template
+            context = {
+                'company_id': request.user.company.company_id,
+                'company_name': request.user.company.company_name,
+                'username': request.user.username,
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'email': request.user.email,
+                'assigned_objects': assigned_objects,
+            }
+            return render(request, 'inquiry/assigned.html', context)
+        else:
+            return HttpResponse("Method not allowed", status=405)
     else:
-        # Handle the case where user is not authenticated
         return HttpResponse("Unauthorized", status=401)

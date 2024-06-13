@@ -149,6 +149,38 @@ class Inquiry(models.Model):
         return f"Inquiry {self.inquiry_id} for {customer_names}"
     
 class Assign(models.Model):
-    assign_id=models.AutoField(primary_key=True)
-    inquiry=models.ForeignKey(Inquiry, on_delete=models.PROTECT)
-    transporter=models.ForeignKey(Transporter, on_delete=models.PROTECT)
+    assign_id = models.AutoField(primary_key=True)
+    customer = models.ManyToManyField(CompanyProfile)
+    DO_BE_PO_NO = models.CharField(max_length=100)
+    CONSIGNMENT_DESCRIPTION = models.CharField(max_length=500)
+    seal_no = models.CharField(max_length=100)
+    container_no = models.CharField(max_length=100)
+    truck_details = models.ManyToManyField(TruckDetails)
+    truck_type = models.ManyToManyField(TruckType)
+    order_quantity = models.ManyToManyField(OrderQuantity)
+    length = models.ManyToManyField(TruckLength)
+    axel_type = models.ManyToManyField(AxelType)
+    loading_by_consignor = models.CharField(max_length=3)
+    unloading_by_consignee = models.CharField(max_length=3)
+    mode_of_shipment = models.ManyToManyField(ModeOfShipment)
+    
+    # Part 2
+    pickup_addresses = models.ManyToManyField(Address, related_name='assign_pickup_addresses', blank=True)
+    freight_value = models.CharField(max_length=100, blank=True, null=True)
+    planned_loading_datetime = models.CharField(max_length=200, blank=True, null=True)
+    destination_addresses = models.ManyToManyField(Address, related_name='assign_destination_addresses', blank=True)
+    price_value = models.CharField(max_length=100, blank=True, null=True)
+    planned_unloading_datetime = models.CharField(max_length=200, blank=True, null=True)
+    
+    # Part 3
+    divisions = models.ManyToManyField(Division, blank=True)
+    clusters = models.ManyToManyField(Cluster, blank=True)
+    payment_terms = models.ManyToManyField(PaymentTerms, blank=True)
+    credit_days = models.ManyToManyField(CreditDays, blank=True)
+    insurance = models.CharField(max_length=100, blank=True, null=True)
+    unmerged_order_quantities = models.CharField(max_length=200, blank=True, null=True)
+    metadata = models.JSONField(null=True, blank=True)
+    transporter = models.ForeignKey(Transporter, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"Assign ID: {self.assign_id} - DO_BE_PO_NO: {self.DO_BE_PO_NO} - Transporter: {self.transporter}"

@@ -1,8 +1,66 @@
 {% extends 'inquiry/inquiry_base.html' %}
-{% block activeassigned %}200{% endblock %}
-{% block css %}{% endblock %}
-{% block title %}Assigned{% endblock %}
-{% block body %}
+{% load static %}
 
+{% block activeassigned %}200{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
+  <style>
+    /* Add custom styles here */
+    .table-container {
+      margin-left: 0; /* Ensure no extra left margin */
+    }
+  </style>
 {% endblock %}
-{% block js %}{% endblock %}
+{% block title %}Assigned Inquiries{% endblock %}
+
+{% block body %}
+<div class="container mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Assigned Inquiries</h1>
+
+  <div class="overflow-x-auto table-container">
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+      <thead class="bg-gray-200 text-gray-700">
+        <tr>
+          <!-- Headers from Assign model -->
+          <th class="py-2 px-4">Assign ID</th>
+          <th class="py-2 px-4">DO/BE/PO NO</th>
+          <th class="py-2 px-4">Consignor</th>
+          <th class="py-2 px-4">Seal No</th>
+          <th class="py-2 px-4">Container No</th>
+          <th class="py-2 px-4">Loading Consignor</th>
+          <th class="py-2 px-4">Mode of Shipment</th>
+          <!-- Headers from Transporter model -->
+          <th class="py-2 px-4">Transporter ID</th>
+          <th class="py-2 px-4">Transporter Name</th>
+          <th class="py-2 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600">
+        {% for assign in assigned_objects %}
+        <tr>
+          <td class="py-2 px-4">{{ assign.assign_id }}</td>
+          <td class="py-2 px-4">{{ assign.DO_BE_PO_NO }}</td>
+          <td class="py-2 px-4">{{ assign.loading_by_consignor }}</td>
+          <td class="py-2 px-4">{{ assign.seal_no }}</td>
+          <td class="py-2 px-4">{{ assign.container_no }}</td>
+          <td class="py-2 px-4">{{ assign.loading_by_consignor }}</td>
+          <td class="py-2 px-4">{{ assign.mode_of_shipment.all|join:", " }}</td>
+          <td class="py-2 px-4">{{ assign.transporter.tr_id }}</td>
+          <td class="py-2 px-4">{{ assign.transporter.transporter_name }}</td>
+          <td class="py-2 px-4">
+            <a href="#" class="text-blue-600 hover:underline">View Details</a>
+            <!-- Add more actions as needed -->
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+  // JavaScript if needed
+</script>
+{% endblock %}
