@@ -615,6 +615,51 @@ function setupDropdownFiltering() {
         console.log("Checkbox state changed.");
         updateRightTable();
     });
+    function setupAssignModal() {
+    $("#staticBackdropAssign").on("show.bs.modal", function (event) {
+        var selectedInquiryIds = getSelectedInquiryIds();
+        var selectedTransporters = $(".parent-checkbox:checked");
+        var $modalBody = $(this).find(".modal-body");
+        var $yesButton = $(this).find(".modal-footer .btn-success");
+
+        // Clear previous content
+        $modalBody.empty();
+        $yesButton.prop("disabled", true);
+
+        // Conditions to check
+        if (selectedInquiryIds.length === 0 && selectedTransporters.length === 0) {
+            $modalBody.append('<span>Please select an order and a transporter to assign the order.</span>');
+        } else if (selectedInquiryIds.length > 1) {
+            $modalBody.append('<span>Only one order can be assigned at a time. Please select only one order.</span>');
+        } else if (selectedInquiryIds.length === 1 && selectedTransporters.length === 0) {
+            $modalBody.append('<span>Please select a transporter to assign the order to.</span>');
+        } else if (selectedInquiryIds.length === 0 && selectedTransporters.length === 1) {
+            $modalBody.append('<span>Please select an order to assign.</span>');
+        } else if (selectedTransporters.length > 1) {
+            $modalBody.append('<span>Only one transporter can be assigned at a time. Please select only one transporter.</span>');
+        } else if (selectedInquiryIds.length === 1 && selectedTransporters.length === 1) {
+            var transporterId = selectedTransporters.val();
+            var transporterName = selectedTransporters.closest("tr").find("td:nth-child(4)").text().trim(); // Get transporter name
+            var inquiryId = selectedInquiryIds[0];
+            var doBePoNo = $(`input[value="${inquiryId}"]`).closest("tr").find(".do-be-po-no").text().trim(); // Get inquiry DO/BE/PO number
+
+            $modalBody.append(`<div>Do you confirm the assignment of order ${doBePoNo} - Transporter: ${transporterName}?</div>`);
+            $yesButton.prop("disabled", false);
+
+            // Set up form submission
+            $("#confirm-assign").on("click", function () {
+                // Set the hidden input fields with selected inquiry and transporter IDs
+                $("#assign-inquiry-id").val(doBePoNo);
+                $("#assign-transporter-id").val(transporterId);
+
+                // Submit the form
+                $("#assign-form").submit();
+            });
+        }
+    });
+}
+
+
 
     // Initialize all functionalities
     function initialize() {
@@ -624,6 +669,7 @@ function setupDropdownFiltering() {
         setupParentChildToggle();
         setupSelectAllDummy();
         setupSplitModal();
+        setupAssignModal();
     }
 
     // Call the initialize function to set up all functionalities

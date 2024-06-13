@@ -14,8 +14,8 @@
                 <button type="button" class="btn btn-success" id="confirm-assign">Yes</button>
                 <form id="assign-form" action="/inquiry/assigned" method="POST" style="display: none;">
                     {% csrf_token %}
-                    <!-- input fields  -->
-                    <button type="submit" class="btn btn-success" id="confirm-assign">Yes</button>
+                    <input type="hidden" id="assign-inquiry-id" name="inquiry_id">
+                    <input type="hidden" id="assign-transporter-id" name="transporter_id">
                 </form>
             </div>
         </div>

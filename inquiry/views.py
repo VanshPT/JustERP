@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from django.contrib import messages
 from decimal import Decimal
+from django.views.decorators.http import require_POST
 # Create your views here.
 
 @login_required
@@ -633,15 +634,28 @@ def split(request):
     return HttpResponseRedirect('/inquiry/placement-table')
 
 
+@require_POST
 def assign(request):
-    user=request.user
-    if user.is_authenticated:
+    if request.user.is_authenticated:
+        # Assuming you're using POST method to submit the form data
+        inquiry_id = request.POST.get('inquiry_id')
+        transporter_id = request.POST.get('transporter_id')
+
+        # Assuming you want to print the received data for debugging or logging purposes
+        print(f"Inquiry ID: {inquiry_id}, Transporter ID: {transporter_id}")
+
+        # Prepare context data as needed for rendering the assigned.html template
         context = {
-            'company_id': user.company.company_id,
-            'company_name': user.company.company_name,
-            'username': user.username,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email,
+            'company_id': request.user.company.company_id,
+            'company_name': request.user.company.company_name,
+            'username': request.user.username,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+            'inquiry_id': inquiry_id,  # Include these if needed in your assigned.html template
+            'transporter_id': transporter_id,
         }
-    return render(request,'inquiry/assigned.html',context)
+        return render(request, 'inquiry/assigned.html', context)
+    else:
+        # Handle the case where user is not authenticated
+        return HttpResponse("Unauthorized", status=401)
