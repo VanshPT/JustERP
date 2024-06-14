@@ -10,5 +10,6 @@ urlpatterns = [
     path('placement-table', views.placement_table, name="Placement Table"),
     path('merge', views.merge, name="Merge View"),
     path('split', views.split, name="Split view"),
-    path('assigned', views.assign, name="Assign Inquiry to truckDetails")
+    path('assigned', views.assign, name="Assign Inquiry to truckDetails"),
+    path('transporter-registration', views.transporter_reg, name="Transporter Registration"),
 ]

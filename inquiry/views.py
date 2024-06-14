@@ -714,3 +714,7 @@ def assign(request):
             return HttpResponse("Method not allowed", status=405)
     else:
         return HttpResponse("Unauthorized", status=401)
+    
+
+def transporter_reg(request):
+    return render('inquiry/transporter_reg_form.html')
