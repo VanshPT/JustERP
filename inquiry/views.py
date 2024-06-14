@@ -682,6 +682,7 @@ def assign(request):
             inquiry.delete()
 
             # Prepare context data for rendering the assigned.html template
+            assigned_objects = Assign.objects.all()
             context = {
                 'company_id': request.user.company.company_id,
                 'company_name': request.user.company.company_name,
@@ -691,6 +692,7 @@ def assign(request):
                 'email': request.user.email,
                 'inquiry_id': inquiry_id,
                 'transporter_id': transporter_id,
+                'assigned_objects': assigned_objects,
             }
             return render(request, 'inquiry/assigned.html', context)
         elif request.method == 'GET':
